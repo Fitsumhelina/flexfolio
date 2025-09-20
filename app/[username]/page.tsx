@@ -1,4 +1,4 @@
-import { UserPortfolio } from "@/components/user-portfolio/user-portfolio"
+                                                                                                                                                                                                                                                                                                                                                                  import { UserPortfolio } from "@/components/user-portfolio/user-portfolio"
 
 interface UserPortfolioPageProps {
   params: {
