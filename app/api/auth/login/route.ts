@@ -27,11 +27,7 @@ export async function POST(request: NextRequest) {
 
     // In a real app, you would compare hashed passwords here
     // For demo purposes, we'll do a simple comparison (NOT recommended for production)
-    // In a real app, you would compare hashed passwords here
-    const bcrypt = require("bcrypt");
-    const passwordIsValid = bcrypt.compareSync(password, user.password);
-
-    if (!passwordIsValid) {
+    if (user.password !== password) {
       return NextResponse.json(
         { error: "Invalid email or password" },
         { status: 401 }

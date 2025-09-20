@@ -1,70 +1,76 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { getDatabase } from '@/lib/mongodb'
-import { ObjectId } from 'mongodb'
+import { NextRequest, NextResponse } from "next/server";
+import { getDatabase } from "@/lib/mongodb";
+import { ObjectId } from "mongodb";
+import bcrypt from "bcryptjs";
 
 export interface User {
-  _id?: string
-  id: string
-  name: string
-  email: string
-  username: string
-  createdAt: string
-  updatedAt: string
+  _id?: string;
+  id: string;
+  name: string;
+  email: string;
+  username: string;
+  createdAt: string;
+  updatedAt: string;
   portfolioData?: {
-    about?: any
-    projects?: any[]
-    skills?: any[]
-  }
+    about?: any;
+    projects?: any[];
+    skills?: any[];
+  };
 }
 
 export async function POST(request: NextRequest) {
   try {
-    const { name, email, username, password } = await request.json()
+    const { name, email, username, password } = await request.json();
 
     // Validate required fields
     if (!name || !email || !username || !password) {
       return NextResponse.json(
-        { error: 'All fields are required' },
+        { error: "All fields are required" },
         { status: 400 }
-      )
+      );
     }
 
     // Validate username format
     if (!/^[a-zA-Z0-9_]+$/.test(username)) {
       return NextResponse.json(
-        { error: 'Username can only contain letters, numbers, and underscores' },
+        {
+          error: "Username can only contain letters, numbers, and underscores",
+        },
         { status: 400 }
-      )
+      );
     }
 
     if (username.length < 3) {
       return NextResponse.json(
-        { error: 'Username must be at least 3 characters' },
+        { error: "Username must be at least 3 characters" },
         { status: 400 }
-      )
+      );
     }
 
-    const db = await getDatabase()
+    const db = await getDatabase();
 
     // Check if user already exists
-    const existingUser = await db.collection('users').findOne({
-      $or: [{ email }, { username }]
-    })
+    const existingUser = await db.collection("users").findOne({
+      $or: [{ email }, { username }],
+    });
 
     if (existingUser) {
       if (existingUser.email === email) {
         return NextResponse.json(
-          { error: 'Email already exists' },
+          { error: "Email already exists" },
           { status: 400 }
-        )
+        );
       }
       if (existingUser.username === username) {
         return NextResponse.json(
-          { error: 'Username already exists' },
+          { error: "Username already exists" },
           { status: 400 }
-        )
+        );
       }
     }
+
+    // Hash the password using bcrypt
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     // Create new user
     const newUser: User = {
@@ -84,38 +90,39 @@ export async function POST(request: NextRequest) {
           email,
           phone: "",
           location: "",
-          profileImage: ""
+          profileImage: "",
         },
         projects: [],
-        skills: []
-      }
-    }
+        skills: [],
+      },
+    };
 
-    // In a real app, you would hash the password here
-    // For demo purposes, we'll store it as is (NOT recommended for production)
+    // Store hashed password
     const userWithPassword = {
       ...newUser,
-      password // In production, hash this password
-    }
+      password: hashedPassword, // Store hashed password
+    };
 
-    const result = await db.collection('users').insertOne(userWithPassword)
+    const result = await db.collection("users").insertOne(userWithPassword);
 
     // Return user without password
-    const { password: _, ...userWithoutPassword } = userWithPassword
+    const { password: _, ...userWithoutPassword } = userWithPassword;
 
-    return NextResponse.json({
-      message: 'User created successfully',
-      user: {
-        ...userWithoutPassword,
-        _id: result.insertedId.toString()
-      }
-    }, { status: 201 })
-
-  } catch (error) {
-    console.error('Registration error:', error)
     return NextResponse.json(
-      { error: 'Internal server error' },
+      {
+        message: "User created successfully",
+        user: {
+          ...userWithoutPassword,
+          _id: result.insertedId.toString(),
+        },
+      },
+      { status: 201 }
+    );
+  } catch (error) {
+    console.error("Registration error:", error);
+    return NextResponse.json(
+      { error: "Internal server error" },
       { status: 500 }
-    )
+    );
   }
 }
