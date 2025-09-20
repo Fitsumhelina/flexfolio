@@ -87,11 +87,7 @@ export async function POST(request: NextRequest) {
           profileImage: ""
         },
         projects: [],
-        skills: [
-          { id: "1", name: "React", category: "Frontend", proficiency: 85 },
-          { id: "2", name: "JavaScript", category: "Frontend", proficiency: 90 },
-          { id: "3", name: "Node.js", category: "Backend", proficiency: 80 }
-        ]
+        skills: []
       }
     }
 
