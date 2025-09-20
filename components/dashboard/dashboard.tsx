@@ -32,7 +32,8 @@ import {
   CheckCircle,
   Clock,
   Zap,
-  Download
+  Download,
+  Trash2
 } from "lucide-react"
 
 interface User {
@@ -188,59 +189,69 @@ export function Dashboard() {
           </div>
         </div>
 
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-white mb-2">Manage your portfolio content and settings</h1>
+          <p className="text-gray-400">Welcome back, {user.name}! Here's an overview of your portfolio.</p>
+        </div>
+
         {/* Stats Overview */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <Card className="bg-gradient-to-br from-blue-500/10 to-blue-600/10 border-blue-500/20 hover:border-blue-500/40 transition-all duration-300">
+          <Card className="bg-gray-900/50 border-gray-700 hover:border-blue-500/50 transition-all duration-300">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-blue-400 text-sm font-medium">Portfolio Views</p>
-                  <p className="text-2xl font-bold text-white">1,234</p>
+                  <p className="text-gray-400 text-sm font-medium">Total Projects</p>
+                  <p className="text-3xl font-bold text-blue-400">{user.portfolioData?.projects?.length || 0}</p>
+                  <p className="text-xs text-gray-500">+{Math.floor(Math.random() * 5)} this month</p>
                 </div>
                 <div className="w-12 h-12 bg-blue-500/20 rounded-lg flex items-center justify-center">
-                  <TrendingUp className="h-6 w-6 text-blue-400" />
+                  <BarChart3 className="h-6 w-6 text-blue-400" />
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-br from-green-500/10 to-green-600/10 border-green-500/20 hover:border-green-500/40 transition-all duration-300">
+          <Card className="bg-gray-900/50 border-gray-700 hover:border-green-500/50 transition-all duration-300">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-green-400 text-sm font-medium">Projects</p>
-                  <p className="text-2xl font-bold text-white">{user.portfolioData?.projects?.length || 0}</p>
+                  <p className="text-gray-400 text-sm font-medium">Page Views</p>
+                  <p className="text-3xl font-bold text-green-400">2,847</p>
+                  <p className="text-xs text-gray-500">+12% this week</p>
                 </div>
                 <div className="w-12 h-12 bg-green-500/20 rounded-lg flex items-center justify-center">
-                  <Code className="h-6 w-6 text-green-400" />
+                  <TrendingUp className="h-6 w-6 text-green-400" />
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-br from-purple-500/10 to-purple-600/10 border-purple-500/20 hover:border-purple-500/40 transition-all duration-300">
+          <Card className="bg-gray-900/50 border-gray-700 hover:border-purple-500/50 transition-all duration-300">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-purple-400 text-sm font-medium">Skills</p>
-                  <p className="text-2xl font-bold text-white">{user.portfolioData?.skills?.length || 0}</p>
+                  <p className="text-gray-400 text-sm font-medium">Contact Messages</p>
+                  <p className="text-3xl font-bold text-purple-400">23</p>
+                  <p className="text-xs text-gray-500">+5 new</p>
                 </div>
                 <div className="w-12 h-12 bg-purple-500/20 rounded-lg flex items-center justify-center">
-                  <Zap className="h-6 w-6 text-purple-400" />
+                  <Mail className="h-6 w-6 text-purple-400" />
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-br from-orange-500/10 to-orange-600/10 border-orange-500/20 hover:border-orange-500/40 transition-all duration-300">
+          <Card className="bg-gray-900/50 border-gray-700 hover:border-orange-500/50 transition-all duration-300">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-orange-400 text-sm font-medium">Completion</p>
-                  <p className="text-2xl font-bold text-white">85%</p>
+                  <p className="text-gray-400 text-sm font-medium">Skills Listed</p>
+                  <p className="text-3xl font-bold text-orange-400">{user.portfolioData?.skills?.length || 0}</p>
+                  <p className="text-xs text-gray-500">Updated recently</p>
                 </div>
                 <div className="w-12 h-12 bg-orange-500/20 rounded-lg flex items-center justify-center">
-                  <CheckCircle className="h-6 w-6 text-orange-400" />
+                  <Zap className="h-6 w-6 text-orange-400" />
                 </div>
               </div>
             </CardContent>
@@ -399,62 +410,109 @@ export function Dashboard() {
               </Card>
             </div>
 
-            {/* Quick Actions */}
-            <Card className="bg-gradient-to-r from-gray-900/50 to-gray-800/50 border-gray-700/50 backdrop-blur-sm">
-              <CardHeader>
-                <CardTitle className="text-white flex items-center">
-                  <Zap className="h-5 w-5 mr-2 text-yellow-400" />
-                  Quick Actions
-                </CardTitle>
-                <p className="text-gray-300 text-sm">Common tasks to manage your portfolio</p>
-              </CardHeader>
-              <CardContent>
-                <div className="grid md:grid-cols-4 gap-4">
-                  <Button 
-                    variant="outline" 
-                    onClick={() => router.push('/dashboard/about')}
-                    className="border-gray-600 text-gray-300 hover:bg-gray-800/50 hover:border-gray-500 h-auto p-6 flex flex-col items-center space-y-3 group"
-                  >
-                    <div className="w-12 h-12 bg-blue-500/20 rounded-lg flex items-center justify-center group-hover:bg-blue-500/30 transition-colors">
-                      <Edit className="h-6 w-6 text-blue-400" />
-                    </div>
-                    <span className="font-medium">Edit Profile</span>
-                    <span className="text-xs text-gray-400">Update your bio</span>
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    onClick={() => router.push('/dashboard/projects')}
-                    className="border-gray-600 text-gray-300 hover:bg-gray-800/50 hover:border-gray-500 h-auto p-6 flex flex-col items-center space-y-3 group"
-                  >
-                    <div className="w-12 h-12 bg-green-500/20 rounded-lg flex items-center justify-center group-hover:bg-green-500/30 transition-colors">
-                      <Plus className="h-6 w-6 text-green-400" />
-                    </div>
-                    <span className="font-medium">Add Project</span>
-                    <span className="text-xs text-gray-400">Showcase your work</span>
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    className="border-gray-600 text-gray-300 hover:bg-gray-800/50 hover:border-gray-500 h-auto p-6 flex flex-col items-center space-y-3 group"
-                  >
-                    <div className="w-12 h-12 bg-purple-500/20 rounded-lg flex items-center justify-center group-hover:bg-purple-500/30 transition-colors">
-                      <Palette className="h-6 w-6 text-purple-400" />
-                    </div>
-                    <span className="font-medium">Change Theme</span>
-                    <span className="text-xs text-gray-400">Customize appearance</span>
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    className="border-gray-600 text-gray-300 hover:bg-gray-800/50 hover:border-gray-500 h-auto p-6 flex flex-col items-center space-y-3 group"
-                  >
-                    <div className="w-12 h-12 bg-orange-500/20 rounded-lg flex items-center justify-center group-hover:bg-orange-500/30 transition-colors">
-                      <Settings className="h-6 w-6 text-orange-400" />
-                    </div>
-                    <span className="font-medium">Settings</span>
-                    <span className="text-xs text-gray-400">Account preferences</span>
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
+            {/* Recent Projects and Quick Actions Side by Side */}
+            <div className="grid lg:grid-cols-2 gap-6">
+              {/* Recent Projects */}
+              <Card className="bg-gray-900/50 border-gray-700">
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-white">Recent Projects</CardTitle>
+                    <Button 
+                      onClick={() => router.push('/dashboard/projects')}
+                      className="bg-blue-500 hover:bg-blue-600 text-white"
+                    >
+                      <Plus className="h-4 w-4 mr-2" />
+                      Add Project
+                    </Button>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {user.portfolioData?.projects?.slice(0, 3).map((project, index) => (
+                      <div key={project.id} className="flex items-center justify-between p-4 bg-gray-800/50 rounded-lg">
+                        <div className="flex-1">
+                          <h4 className="text-white font-medium">{project.title}</h4>
+                          <p className="text-gray-400 text-sm">
+                            {project.status} • {index === 0 ? '2 days ago' : index === 1 ? '1 week ago' : '3 days ago'}
+                          </p>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Button variant="ghost" size="sm" className="text-gray-400 hover:text-white">
+                            <Eye className="h-4 w-4" />
+                          </Button>
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            onClick={() => router.push('/dashboard/projects')}
+                            className="text-gray-400 hover:text-white"
+                          >
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                          <Button variant="ghost" size="sm" className="text-gray-400 hover:text-red-400">
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    )) || (
+                      <div className="text-center py-8">
+                        <div className="w-16 h-16 bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4">
+                          <Plus className="h-8 w-8 text-gray-400" />
+                        </div>
+                        <h4 className="text-white font-medium mb-2">No Projects Yet</h4>
+                        <p className="text-gray-400 text-sm mb-4">Start building your portfolio by adding your first project.</p>
+                        <Button 
+                          onClick={() => router.push('/dashboard/projects')}
+                          className="bg-blue-500 hover:bg-blue-600 text-white"
+                        >
+                          <Plus className="h-4 w-4 mr-2" />
+                          Add Your First Project
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Quick Actions */}
+              <Card className="bg-gray-900/50 border-gray-700">
+                <CardHeader>
+                  <CardTitle className="text-white flex items-center">
+                    <Zap className="h-5 w-5 mr-2 text-yellow-400" />
+                    Quick Actions
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-2 gap-4">
+                    <Button 
+                      onClick={() => router.push('/dashboard/projects')}
+                      className="bg-blue-500 hover:bg-blue-600 text-white h-auto p-6 flex flex-col items-center space-y-3 group"
+                    >
+                      <Plus className="h-6 w-6" />
+                      <span className="font-medium">New Project</span>
+                    </Button>
+                    <Button 
+                      onClick={() => router.push('/dashboard/about')}
+                      className="bg-purple-500 hover:bg-purple-600 text-white h-auto p-6 flex flex-col items-center space-y-3 group"
+                    >
+                      <Edit className="h-6 w-6" />
+                      <span className="font-medium">Edit About</span>
+                    </Button>
+                    <Button 
+                      className="bg-green-500 hover:bg-green-600 text-white h-auto p-6 flex flex-col items-center space-y-3 group"
+                    >
+                      <BarChart3 className="h-6 w-6" />
+                      <span className="font-medium">Analytics</span>
+                    </Button>
+                    <Button 
+                      className="bg-orange-500 hover:bg-orange-600 text-white h-auto p-6 flex flex-col items-center space-y-3 group"
+                    >
+                      <Settings className="h-6 w-6" />
+                      <span className="font-medium">Settings</span>
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
           </TabsContent>
 
           <TabsContent value="content" className="space-y-6">
