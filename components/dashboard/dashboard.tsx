@@ -16,7 +16,22 @@ import {
   Palette, 
   Code,
   LogOut,
-  Globe
+  Globe,
+  Home,
+  BarChart3,
+  FileText,
+  Image,
+  Link,
+  Mail,
+  Phone,
+  MapPin,
+  Calendar,
+  TrendingUp,
+  Users,
+  Star,
+  CheckCircle,
+  Clock,
+  Zap
 } from "lucide-react"
 
 interface User {
@@ -82,33 +97,68 @@ export function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-black text-white">
-      {/* Header */}
-      <header className="border-b border-gray-800 bg-black/50 backdrop-blur-md">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 text-white">
+      {/* Enhanced Header */}
+      <header className="border-b border-gray-800/50 bg-black/30 backdrop-blur-xl sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">F</span>
-              </div>
-              <span className="text-xl font-bold">FlexFolio</span>
-            </div>
             <div className="flex items-center space-x-4">
+              <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl flex items-center justify-center shadow-lg">
+                <span className="text-white font-bold text-lg">F</span>
+              </div>
+              <div>
+                <span className="text-xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">FlexFolio</span>
+                <p className="text-xs text-gray-400">Dashboard</p>
+              </div>
+            </div>
+            
+            {/* Navigation Menu */}
+            <nav className="hidden md:flex items-center space-x-1">
               <Button 
-                variant="outline" 
+                variant="ghost" 
+                onClick={() => router.push('/')}
+                className="text-gray-300 hover:text-white hover:bg-gray-800/50"
+              >
+                <Home className="h-4 w-4 mr-2" />
+                Home
+              </Button>
+              <Button 
+                variant="ghost" 
                 onClick={handleViewPortfolio}
-                className="border-gray-600 text-gray-300 hover:bg-gray-800"
+                className="text-gray-300 hover:text-white hover:bg-gray-800/50"
               >
                 <Eye className="h-4 w-4 mr-2" />
                 View Portfolio
               </Button>
               <Button 
                 variant="ghost" 
-                onClick={handleLogout}
-                className="text-gray-300 hover:text-white"
+                onClick={() => router.push('/demo')}
+                className="text-gray-300 hover:text-white hover:bg-gray-800/50"
               >
-                <LogOut className="h-4 w-4 mr-2" />
-                Logout
+                <Star className="h-4 w-4 mr-2" />
+                Demo
+              </Button>
+            </nav>
+
+            <div className="flex items-center space-x-3">
+              <div className="hidden sm:flex items-center space-x-2 bg-gray-800/50 rounded-lg px-3 py-1">
+                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                <span className="text-sm text-gray-300">Live</span>
+              </div>
+              <Button 
+                variant="outline" 
+                onClick={handleViewPortfolio}
+                className="border-gray-600 text-gray-300 hover:bg-gray-800/50 hover:border-gray-500"
+              >
+                <ExternalLink className="h-4 w-4 mr-2" />
+                Portfolio
+              </Button>
+              <Button 
+                variant="ghost" 
+                onClick={handleLogout}
+                className="text-gray-300 hover:text-white hover:bg-gray-800/50"
+              >
+                <LogOut className="h-4 w-4" />
               </Button>
             </div>
           </div>
@@ -119,31 +169,115 @@ export function Dashboard() {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Welcome Section */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">Welcome back, {user.name}!</h1>
-          <p className="text-gray-400">
-            Manage your portfolio and customize your online presence
-          </p>
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-white via-blue-100 to-purple-100 bg-clip-text text-transparent">
+                Welcome back, {user.name}!
+              </h1>
+              <p className="text-gray-400 text-lg">
+                Manage your portfolio and customize your online presence
+              </p>
+            </div>
+            <div className="hidden lg:flex items-center space-x-4">
+              <div className="text-right">
+                <p className="text-sm text-gray-400">Last updated</p>
+                <p className="text-sm text-white">{new Date().toLocaleDateString()}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Stats Overview */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+          <Card className="bg-gradient-to-br from-blue-500/10 to-blue-600/10 border-blue-500/20 hover:border-blue-500/40 transition-all duration-300">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-blue-400 text-sm font-medium">Portfolio Views</p>
+                  <p className="text-2xl font-bold text-white">1,234</p>
+                </div>
+                <div className="w-12 h-12 bg-blue-500/20 rounded-lg flex items-center justify-center">
+                  <TrendingUp className="h-6 w-6 text-blue-400" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-gradient-to-br from-green-500/10 to-green-600/10 border-green-500/20 hover:border-green-500/40 transition-all duration-300">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-green-400 text-sm font-medium">Projects</p>
+                  <p className="text-2xl font-bold text-white">{user.portfolioData?.projects?.length || 0}</p>
+                </div>
+                <div className="w-12 h-12 bg-green-500/20 rounded-lg flex items-center justify-center">
+                  <Code className="h-6 w-6 text-green-400" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-gradient-to-br from-purple-500/10 to-purple-600/10 border-purple-500/20 hover:border-purple-500/40 transition-all duration-300">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-purple-400 text-sm font-medium">Skills</p>
+                  <p className="text-2xl font-bold text-white">{user.portfolioData?.skills?.length || 0}</p>
+                </div>
+                <div className="w-12 h-12 bg-purple-500/20 rounded-lg flex items-center justify-center">
+                  <Zap className="h-6 w-6 text-purple-400" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-gradient-to-br from-orange-500/10 to-orange-600/10 border-orange-500/20 hover:border-orange-500/40 transition-all duration-300">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-orange-400 text-sm font-medium">Completion</p>
+                  <p className="text-2xl font-bold text-white">85%</p>
+                </div>
+                <div className="w-12 h-12 bg-orange-500/20 rounded-lg flex items-center justify-center">
+                  <CheckCircle className="h-6 w-6 text-orange-400" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
         {/* Portfolio URL */}
-        <Card className="bg-gray-900/50 border-gray-700 mb-8">
+        <Card className="bg-gradient-to-r from-gray-900/50 to-gray-800/50 border-gray-700/50 mb-8 backdrop-blur-sm">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
-              <div>
-                <h3 className="text-lg font-semibold mb-2">Your Portfolio URL</h3>
-                <p className="text-gray-400 mb-2">
-                  Your portfolio is live at:
+              <div className="flex-1">
+                <h3 className="text-xl font-semibold mb-2 flex items-center">
+                  <Globe className="h-5 w-5 mr-2 text-blue-400" />
+                  Your Portfolio URL
+                </h3>
+                <p className="text-gray-400 mb-3">
+                  Your portfolio is live and accessible at:
                 </p>
-                <div className="flex items-center space-x-2">
-                  <Globe className="h-4 w-4 text-blue-400" />
-                  <code className="bg-gray-800 px-3 py-1 rounded text-blue-400">
+                <div className="flex items-center space-x-3">
+                  <code className="bg-gray-800/50 px-4 py-2 rounded-lg text-blue-400 border border-gray-700/50 font-mono">
                     {typeof window !== 'undefined' ? window.location.origin : 'localhost:3000'}/{user.username}
                   </code>
+                  <Button 
+                    size="sm"
+                    variant="outline"
+                    onClick={() => {
+                      const url = `${typeof window !== 'undefined' ? window.location.origin : 'localhost:3000'}/${user.username}`
+                      navigator.clipboard.writeText(url)
+                    }}
+                    className="border-gray-600 text-gray-300 hover:bg-gray-800/50"
+                  >
+                    Copy
+                  </Button>
                 </div>
               </div>
               <Button 
                 onClick={handleViewPortfolio}
-                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg"
               >
                 <ExternalLink className="h-4 w-4 mr-2" />
                 Visit Portfolio
@@ -154,17 +288,21 @@ export function Dashboard() {
 
         {/* Dashboard Tabs */}
         <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList className="bg-gray-900/50 border-gray-700">
-            <TabsTrigger value="overview" className="data-[state=active]:bg-gray-800">
+          <TabsList className="bg-gray-900/50 border-gray-700/50 backdrop-blur-sm p-1">
+            <TabsTrigger value="overview" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-purple-600 data-[state=active]:text-white">
+              <BarChart3 className="h-4 w-4 mr-2" />
               Overview
             </TabsTrigger>
-            <TabsTrigger value="content" className="data-[state=active]:bg-gray-800">
+            <TabsTrigger value="content" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-purple-600 data-[state=active]:text-white">
+              <FileText className="h-4 w-4 mr-2" />
               Content
             </TabsTrigger>
-            <TabsTrigger value="design" className="data-[state=active]:bg-gray-800">
+            <TabsTrigger value="design" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-purple-600 data-[state=active]:text-white">
+              <Palette className="h-4 w-4 mr-2" />
               Design
             </TabsTrigger>
-            <TabsTrigger value="settings" className="data-[state=active]:bg-gray-800">
+            <TabsTrigger value="settings" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-purple-600 data-[state=active]:text-white">
+              <Settings className="h-4 w-4 mr-2" />
               Settings
             </TabsTrigger>
           </TabsList>
