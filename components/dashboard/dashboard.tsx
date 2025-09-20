@@ -189,11 +189,6 @@ export function Dashboard() {
           </div>
         </div>
 
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-white mb-2">Manage your portfolio content and settings</h1>
-          <p className="text-gray-400">Welcome back, {user.name}! Here's an overview of your portfolio.</p>
-        </div>
 
         {/* Stats Overview */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
