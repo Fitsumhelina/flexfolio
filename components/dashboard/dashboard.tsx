@@ -31,7 +31,8 @@ import {
   Star,
   CheckCircle,
   Clock,
-  Zap
+  Zap,
+  Download
 } from "lucide-react"
 
 interface User {
@@ -308,110 +309,145 @@ export function Dashboard() {
           </TabsList>
 
           <TabsContent value="overview" className="space-y-6">
-            <div className="grid md:grid-cols-3 gap-6">
-              <Card className="bg-gray-900/50 border-gray-700">
+            {/* Quick Actions Grid */}
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <Card className="bg-gradient-to-br from-blue-500/10 to-blue-600/10 border-blue-500/20 hover:border-blue-500/40 transition-all duration-300 group">
                 <CardHeader>
-                  <CardTitle className="flex items-center text-white">
+                  <CardTitle className="flex items-center text-white group-hover:text-blue-300 transition-colors">
                     <User className="h-5 w-5 mr-2 text-blue-400" />
                     About Section
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-gray-400 mb-4">
-                    {user.portfolioData?.about?.bio || "No bio added yet"}
+                  <p className="text-gray-400 mb-4 text-sm">
+                    {user.portfolioData?.about?.bio ? 
+                      `${user.portfolioData.about.bio.substring(0, 100)}...` : 
+                      "No bio added yet"
+                    }
                   </p>
-                  <Button 
-                    variant="outline" 
-                    size="sm"
-                    onClick={() => router.push('/dashboard/about')}
-                    className="border-gray-600 text-gray-300 hover:bg-gray-800"
-                  >
-                    <Edit className="h-4 w-4 mr-2" />
-                    Edit About
-                  </Button>
+                  <div className="flex items-center justify-between">
+                    <Badge variant="outline" className="border-blue-500/30 text-blue-400">
+                      {user.portfolioData?.about?.bio ? 'Complete' : 'Incomplete'}
+                    </Badge>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => router.push('/dashboard/about')}
+                      className="border-gray-600 text-gray-300 hover:bg-gray-800/50 hover:border-gray-500"
+                    >
+                      <Edit className="h-4 w-4 mr-2" />
+                      Edit
+                    </Button>
+                  </div>
                 </CardContent>
               </Card>
 
-              <Card className="bg-gray-900/50 border-gray-700">
+              <Card className="bg-gradient-to-br from-green-500/10 to-green-600/10 border-green-500/20 hover:border-green-500/40 transition-all duration-300 group">
                 <CardHeader>
-                  <CardTitle className="flex items-center text-white">
+                  <CardTitle className="flex items-center text-white group-hover:text-green-300 transition-colors">
                     <Code className="h-5 w-5 mr-2 text-green-400" />
                     Projects
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-gray-400 mb-4">
+                  <p className="text-gray-400 mb-4 text-sm">
                     {user.portfolioData?.projects?.length || 0} projects added
                   </p>
-                  <Button 
-                    variant="outline" 
-                    size="sm"
-                    className="border-gray-600 text-gray-300 hover:bg-gray-800"
-                  >
-                    <Plus className="h-4 w-4 mr-2" />
-                    Add Project
-                  </Button>
+                  <div className="flex items-center justify-between">
+                    <Badge variant="outline" className="border-green-500/30 text-green-400">
+                      {user.portfolioData?.projects?.length || 0} Active
+                    </Badge>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      className="border-gray-600 text-gray-300 hover:bg-gray-800/50 hover:border-gray-500"
+                    >
+                      <Plus className="h-4 w-4 mr-2" />
+                      Add
+                    </Button>
+                  </div>
                 </CardContent>
               </Card>
 
-              <Card className="bg-gray-900/50 border-gray-700">
+              <Card className="bg-gradient-to-br from-purple-500/10 to-purple-600/10 border-purple-500/20 hover:border-purple-500/40 transition-all duration-300 group">
                 <CardHeader>
-                  <CardTitle className="flex items-center text-white">
-                    <Palette className="h-5 w-5 mr-2 text-purple-400" />
+                  <CardTitle className="flex items-center text-white group-hover:text-purple-300 transition-colors">
+                    <Zap className="h-5 w-5 mr-2 text-purple-400" />
                     Skills
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-gray-400 mb-4">
+                  <p className="text-gray-400 mb-4 text-sm">
                     {user.portfolioData?.skills?.length || 0} skills added
                   </p>
-                  <Button 
-                    variant="outline" 
-                    size="sm"
-                    className="border-gray-600 text-gray-300 hover:bg-gray-800"
-                  >
-                    <Plus className="h-4 w-4 mr-2" />
-                    Add Skill
-                  </Button>
+                  <div className="flex items-center justify-between">
+                    <Badge variant="outline" className="border-purple-500/30 text-purple-400">
+                      {user.portfolioData?.skills?.length || 0} Skills
+                    </Badge>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      className="border-gray-600 text-gray-300 hover:bg-gray-800/50 hover:border-gray-500"
+                    >
+                      <Plus className="h-4 w-4 mr-2" />
+                      Add
+                    </Button>
+                  </div>
                 </CardContent>
               </Card>
             </div>
 
             {/* Quick Actions */}
-            <Card className="bg-gray-900/50 border-gray-700">
+            <Card className="bg-gradient-to-r from-gray-900/50 to-gray-800/50 border-gray-700/50 backdrop-blur-sm">
               <CardHeader>
-                <CardTitle className="text-white">Quick Actions</CardTitle>
+                <CardTitle className="text-white flex items-center">
+                  <Zap className="h-5 w-5 mr-2 text-yellow-400" />
+                  Quick Actions
+                </CardTitle>
+                <p className="text-gray-400 text-sm">Common tasks to manage your portfolio</p>
               </CardHeader>
               <CardContent>
                 <div className="grid md:grid-cols-4 gap-4">
                   <Button 
                     variant="outline" 
                     onClick={() => router.push('/dashboard/about')}
-                    className="border-gray-600 text-gray-300 hover:bg-gray-800 h-auto p-4 flex flex-col items-center space-y-2"
+                    className="border-gray-600 text-gray-300 hover:bg-gray-800/50 hover:border-gray-500 h-auto p-6 flex flex-col items-center space-y-3 group"
                   >
-                    <Edit className="h-6 w-6" />
-                    <span>Edit Profile</span>
+                    <div className="w-12 h-12 bg-blue-500/20 rounded-lg flex items-center justify-center group-hover:bg-blue-500/30 transition-colors">
+                      <Edit className="h-6 w-6 text-blue-400" />
+                    </div>
+                    <span className="font-medium">Edit Profile</span>
+                    <span className="text-xs text-gray-500">Update your bio</span>
                   </Button>
                   <Button 
                     variant="outline" 
-                    className="border-gray-600 text-gray-300 hover:bg-gray-800 h-auto p-4 flex flex-col items-center space-y-2"
+                    className="border-gray-600 text-gray-300 hover:bg-gray-800/50 hover:border-gray-500 h-auto p-6 flex flex-col items-center space-y-3 group"
                   >
-                    <Plus className="h-6 w-6" />
-                    <span>Add Project</span>
+                    <div className="w-12 h-12 bg-green-500/20 rounded-lg flex items-center justify-center group-hover:bg-green-500/30 transition-colors">
+                      <Plus className="h-6 w-6 text-green-400" />
+                    </div>
+                    <span className="font-medium">Add Project</span>
+                    <span className="text-xs text-gray-500">Showcase your work</span>
                   </Button>
                   <Button 
                     variant="outline" 
-                    className="border-gray-600 text-gray-300 hover:bg-gray-800 h-auto p-4 flex flex-col items-center space-y-2"
+                    className="border-gray-600 text-gray-300 hover:bg-gray-800/50 hover:border-gray-500 h-auto p-6 flex flex-col items-center space-y-3 group"
                   >
-                    <Palette className="h-6 w-6" />
-                    <span>Change Theme</span>
+                    <div className="w-12 h-12 bg-purple-500/20 rounded-lg flex items-center justify-center group-hover:bg-purple-500/30 transition-colors">
+                      <Palette className="h-6 w-6 text-purple-400" />
+                    </div>
+                    <span className="font-medium">Change Theme</span>
+                    <span className="text-xs text-gray-500">Customize appearance</span>
                   </Button>
                   <Button 
                     variant="outline" 
-                    className="border-gray-600 text-gray-300 hover:bg-gray-800 h-auto p-4 flex flex-col items-center space-y-2"
+                    className="border-gray-600 text-gray-300 hover:bg-gray-800/50 hover:border-gray-500 h-auto p-6 flex flex-col items-center space-y-3 group"
                   >
-                    <Settings className="h-6 w-6" />
-                    <span>Settings</span>
+                    <div className="w-12 h-12 bg-orange-500/20 rounded-lg flex items-center justify-center group-hover:bg-orange-500/30 transition-colors">
+                      <Settings className="h-6 w-6 text-orange-400" />
+                    </div>
+                    <span className="font-medium">Settings</span>
+                    <span className="text-xs text-gray-500">Account preferences</span>
                   </Button>
                 </div>
               </CardContent>
@@ -419,66 +455,163 @@ export function Dashboard() {
           </TabsContent>
 
           <TabsContent value="content" className="space-y-6">
-            <Card className="bg-gray-900/50 border-gray-700">
-              <CardHeader>
-                <CardTitle className="text-white">Content Management</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-400 mb-4">
-                  Manage your portfolio content including about section, projects, and skills.
-                </p>
-                <div className="space-y-4">
+            <div className="grid lg:grid-cols-2 gap-6">
+              <Card className="bg-gradient-to-br from-blue-500/10 to-blue-600/10 border-blue-500/20">
+                <CardHeader>
+                  <CardTitle className="text-white flex items-center">
+                    <User className="h-5 w-5 mr-2 text-blue-400" />
+                    About Section
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-gray-400 mb-4">
+                    Manage your personal information, bio, and contact details.
+                  </p>
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between p-3 bg-gray-800/50 rounded-lg">
+                      <div className="flex items-center">
+                        <Mail className="h-4 w-4 mr-2 text-gray-400" />
+                        <span className="text-sm text-gray-300">Email</span>
+                      </div>
+                      <Badge variant="outline" className="border-green-500/30 text-green-400">
+                        {user.portfolioData?.about?.email ? 'Set' : 'Not Set'}
+                      </Badge>
+                    </div>
+                    <div className="flex items-center justify-between p-3 bg-gray-800/50 rounded-lg">
+                      <div className="flex items-center">
+                        <Phone className="h-4 w-4 mr-2 text-gray-400" />
+                        <span className="text-sm text-gray-300">Phone</span>
+                      </div>
+                      <Badge variant="outline" className="border-green-500/30 text-green-400">
+                        {user.portfolioData?.about?.phone ? 'Set' : 'Not Set'}
+                      </Badge>
+                    </div>
+                    <div className="flex items-center justify-between p-3 bg-gray-800/50 rounded-lg">
+                      <div className="flex items-center">
+                        <MapPin className="h-4 w-4 mr-2 text-gray-400" />
+                        <span className="text-sm text-gray-300">Location</span>
+                      </div>
+                      <Badge variant="outline" className="border-green-500/30 text-green-400">
+                        {user.portfolioData?.about?.location ? 'Set' : 'Not Set'}
+                      </Badge>
+                    </div>
+                  </div>
                   <Button 
                     variant="outline" 
                     onClick={() => router.push('/dashboard/about')}
-                    className="w-full justify-start border-gray-600 text-gray-300 hover:bg-gray-800"
+                    className="w-full mt-4 border-gray-600 text-gray-300 hover:bg-gray-800/50"
                   >
                     <Edit className="h-4 w-4 mr-2" />
                     Edit About Section
                   </Button>
-                  <Button 
-                    variant="outline" 
-                    className="w-full justify-start border-gray-600 text-gray-300 hover:bg-gray-800"
-                  >
-                    <Plus className="h-4 w-4 mr-2" />
-                    Manage Projects
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    className="w-full justify-start border-gray-600 text-gray-300 hover:bg-gray-800"
-                  >
-                    <Plus className="h-4 w-4 mr-2" />
-                    Manage Skills
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+
+              <Card className="bg-gradient-to-br from-green-500/10 to-green-600/10 border-green-500/20">
+                <CardHeader>
+                  <CardTitle className="text-white flex items-center">
+                    <Code className="h-5 w-5 mr-2 text-green-400" />
+                    Projects & Skills
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-gray-400 mb-4">
+                    Showcase your work and highlight your technical skills.
+                  </p>
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between p-3 bg-gray-800/50 rounded-lg">
+                      <div className="flex items-center">
+                        <Code className="h-4 w-4 mr-2 text-gray-400" />
+                        <span className="text-sm text-gray-300">Projects</span>
+                      </div>
+                      <Badge variant="outline" className="border-green-500/30 text-green-400">
+                        {user.portfolioData?.projects?.length || 0} Added
+                      </Badge>
+                    </div>
+                    <div className="flex items-center justify-between p-3 bg-gray-800/50 rounded-lg">
+                      <div className="flex items-center">
+                        <Zap className="h-4 w-4 mr-2 text-gray-400" />
+                        <span className="text-sm text-gray-300">Skills</span>
+                      </div>
+                      <Badge variant="outline" className="border-green-500/30 text-green-400">
+                        {user.portfolioData?.skills?.length || 0} Added
+                      </Badge>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2 mt-4">
+                    <Button 
+                      variant="outline" 
+                      className="border-gray-600 text-gray-300 hover:bg-gray-800/50"
+                    >
+                      <Plus className="h-4 w-4 mr-2" />
+                      Add Project
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      className="border-gray-600 text-gray-300 hover:bg-gray-800/50"
+                    >
+                      <Plus className="h-4 w-4 mr-2" />
+                      Add Skill
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
           </TabsContent>
 
           <TabsContent value="design" className="space-y-6">
-            <Card className="bg-gray-900/50 border-gray-700">
+            <Card className="bg-gradient-to-br from-purple-500/10 to-purple-600/10 border-purple-500/20">
               <CardHeader>
-                <CardTitle className="text-white">Design & Themes</CardTitle>
+                <CardTitle className="text-white flex items-center">
+                  <Palette className="h-5 w-5 mr-2 text-purple-400" />
+                  Design & Themes
+                </CardTitle>
+                <p className="text-gray-400">
+                  Customize the look and feel of your portfolio with beautiful themes.
+                </p>
               </CardHeader>
               <CardContent>
-                <p className="text-gray-400 mb-4">
-                  Customize the look and feel of your portfolio.
-                </p>
-                <div className="grid md:grid-cols-3 gap-4">
-                  <div className="border border-gray-600 rounded-lg p-4 hover:border-gray-500 cursor-pointer">
-                    <div className="w-full h-32 bg-gradient-to-br from-gray-800 to-gray-900 rounded mb-2"></div>
-                    <h4 className="font-medium">Dark Theme</h4>
-                    <p className="text-sm text-gray-400">Current</p>
+                <div className="grid md:grid-cols-3 gap-6">
+                  <div className="border-2 border-blue-500/50 rounded-xl p-4 hover:border-blue-500 cursor-pointer transition-all duration-300 bg-gradient-to-br from-gray-800/50 to-gray-900/50">
+                    <div className="w-full h-32 bg-gradient-to-br from-gray-800 to-gray-900 rounded-lg mb-3 relative">
+                      <div className="absolute top-2 right-2">
+                        <Badge className="bg-blue-500 text-white">Active</Badge>
+                      </div>
+                    </div>
+                    <h4 className="font-semibold text-white mb-1">Dark Theme</h4>
+                    <p className="text-sm text-gray-400">Professional and modern</p>
                   </div>
-                  <div className="border border-gray-600 rounded-lg p-4 hover:border-gray-500 cursor-pointer">
-                    <div className="w-full h-32 bg-gradient-to-br from-white to-gray-100 rounded mb-2"></div>
-                    <h4 className="font-medium">Light Theme</h4>
-                    <p className="text-sm text-gray-400">Coming Soon</p>
+                  <div className="border border-gray-600 rounded-xl p-4 hover:border-gray-500 cursor-pointer transition-all duration-300 bg-gradient-to-br from-gray-800/50 to-gray-900/50 opacity-60">
+                    <div className="w-full h-32 bg-gradient-to-br from-white to-gray-100 rounded-lg mb-3 relative">
+                      <div className="absolute top-2 right-2">
+                        <Badge variant="outline" className="border-gray-500 text-gray-400">Soon</Badge>
+                      </div>
+                    </div>
+                    <h4 className="font-semibold text-white mb-1">Light Theme</h4>
+                    <p className="text-sm text-gray-400">Clean and minimal</p>
                   </div>
-                  <div className="border border-gray-600 rounded-lg p-4 hover:border-gray-500 cursor-pointer">
-                    <div className="w-full h-32 bg-gradient-to-br from-blue-900 to-purple-900 rounded mb-2"></div>
-                    <h4 className="font-medium">Blue Theme</h4>
-                    <p className="text-sm text-gray-400">Coming Soon</p>
+                  <div className="border border-gray-600 rounded-xl p-4 hover:border-gray-500 cursor-pointer transition-all duration-300 bg-gradient-to-br from-gray-800/50 to-gray-900/50 opacity-60">
+                    <div className="w-full h-32 bg-gradient-to-br from-blue-900 to-purple-900 rounded-lg mb-3 relative">
+                      <div className="absolute top-2 right-2">
+                        <Badge variant="outline" className="border-gray-500 text-gray-400">Soon</Badge>
+                      </div>
+                    </div>
+                    <h4 className="font-semibold text-white mb-1">Blue Theme</h4>
+                    <p className="text-sm text-gray-400">Vibrant and energetic</p>
+                  </div>
+                </div>
+                
+                <div className="mt-6 p-4 bg-gray-800/50 rounded-lg">
+                  <h5 className="font-medium text-white mb-2">Customization Options</h5>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-gray-300">Primary Color</span>
+                      <div className="w-8 h-8 bg-blue-500 rounded-full border-2 border-gray-600"></div>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-gray-300">Font Size</span>
+                      <Badge variant="outline" className="border-gray-500 text-gray-400">Medium</Badge>
+                    </div>
                   </div>
                 </div>
               </CardContent>
@@ -486,55 +619,115 @@ export function Dashboard() {
           </TabsContent>
 
           <TabsContent value="settings" className="space-y-6">
-            <Card className="bg-gray-900/50 border-gray-700">
-              <CardHeader>
-                <CardTitle className="text-white">Account Settings</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">
-                      Full Name
-                    </label>
-                    <input 
-                      type="text" 
-                      value={user.name}
-                      className="w-full bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 text-white"
-                      readOnly
-                    />
+            <div className="grid lg:grid-cols-2 gap-6">
+              <Card className="bg-gradient-to-br from-orange-500/10 to-orange-600/10 border-orange-500/20">
+                <CardHeader>
+                  <CardTitle className="text-white flex items-center">
+                    <User className="h-5 w-5 mr-2 text-orange-400" />
+                    Account Information
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-300 mb-2">
+                        Full Name
+                      </label>
+                      <input 
+                        type="text" 
+                        value={user.name}
+                        className="w-full bg-gray-800/50 border border-gray-600 rounded-lg px-3 py-2 text-white focus:border-orange-500 focus:outline-none"
+                        readOnly
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-300 mb-2">
+                        Email Address
+                      </label>
+                      <input 
+                        type="email" 
+                        value={user.email}
+                        className="w-full bg-gray-800/50 border border-gray-600 rounded-lg px-3 py-2 text-white focus:border-orange-500 focus:outline-none"
+                        readOnly
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-300 mb-2">
+                        Username
+                      </label>
+                      <input 
+                        type="text" 
+                        value={user.username}
+                        className="w-full bg-gray-800/50 border border-gray-600 rounded-lg px-3 py-2 text-white focus:border-orange-500 focus:outline-none"
+                        readOnly
+                      />
+                    </div>
+                    <Button 
+                      variant="outline" 
+                      className="w-full border-gray-600 text-gray-300 hover:bg-gray-800/50 hover:border-orange-500"
+                    >
+                      <Settings className="h-4 w-4 mr-2" />
+                      Update Account Settings
+                    </Button>
                   </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">
-                      Email
-                    </label>
-                    <input 
-                      type="email" 
-                      value={user.email}
-                      className="w-full bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 text-white"
-                      readOnly
-                    />
+                </CardContent>
+              </Card>
+
+              <Card className="bg-gradient-to-br from-red-500/10 to-red-600/10 border-red-500/20">
+                <CardHeader>
+                  <CardTitle className="text-white flex items-center">
+                    <LogOut className="h-5 w-5 mr-2 text-red-400" />
+                    Account Actions
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="p-4 bg-gray-800/50 rounded-lg">
+                      <h5 className="font-medium text-white mb-2">Portfolio Statistics</h5>
+                      <div className="space-y-2">
+                        <div className="flex justify-between text-sm">
+                          <span className="text-gray-400">Member since</span>
+                          <span className="text-white">{new Date(user.createdAt).toLocaleDateString()}</span>
+                        </div>
+                        <div className="flex justify-between text-sm">
+                          <span className="text-gray-400">Last updated</span>
+                          <span className="text-white">{new Date(user.updatedAt).toLocaleDateString()}</span>
+                        </div>
+                        <div className="flex justify-between text-sm">
+                          <span className="text-gray-400">Portfolio URL</span>
+                          <span className="text-blue-400">/{user.username}</span>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-3">
+                      <Button 
+                        variant="outline" 
+                        className="w-full border-gray-600 text-gray-300 hover:bg-gray-800/50"
+                      >
+                        <Download className="h-4 w-4 mr-2" />
+                        Export Portfolio Data
+                      </Button>
+                      <Button 
+                        variant="outline" 
+                        className="w-full border-gray-600 text-gray-300 hover:bg-gray-800/50"
+                      >
+                        <Link className="h-4 w-4 mr-2" />
+                        Share Portfolio
+                      </Button>
+                      <Button 
+                        variant="outline" 
+                        onClick={handleLogout}
+                        className="w-full border-red-500/30 text-red-400 hover:bg-red-500/10 hover:border-red-500"
+                      >
+                        <LogOut className="h-4 w-4 mr-2" />
+                        Sign Out
+                      </Button>
+                    </div>
                   </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">
-                      Username
-                    </label>
-                    <input 
-                      type="text" 
-                      value={user.username}
-                      className="w-full bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 text-white"
-                      readOnly
-                    />
-                  </div>
-                  <Button 
-                    variant="outline" 
-                    className="border-gray-600 text-gray-300 hover:bg-gray-800"
-                  >
-                    <Settings className="h-4 w-4 mr-2" />
-                    Update Settings
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+            </div>
           </TabsContent>
         </Tabs>
       </main>
