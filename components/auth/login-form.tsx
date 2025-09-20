@@ -24,13 +24,29 @@ export function LoginForm() {
     setIsLoading(true)
     setError("")
 
-    // Simple authentication check (replace with real auth)
-    if (email === "admin@portfolio.com" && password === "admin123") {
-      // Set auth token in localStorage (replace with proper auth)
-      localStorage.setItem("isAuthenticated", "true")
-      router.push("/admin")
-    } else {
-      setError("Invalid email or password")
+    try {
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      })
+
+      const data = await response.json()
+
+      if (response.ok) {
+        // Store user data in localStorage for demo purposes
+        localStorage.setItem('user', JSON.stringify(data.user))
+        localStorage.setItem('isAuthenticated', 'true')
+        
+        // Redirect to dashboard
+        router.push('/dashboard')
+      } else {
+        setError(data.error || 'Login failed')
+      }
+    } catch (error) {
+      setError('Network error. Please try again.')
     }
 
     setIsLoading(false)
@@ -112,7 +128,15 @@ export function LoginForm() {
           </form>
 
           <div className="mt-6 text-center">
-            <p className="text-gray-400 text-sm">Demo credentials: admin@portfolio.com / admin123</p>
+            <p className="text-gray-400 text-sm">
+              Don't have an account?{" "}
+              <button
+                onClick={() => router.push('/register')}
+                className="text-blue-400 hover:text-blue-300 underline"
+              >
+                Sign up
+              </button>
+            </p>
           </div>
         </CardContent>
       </Card>
