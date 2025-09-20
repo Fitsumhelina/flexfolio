@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getDatabase } from "@/lib/mongodb";
+import bcrypt from 'bcryptjs'
 
 export async function POST(request: NextRequest) {
   try {
@@ -25,13 +26,14 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // In a real app, you would compare hashed passwords here
-    // For demo purposes, we'll do a simple comparison (NOT recommended for production)
-    if (user.password !== password) {
+    // Compare hashed passwords
+    const passwordIsValid = await bcrypt.compare(password, user.password)
+    
+    if (!passwordIsValid) {
       return NextResponse.json(
         { error: "Invalid email or password" },
         { status: 401 }
-      );
+      )
     }
 
     // Return user without password
