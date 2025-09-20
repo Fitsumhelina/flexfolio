@@ -260,7 +260,7 @@ export function Dashboard() {
                   Your portfolio is live and accessible at:
                 </p>
                 <div className="flex items-center space-x-3">
-                  <code className="bg-gray-800/50 px-4 py-2 rounded-lg text-blue-400 border border-gray-700/50 font-mono">
+                  <code className="bg-gray-800/80 px-4 py-2 rounded-lg text-blue-300 border border-gray-600 font-mono">
                     {typeof window !== 'undefined' ? window.location.origin : 'localhost:3000'}/{user.username}
                   </code>
                   <Button 
@@ -270,7 +270,7 @@ export function Dashboard() {
                       const url = `${typeof window !== 'undefined' ? window.location.origin : 'localhost:3000'}/${user.username}`
                       navigator.clipboard.writeText(url)
                     }}
-                    className="border-gray-600 text-gray-300 hover:bg-gray-800/50"
+                    className="border-gray-500 text-white hover:bg-gray-700 hover:border-gray-400"
                   >
                     Copy
                   </Button>
@@ -360,7 +360,8 @@ export function Dashboard() {
                     <Button 
                       variant="outline" 
                       size="sm"
-                      className="border-gray-600 text-gray-300 hover:bg-gray-800/50 hover:border-gray-500"
+                      onClick={() => router.push('/dashboard/projects')}
+                      className="border-gray-500 text-white hover:bg-gray-700 hover:border-gray-400"
                     >
                       <Plus className="h-4 w-4 mr-2" />
                       Add
@@ -387,7 +388,8 @@ export function Dashboard() {
                     <Button 
                       variant="outline" 
                       size="sm"
-                      className="border-gray-600 text-gray-300 hover:bg-gray-800/50 hover:border-gray-500"
+                      onClick={() => router.push('/dashboard/skills')}
+                      className="border-gray-500 text-white hover:bg-gray-700 hover:border-gray-400"
                     >
                       <Plus className="h-4 w-4 mr-2" />
                       Add
@@ -404,7 +406,7 @@ export function Dashboard() {
                   <Zap className="h-5 w-5 mr-2 text-yellow-400" />
                   Quick Actions
                 </CardTitle>
-                <p className="text-gray-400 text-sm">Common tasks to manage your portfolio</p>
+                <p className="text-gray-300 text-sm">Common tasks to manage your portfolio</p>
               </CardHeader>
               <CardContent>
                 <div className="grid md:grid-cols-4 gap-4">
@@ -417,17 +419,18 @@ export function Dashboard() {
                       <Edit className="h-6 w-6 text-blue-400" />
                     </div>
                     <span className="font-medium">Edit Profile</span>
-                    <span className="text-xs text-gray-500">Update your bio</span>
+                    <span className="text-xs text-gray-400">Update your bio</span>
                   </Button>
                   <Button 
                     variant="outline" 
+                    onClick={() => router.push('/dashboard/projects')}
                     className="border-gray-600 text-gray-300 hover:bg-gray-800/50 hover:border-gray-500 h-auto p-6 flex flex-col items-center space-y-3 group"
                   >
                     <div className="w-12 h-12 bg-green-500/20 rounded-lg flex items-center justify-center group-hover:bg-green-500/30 transition-colors">
                       <Plus className="h-6 w-6 text-green-400" />
                     </div>
                     <span className="font-medium">Add Project</span>
-                    <span className="text-xs text-gray-500">Showcase your work</span>
+                    <span className="text-xs text-gray-400">Showcase your work</span>
                   </Button>
                   <Button 
                     variant="outline" 
@@ -437,7 +440,7 @@ export function Dashboard() {
                       <Palette className="h-6 w-6 text-purple-400" />
                     </div>
                     <span className="font-medium">Change Theme</span>
-                    <span className="text-xs text-gray-500">Customize appearance</span>
+                    <span className="text-xs text-gray-400">Customize appearance</span>
                   </Button>
                   <Button 
                     variant="outline" 
@@ -447,7 +450,7 @@ export function Dashboard() {
                       <Settings className="h-6 w-6 text-orange-400" />
                     </div>
                     <span className="font-medium">Settings</span>
-                    <span className="text-xs text-gray-500">Account preferences</span>
+                    <span className="text-xs text-gray-400">Account preferences</span>
                   </Button>
                 </div>
               </CardContent>
@@ -541,14 +544,16 @@ export function Dashboard() {
                   <div className="grid grid-cols-2 gap-2 mt-4">
                     <Button 
                       variant="outline" 
-                      className="border-gray-600 text-gray-300 hover:bg-gray-800/50"
+                      onClick={() => router.push('/dashboard/projects')}
+                      className="border-gray-500 text-white hover:bg-gray-700 hover:border-gray-400"
                     >
                       <Plus className="h-4 w-4 mr-2" />
                       Add Project
                     </Button>
                     <Button 
                       variant="outline" 
-                      className="border-gray-600 text-gray-300 hover:bg-gray-800/50"
+                      onClick={() => router.push('/dashboard/skills')}
+                      className="border-gray-500 text-white hover:bg-gray-700 hover:border-gray-400"
                     >
                       <Plus className="h-4 w-4 mr-2" />
                       Add Skill
