@@ -2,7 +2,7 @@ import { MongoClient, type Db } from "mongodb"
 
 const uri = process.env.MONGODB_URI
 if (!uri) {
-  throw new Error("Please add your MongoDB URI to .env.local")
+  throw new Error("Please add your MongoDB URI to .env")
 }
 
 const options = {}
@@ -33,9 +33,9 @@ export default clientPromise
 export async function getDatabase(): Promise<Db> {
   try {
     const client = await clientPromise
-    const db = client.db("portfolio-cms")
+    const db = client.db("flexfolio")
 
-    console.log("[v0] Connected to MongoDB database: portfolio-cms")
+    console.log("[v0] Connected to MongoDB database: flexfolio")
     return db
   } catch (error) {
     console.error("[v0] MongoDB connection error:", error)
