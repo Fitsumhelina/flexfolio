@@ -20,29 +20,6 @@ A modern, no-code portfolio builder that allows users to create stunning portfol
 - **Authentication**: Custom JWT-based auth (demo implementation)
 - **Database**: MongoDB with Mongoose
 
-## 📁 Project Structure
-
-```
-flexfolio/
-├── app/                    # Next.js app directory
-│   ├── api/               # API routes
-│   │   ├── auth/          # Authentication endpoints
-│   │   └── users/         # User management endpoints
-│   ├── dashboard/         # User dashboard
-│   ├── demo/              # Demo portfolio page
-│   ├── login/             # Login page
-│   ├── register/          # Registration page
-│   └── [username]/        # Dynamic user portfolio pages
-├── components/            # React components
-│   ├── auth/              # Authentication components
-│   ├── dashboard/         # Dashboard components
-│   ├── user-portfolio/    # Portfolio display components
-│   └── ui/                # Reusable UI components
-├── lib/                   # Utility functions
-│   ├── mongodb.ts         # Database connection
-│   └── db-operations.ts   # Database operations
-└── public/                # Static assets
-```
 
 ## 🚀 Getting Started
 
@@ -69,7 +46,7 @@ pnpm install
 
 3. Set up environment variables:
 ```bash
-cp .env.example .env.local
+cp .env.example .env
 ```
 
 Add your MongoDB connection string:
