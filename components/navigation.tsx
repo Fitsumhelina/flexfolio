@@ -105,6 +105,7 @@ export function Navigation() {
                 className="text-gray-400 hover:text-blue-400 hover:bg-blue-400/10 transition-colors"
               >
                 <Settings className="h-4 w-4" />
+                profile
               </Button>
             </div>
           </div>
@@ -160,6 +161,15 @@ export function Navigation() {
               <Mail className="h-4 w-4" />
               <span>Contact</span>
             </a>
+
+            <div className="h-px bg-gray-600 my-2"></div>
+            <button 
+              onClick={() => router.push('/dashboard')}
+              className="flex items-center space-x-2 px-3 py-2 text-gray-400 hover:text-blue-400 hover:bg-blue-400/10 transition-colors rounded-lg w-full"
+            >
+              <Settings className="h-4 w-4" />
+              <span>profile</span>
+            </button>
             
           </div>
         </div>
