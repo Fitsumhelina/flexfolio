@@ -254,7 +254,7 @@ export function Dashboard() {
         </div>
 
         {/* Portfolio URL */}
-        <Card className="bg-gradient-to-r from-gray-900/50 to-gray-800/50 border-gray-700/50 mb-8 backdrop-blur-sm">
+        <Card className="bg-gray-900/50 border-gray-700 hover:border-blue-500/50 transition-all duration-300 mb-4">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div className="flex-1">
