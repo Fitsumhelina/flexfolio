@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getDatabase } from '@/lib/mongodb'
 import { ObjectId } from 'mongodb'
 
-export async function POST(request: NextRequest) {
+export async function PUT(request: NextRequest) {
   try {
     const { userId, skill, isEdit } = await request.json()
 
