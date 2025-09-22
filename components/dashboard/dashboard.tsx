@@ -343,7 +343,7 @@ export function Dashboard() {
                       variant="outline"
                       size="sm"
                       onClick={() => router.push("/dashboard/about")}
-                      className="border-white/40 text-white/90 hover:bg-white/10 hover:border-white/60"
+                      className="text-black border-white/40 hover:bg-white/10 hover:border-white/60 hover:text-white"
                     >
                       <Edit className="h-4 w-4 mr-2" />
                       Edit
