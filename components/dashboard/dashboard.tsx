@@ -150,7 +150,7 @@ export function Dashboard() {
               <Button 
                 variant="outline" 
                 onClick={handleViewPortfolio}
-                className="border-gray-600 text-gray-300 hover:bg-gray-800/50 hover:border-gray-500"
+                className=" text-white/80  bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg hover:text-white"
               >
                 <ExternalLink className="h-4 w-4 mr-2" />
                 Portfolio
