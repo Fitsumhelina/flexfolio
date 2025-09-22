@@ -276,7 +276,7 @@ export function Dashboard() {
                       const url = `${typeof window !== 'undefined' ? window.location.origin : 'localhost:3000'}/${user.username}`
                       navigator.clipboard.writeText(url)
                     }}
-                    className="border-gray-500 text-white hover:bg-gray-700 hover:border-gray-400"
+                    className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg"
                   >
                     Copy
                   </Button>
