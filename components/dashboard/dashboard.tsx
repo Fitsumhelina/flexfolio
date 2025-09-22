@@ -276,7 +276,7 @@ export function Dashboard() {
                       const url = `${typeof window !== 'undefined' ? window.location.origin : 'localhost:3000'}/${user.username}`
                       navigator.clipboard.writeText(url)
                     }}
-                    className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg"
+                    className="text-white/80 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg hover:text-white"
                   >
                     Copy
                   </Button>
@@ -317,29 +317,33 @@ export function Dashboard() {
           <TabsContent value="overview" className="space-y-6">
             {/* Quick Actions Grid */}
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              <Card className="bg-gradient-to-br from-blue-500/10 to-blue-600/10 border-blue-500/20 hover:border-blue-500/40 transition-all duration-300 group">
+              <Card
+                className="transition-all duration-300 group border-0 rounded-xl shadow-lg bg-[linear-gradient(90deg,_rgba(0,178,255,1)_0%,_rgba(87,100,199,1)_50%,_rgba(237,83,234,1)_100%)]"
+              >
                 <CardHeader>
-                  <CardTitle className="flex items-center text-white group-hover:text-blue-300 transition-colors">
-                    <User className="h-5 w-5 mr-2 text-blue-400" />
+                  <CardTitle className="flex items-center text-white group-hover:text-blue-100 transition-colors">
+                    <User className="h-5 w-5 mr-2 text-white/80" />
                     About Section
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-gray-400 mb-4 text-sm">
-                    {user.portfolioData?.about?.bio ? 
-                      `${user.portfolioData.about.bio.substring(0, 100)}...` : 
-                      "No bio added yet"
-                    }
+                  <p className="text-white/80 mb-4 text-sm">
+                    {user.portfolioData?.about?.bio
+                      ? `${user.portfolioData.about.bio.substring(0, 100)}...`
+                      : "No bio added yet"}
                   </p>
                   <div className="flex items-center justify-between">
-                    <Badge variant="outline" className="border-blue-500/30 text-blue-400">
-                      {user.portfolioData?.about?.bio ? 'Complete' : 'Incomplete'}
+                    <Badge
+                      variant="outline"
+                      className="border-white/30 text-white/90 bg-white/10"
+                    >
+                      {user.portfolioData?.about?.bio ? "Complete" : "Incomplete"}
                     </Badge>
-                    <Button 
-                      variant="outline" 
+                    <Button
+                      variant="outline"
                       size="sm"
-                      onClick={() => router.push('/dashboard/about')}
-                      className="border-gray-600 text-gray-300 hover:bg-gray-800/50 hover:border-gray-500"
+                      onClick={() => router.push("/dashboard/about")}
+                      className="border-white/40 text-white/90 hover:bg-white/10 hover:border-white/60"
                     >
                       <Edit className="h-4 w-4 mr-2" />
                       Edit
