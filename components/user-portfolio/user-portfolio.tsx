@@ -93,7 +93,7 @@ export function UserPortfolio({ username }: UserPortfolioProps) {
         <Card className="bg-gray-900/50 border-gray-700 max-w-md">
           <CardContent className="p-8 text-center">
             <User className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-            <h1 className="text-2xl font-bold text-white mb-2">Portfolio Not Found</h1>
+            <h1 className="text-2xl font-bold text-white mb-2">Page Not Found</h1>
             <p className="text-gray-400 mb-6">
               The portfolio you're looking for doesn't exist or has been removed.
             </p>
