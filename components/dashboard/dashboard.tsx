@@ -352,26 +352,28 @@ export function Dashboard() {
                 </CardContent>
               </Card>
 
-              <Card className="bg-gradient-to-br from-green-500/10 to-green-600/10 border-green-500/20 hover:border-green-500/40 transition-all duration-300 group">
+              <Card
+                className="bg-[linear-gradient(90deg,_rgba(42,123,155,1)_0%,_rgba(87,199,133,1)_50%,_rgba(204,237,83,1)_100%)] border-0 transition-all duration-300 group"
+              >
                 <CardHeader>
-                  <CardTitle className="flex items-center text-white group-hover:text-green-300 transition-colors">
-                    <Code className="h-5 w-5 mr-2 text-green-400" />
+                  <CardTitle className="flex items-center text-white  transition-colors">
+                    <Code className="h-5 w-5 mr-2 text-[#57C785]" />
                     Projects
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-gray-400 mb-4 text-sm">
+                  <p className="text-white/90 mb-4 text-sm">
                     {user.portfolioData?.projects?.length || 0} projects added
                   </p>
                   <div className="flex items-center justify-between">
-                    <Badge variant="outline" className="border-green-500/30 text-green-400">
+                    <Badge variant="outline" className="border-[#57C785]/30 text-[#57C785] bg-white/10">
                       {user.portfolioData?.projects?.length || 0} Active
                     </Badge>
                     <Button 
                       variant="outline" 
                       size="sm"
                       onClick={() => router.push('/dashboard/projects')}
-                      className="border-gray-500 text-white hover:bg-gray-700 hover:border-gray-400"
+                      className="border-white/40 text-black hover:bg-white/10 hover:border-white/60 hover:text-white"
                     >
                       <Plus className="h-4 w-4 mr-2" />
                       Add
