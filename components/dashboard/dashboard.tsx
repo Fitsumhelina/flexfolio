@@ -382,26 +382,28 @@ export function Dashboard() {
                 </CardContent>
               </Card>
 
-              <Card className="bg-gradient-to-br from-purple-500/10 to-purple-600/10 border-purple-500/20 hover:border-purple-500/40 transition-all duration-300 group">
+              <Card
+                className="bg-[linear-gradient(90deg,_rgba(237,0,194,1)_0%,_rgba(199,87,188,1)_50%,_rgba(168,83,237,1)_100%)] border-0 transition-all duration-300 group"
+              >
                 <CardHeader>
-                  <CardTitle className="flex items-center text-white group-hover:text-purple-300 transition-colors">
-                    <Zap className="h-5 w-5 mr-2 text-purple-400" />
+                  <CardTitle className="flex items-center text-white group-hover:text-pink-200 transition-colors">
+                    <Zap className="h-5 w-5 mr-2 text-pink-300" />
                     Skills
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-gray-400 mb-4 text-sm">
+                  <p className="text-white/90 mb-4 text-sm">
                     {user.portfolioData?.skills?.length || 0} skills added
                   </p>
                   <div className="flex items-center justify-between">
-                    <Badge variant="outline" className="border-purple-500/30 text-purple-400">
+                    <Badge variant="outline" className="border-pink-400/30 text-pink-200 bg-white/10">
                       {user.portfolioData?.skills?.length || 0} Skills
                     </Badge>
                     <Button 
                       variant="outline" 
                       size="sm"
                       onClick={() => router.push('/dashboard/skills')}
-                      className="border-gray-500 text-white hover:bg-gray-700 hover:border-gray-400"
+                      className="border-white/40 text-black hover:bg-white/10 hover:border-white/60 hover:text-white"
                     >
                       <Plus className="h-4 w-4 mr-2" />
                       Add
