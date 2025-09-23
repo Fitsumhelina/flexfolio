@@ -263,11 +263,14 @@ export function UserPortfolio({ username }: UserPortfolioProps) {
 
             <div>
               <div className="flex items-center justify-center w-full">
-                <div className="relative w-72 h-72 sm:w-96 sm:h-96 rounded-full overflow-hidden flex items-center justify-center border-blue-500 shadow-[0_0_40px_10px_rgba(99,102,241,0.5),0_0_80px_20px_rgba(168,85,247,0.3)] animate-pulse"
-                  style={{
-                    boxShadow: "0 0 40px 10px rgba(99,102,241,0.5), 0 0 80px 20px rgba(168,85,247,0.3)",
-                    borderImage: "linear-gradient(135deg, #3b82f6, #a855f7) 1"
-                  }}
+                <div
+                  className={`
+                    relative w-72 h-72 sm:w-96 sm:h-96 rounded-full overflow-hidden flex items-center justify-center
+                    border-4 border-blue-500
+                    shadow-[0_0_40px_10px_rgba(99,102,241,0.5),0_0_80px_20px_rgba(168,85,247,0.3)]
+                    transition-shadow duration-300
+                    hover:shadow-[0_0_60px_20px_rgba(59,130,246,0.7),0_0_120px_40px_rgba(168,85,247,0.5)]
+                  `}
                 >
                   {aboutData.profileImage ? (
                     <img
