@@ -711,29 +711,46 @@ export function UserPortfolio({ username }: UserPortfolioProps) {
                 <CardTitle className="text-white">Send Message</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <Input
-                  placeholder="Your Name"
-                  className="bg-gray-700/50 border-gray-600 text-white placeholder:text-gray-400"
-                />
-
-                <Input
-                  placeholder="Email Address"
-                  type="email"
-                  className="bg-gray-700/50 border-gray-600 text-white placeholder:text-gray-400"
-                />
-                <Input
-                  placeholder="Subject"
-                  className="bg-gray-700/50 border-gray-600 text-white placeholder:text-gray-400"
-                />
-                <Textarea
-                  placeholder="Your Message"
-                  rows={5}
-                  className="bg-gray-700/50 border-gray-600 text-white placeholder:text-gray-400"
-                />
-                <Button className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
-                  <Send className="h-4 w-4 mr-2" />
-                  Send Message
-                </Button>
+                <form
+                  onSubmit={async (e) => {
+                    e.preventDefault()
+                    const form = e.currentTarget as any
+                    const formData = new FormData(form)
+                    const payload = {
+                      toUsername: user.username,
+                      fromName: String(formData.get('name') || ''),
+                      fromEmail: String(formData.get('email') || ''),
+                      subject: String(formData.get('subject') || ''),
+                      body: String(formData.get('message') || ''),
+                    }
+                    try {
+                      const res = await fetch('/api/messages', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload),
+                      })
+                      if (res.ok) {
+                        form.reset()
+                        alert('Message sent!')
+                      } else {
+                        const data = await res.json()
+                        alert(data?.error || 'Failed to send')
+                      }
+                    } catch (err) {
+                      alert('Network error')
+                    }
+                  }}
+                  className="space-y-4"
+                >
+                  <Input name="name" placeholder="Your Name" className="bg-gray-700/50 border-gray-600 text-white placeholder:text-gray-400" />
+                  <Input name="email" placeholder="Email Address" type="email" className="bg-gray-700/50 border-gray-600 text-white placeholder:text-gray-400" />
+                  <Input name="subject" placeholder="Subject" className="bg-gray-700/50 border-gray-600 text-white placeholder:text-gray-400" />
+                  <Textarea name="message" placeholder="Your Message" rows={5} className="bg-gray-700/50 border-gray-600 text-white placeholder:text-gray-400" />
+                  <Button type="submit" className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
+                    <Send className="h-4 w-4 mr-2" />
+                    Send Message
+                  </Button>
+                </form>
               </CardContent>
             </Card>
           </div>

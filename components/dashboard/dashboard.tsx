@@ -35,6 +35,84 @@ import {
   Download,
   Trash2
 } from "lucide-react"
+import { useEffect as ReactUseEffect, useState as ReactUseState } from 'react'
+
+function Inbox({ user }: { user: User }) {
+  const [messages, setMessages] = ReactUseState<Array<any>>([])
+  const [selectedId, setSelectedId] = ReactUseState<string | null>(null)
+  const [loading, setLoading] = ReactUseState(true)
+  const selected = messages.find(m => m.id === selectedId) || null
+
+  const load = async () => {
+    setLoading(true)
+    try {
+      const res = await fetch(`/api/messages?username=${user.username}`)
+      const data = await res.json()
+      if (Array.isArray(data)) setMessages(data)
+    } catch (e) {
+      // ignore
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  ReactUseEffect(() => { load() }, [])
+
+  const handleDelete = async (id: string) => {
+    if (!confirm('Delete this message?')) return
+    await fetch(`/api/messages/${id}`, { method: 'DELETE' })
+    if (selectedId === id) setSelectedId(null)
+    load()
+  }
+
+  const markRead = async (id: string) => {
+    await fetch(`/api/messages/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ isRead: true }) })
+    load()
+  }
+
+  return (
+    <div className="grid md:grid-cols-3 gap-4">
+      <div className="md:col-span-1 border border-gray-700 rounded-lg overflow-hidden">
+        <div className="px-3 py-2 bg-gray-800/60 text-gray-200">Inbox</div>
+        <div className="max-h-96 overflow-auto divide-y divide-gray-800">
+          {loading ? (
+            <div className="p-4 text-gray-400">Loading...</div>
+          ) : messages.length === 0 ? (
+            <div className="p-4 text-gray-400">No messages</div>
+          ) : (
+            messages.map(m => (
+              <button key={m.id} onClick={() => { setSelectedId(m.id); markRead(m.id) }} className={`w-full text-left p-3 hover:bg-gray-800/50 ${selectedId===m.id ? 'bg-gray-800/70' : ''}`}>
+                <div className="flex justify-between">
+                  <span className="text-white">{m.fromName}</span>
+                  {!m.isRead && <span className="text-xs text-blue-400">New</span>}
+                </div>
+                <div className="text-xs text-gray-400">{m.fromEmail}</div>
+                <div className="text-sm text-gray-300 truncate">{m.subject || '(no subject)'}</div>
+              </button>
+            ))
+          )}
+        </div>
+      </div>
+      <div className="md:col-span-2 border border-gray-700 rounded-lg p-4 min-h-64">
+        {selected ? (
+          <div className="space-y-2">
+            <div className="flex justify-between items-center">
+              <div>
+                <div className="text-white text-lg">{selected.subject || '(no subject)'}</div>
+                <div className="text-sm text-gray-400">From {selected.fromName} &lt;{selected.fromEmail}&gt;</div>
+              </div>
+              <button onClick={() => handleDelete(selected.id)} className="text-red-400 hover:text-red-300">Delete</button>
+            </div>
+            <div className="h-px bg-gray-700 my-2" />
+            <div className="whitespace-pre-wrap text-gray-200">{selected.body}</div>
+          </div>
+        ) : (
+          <div className="text-gray-400">Select a message to preview</div>
+        )}
+      </div>
+    </div>
+  )
+}
 
 interface User {
   _id: string
@@ -332,6 +410,19 @@ export function Dashboard() {
                   <Mail className="h-6 w-6 text-purple-400" />
                 </div>
               </div>
+              <div className="mt-4 flex justify-end">
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => {
+                    const tabs = document.querySelector('[role=tablist]') as any
+                    // best-effort activate inbox tab
+                  }}
+                  className="border-gray-600 text-gray-300 hover:bg-gray-800/50"
+                >
+                  Open Inbox
+                </Button>
+              </div>
             </CardContent>
           </Card>
 
@@ -401,6 +492,10 @@ export function Dashboard() {
             <TabsTrigger value="content" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-purple-600 data-[state=active]:text-white">
               <FileText className="h-4 w-4 mr-2" />
               Content
+            </TabsTrigger>
+            <TabsTrigger value="inbox" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-purple-600 data-[state=active]:text-white">
+              <Mail className="h-4 w-4 mr-2" />
+              Inbox
             </TabsTrigger>
             <TabsTrigger value="design" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-purple-600 data-[state=active]:text-white">
               <Palette className="h-4 w-4 mr-2" />
@@ -615,6 +710,20 @@ export function Dashboard() {
               </Card>
             </div>
           </TabsContent>
+
+        <TabsContent value="inbox" className="space-y-6">
+          <Card className="bg-gray-900/50 border-gray-700">
+            <CardHeader>
+              <CardTitle className="text-white flex items-center">
+                <Mail className="h-5 w-5 mr-2 text-blue-400" />
+                Messages
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Inbox user={user} />
+            </CardContent>
+          </Card>
+        </TabsContent>
 
           <TabsContent value="content" className="space-y-6">
             <div className="grid lg:grid-cols-2 gap-6">
