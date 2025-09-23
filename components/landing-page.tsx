@@ -117,7 +117,7 @@ export function LandingPage() {
             </div>
 
             {/* Demo Portfolio Preview */}
-            <div className="relative max-w-4xl mx-auto">
+            <div className="relative max-w-6xl mx-auto max-h-6xl">
               <div className="bg-gray-800/50 backdrop-blur-sm rounded-2xl p-6 border border-gray-700">
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center space-x-2">
