@@ -702,7 +702,7 @@ export function UserPortfolio({ username }: UserPortfolioProps) {
             </h1>
           </div>
             <div className="text-gray-400 text-sm">
-              © 2024 made by FlexFolio. All rights reserved.
+            &copy; {new Date().getFullYear()} made via FlexFolio. All rights reserved.
             </div>
           </div>
         </div>
