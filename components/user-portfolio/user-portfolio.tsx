@@ -383,7 +383,7 @@ export function UserPortfolio({ username }: UserPortfolioProps) {
               <path d="M3 13v4c0 2.21 4.03 4 9 4s9-1.79 9-4v-4" className="stroke-blue-400" />
             </svg>
           ),
-          "Databases & DevOps": (
+          "Cloud & DevOps": (
             <svg className="w-7 h-7 text-teal-400" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
               <ellipse cx="12" cy="6" rx="9" ry="3" className="stroke-teal-400" />
               <path d="M3 6v6c0 1.66 4.03 3 9 3s9-1.34 9-3V6" className="stroke-teal-400" />
@@ -396,7 +396,7 @@ export function UserPortfolio({ username }: UserPortfolioProps) {
         const displayCategories = [
           { key: "Frontend", label: "Frontend" },
           { key: "Backend", label: "Backend" },
-          { key: "Databases & DevOps", label: "Databases & DevOps" },
+          { key: "Cloud & DevOps", label: "Cloud & DevOps" },
         ];
 
         return (
