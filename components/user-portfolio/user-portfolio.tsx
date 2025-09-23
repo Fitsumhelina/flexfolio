@@ -123,35 +123,21 @@ export function UserPortfolio({ username }: UserPortfolioProps) {
     <div className="min-h-screen bg-black text-white">
       <Navigation />
       
-      {/* Hero Section with User Data */}
-      <section id="home" className="relative min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8">
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-purple-500/10"></div>
-        <div className="relative max-w-4xl mx-auto text-center">
-          <div className="mb-8">
-            {aboutData.profileImage ? (
-              <img 
-                src={aboutData.profileImage} 
-                alt={aboutData.name}
-                className="w-32 h-32 rounded-full mx-auto mb-6 border-4 border-white/20"
-              />
-            ) : (
-              <div className="w-32 h-32 rounded-full mx-auto mb-6 bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center">
-                <span className="text-4xl font-bold text-white">
-                  {aboutData.name.charAt(0).toUpperCase()}
-                </span>
-              </div>
-            )}
-          </div>
-          
-          <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-white via-blue-100 to-purple-100 bg-clip-text text-transparent">
-            {aboutData.name}
+      {/* Hero Section with User Data (match demo) */}
+      <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-black via-gray-900 to-black" />
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute top-1/4 left-1/4 w-32 h-32 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-lg rotate-45" />
+          <div className="absolute top-3/4 right-1/4 w-24 h-24 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-lg rotate-12" />
+          <div className="absolute bottom-1/4 left-1/3 w-20 h-20 bg-gradient-to-br from-cyan-500/20 to-blue-500/20 rounded-lg -rotate-12" />
+        </div>
+
+        <div className="relative z-10 max-w-3xl mx-auto text-center px-4">
+          <h2 className="text-2xl md:text-3xl font-semibold text-gray-300 mb-3">Hi, I'm {aboutData.name}</h2>
+          <h1 className="text-5xl md:text-7xl font-extrabold mb-6 bg-gradient-to-r from-white via-gray-200 to-gray-400 bg-clip-text text-transparent">
+            {aboutData.title || "Full Stack Developer"}
           </h1>
-          
-          <p className="text-2xl md:text-3xl text-blue-400 mb-8 font-light">
-            {aboutData.title}
-          </p>
-          
-          <p className="text-xl text-gray-300 mb-12 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-lg md:text-xl text-gray-300 mb-8 leading-relaxed">
             {aboutData.bio}
           </p>
           
@@ -174,81 +160,47 @@ export function UserPortfolio({ username }: UserPortfolioProps) {
             </Button>
           </div>
 
-          {/* Stats */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-2xl mx-auto">
-            <div className="text-center">
-              <div className="text-3xl font-bold text-white mb-2">
-                {aboutData.experience}
-              </div>
-              <div className="text-gray-400">Years Experience</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-white mb-2">
-                {aboutData.projectsCompleted}
-              </div>
-              <div className="text-gray-400">Projects Completed</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-white mb-2">
-                {portfolioData.skills?.length || 0}
-              </div>
-              <div className="text-gray-400">Technologies</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-white mb-2">
-                {portfolioData.projects?.length || 0}
-              </div>
-              <div className="text-gray-400">Portfolio Projects</div>
-            </div>
-          </div>
+          {/* Down arrow */}
+          <div className="mt-10 text-gray-400">↓</div>
         </div>
       </section>
 
-      {/* About Section */}
+      {/* About Section (match demo) */}
       <section id="about" className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-black to-gray-900">
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-6xl mx-auto">
           <h2 className="text-4xl md:text-5xl font-bold text-center mb-12 bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">About Me</h2>
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
-              <p className="text-xl text-gray-300 leading-relaxed mb-8">
+              <p className="text-lg md:text-xl text-gray-300 leading-relaxed mb-10">
                 {aboutData.bio}
               </p>
-              <div className="space-y-4">
-                {aboutData.email && (
-                  <div className="flex items-center text-gray-300">
-                    <Mail className="h-5 w-5 mr-3 text-blue-400" />
-                    <span>{aboutData.email}</span>
-                  </div>
-                )}
-                {aboutData.phone && (
-                  <div className="flex items-center text-gray-300">
-                    <Phone className="h-5 w-5 mr-3 text-blue-400" />
-                    <span>{aboutData.phone}</span>
-                  </div>
-                )}
-                {aboutData.location && (
-                  <div className="flex items-center text-gray-300">
-                    <MapPin className="h-5 w-5 mr-3 text-blue-400" />
-                    <span>{aboutData.location}</span>
-                  </div>
-                )}
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <Card className="bg-gray-800/50 border-gray-700">
+                  <CardContent className="p-8 text-center">
+                    <div className="text-4xl md:text-5xl font-extrabold text-blue-300 mb-2">{aboutData.projectsCompleted}</div>
+                    <div className="text-gray-300">Projects Completed</div>
+                  </CardContent>
+                </Card>
+                <Card className="bg-gray-800/50 border-gray-700">
+                  <CardContent className="p-8 text-center">
+                    <div className="text-4xl md:text-5xl font-extrabold text-purple-300 mb-2">{aboutData.experience}</div>
+                    <div className="text-gray-300">Years Experience</div>
+                  </CardContent>
+                </Card>
               </div>
             </div>
-            <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl p-8">
-              <h3 className="text-2xl font-bold mb-6">Quick Facts</h3>
-              <div className="space-y-4">
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Experience</span>
-                  <span className="text-white font-semibold">{aboutData.experience}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Projects</span>
-                  <span className="text-white font-semibold">{aboutData.projectsCompleted}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Skills</span>
-                  <span className="text-white font-semibold">{portfolioData.skills?.length || 0}</span>
-                </div>
+
+            <div>
+              <div className="w-full h-[420px] bg-gray-800/40 border border-gray-700 rounded-xl overflow-hidden flex items-center justify-center">
+                {aboutData.profileImage ? (
+                  <img src={aboutData.profileImage} alt={aboutData.name} className="w-full h-full object-cover" />
+                ) : (
+                  <div className="text-gray-500 text-center">
+                    <div className="w-24 h-24 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-full mx-auto mb-4" />
+                    <p>Profile Image</p>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -406,12 +358,12 @@ export function UserPortfolio({ username }: UserPortfolioProps) {
                 <CardTitle className="text-white">Send Message</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
+           
                   <Input
                     placeholder="Your Name"
                     className="bg-gray-700/50 border-gray-600 text-white placeholder:text-gray-400"
                   />
-                </div>
+          
                 <Input
                   placeholder="Email Address"
                   type="email"
