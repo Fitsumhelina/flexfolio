@@ -22,6 +22,58 @@ export function LandingPage() {
   const router = useRouter();
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
 
+  // Demo content used to mirror the user portfolio look-and-feel
+  const demoProjects = [
+    {
+      id: "p1",
+      title: "Modern Dashboard",
+      description:
+        "A responsive analytics dashboard with charts, theming, and realtime data.",
+      tech: ["Next.js", "Tailwind", "TypeScript"],
+      image: "/project-placeholder.png",
+      github: "#",
+      live: "#",
+    },
+    {
+      id: "p2",
+      title: "E‑commerce Storefront",
+      description:
+        "Product listings, cart, and checkout flows with clean UI and state mgmt.",
+      tech: ["React", "Zustand", "Stripe"],
+      image: "/project-placeholder.png",
+      github: "#",
+      live: "#",
+    },
+    {
+      id: "p3",
+      title: "Team Tasks App",
+      description:
+        "Collaborative task management with roles, comments, and activity feed.",
+      tech: ["Next.js", "Prisma", "PostgreSQL"],
+      image: "/project-placeholder.png",
+      github: "#",
+      live: "#",
+    },
+  ];
+
+  const demoSkillsByCategory: Record<string, { id: string; name: string; proficiency: number }[]> = {
+    Frontend: [
+      { id: "s-fe-1", name: "React", proficiency: 90 },
+      { id: "s-fe-2", name: "Next.js", proficiency: 85 },
+      { id: "s-fe-3", name: "Tailwind CSS", proficiency: 88 },
+    ],
+    Backend: [
+      { id: "s-be-1", name: "Node.js", proficiency: 86 },
+      { id: "s-be-2", name: "Prisma", proficiency: 80 },
+      { id: "s-be-3", name: "MongoDB", proficiency: 78 },
+    ],
+    "Cloud & DevOps": [
+      { id: "s-dev-1", name: "Docker", proficiency: 75 },
+      { id: "s-dev-2", name: "Vercel", proficiency: 82 },
+      { id: "s-dev-3", name: "GitHub Actions", proficiency: 70 },
+    ],
+  };
+
   const features = [
     {
       icon: <Zap className="h-6 w-6" />,
@@ -165,6 +217,7 @@ export function LandingPage() {
         </div>
       </section>
 
+    
       {/* Stats Section */}
       <section className="py-16 border-y border-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
