@@ -408,11 +408,7 @@ export function UserPortfolio({ username }: UserPortfolioProps) {
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <Input
-                    placeholder="First Name"
-                    className="bg-gray-700/50 border-gray-600 text-white placeholder:text-gray-400"
-                  />
-                  <Input
-                    placeholder="Last Name"
+                    placeholder="Your Name"
                     className="bg-gray-700/50 border-gray-600 text-white placeholder:text-gray-400"
                   />
                 </div>
