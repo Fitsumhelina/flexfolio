@@ -262,15 +262,26 @@ export function UserPortfolio({ username }: UserPortfolioProps) {
             </div>
 
             <div>
-              <div className="w-full h-[420px] bg-gray-800/40 border border-gray-700 rounded-xl overflow-hidden flex items-center justify-center">
-                {aboutData.profileImage ? (
-                  <img src={aboutData.profileImage} alt={aboutData.name} className="w-full h-full object-cover" />
-                ) : (
-                  <div className="text-gray-500 text-center">
-                    <div className="w-24 h-24 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-full mx-auto mb-4" />
-                    <p>Profile Image</p>
-                  </div>
-                )}
+              <div className="flex items-center justify-center w-full">
+                <div className="relative w-72 h-72 sm:w-96 sm:h-96 rounded-full overflow-hidden flex items-center justify-center border-blue-500 shadow-[0_0_40px_10px_rgba(99,102,241,0.5),0_0_80px_20px_rgba(168,85,247,0.3)] animate-pulse"
+                  style={{
+                    boxShadow: "0 0 40px 10px rgba(99,102,241,0.5), 0 0 80px 20px rgba(168,85,247,0.3)",
+                    borderImage: "linear-gradient(135deg, #3b82f6, #a855f7) 1"
+                  }}
+                >
+                  {aboutData.profileImage ? (
+                    <img
+                      src={aboutData.profileImage}
+                      alt={aboutData.name}
+                      className="w-full h-full object-cover rounded-full"
+                    />
+                  ) : (
+                    <div className="flex flex-col items-center justify-center w-full h-full">
+                      <div className="w-32 h-32 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-full mb-4" />
+                      <p className="text-gray-400">Profile Image</p>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           </div>
