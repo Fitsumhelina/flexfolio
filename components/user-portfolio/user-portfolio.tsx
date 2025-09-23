@@ -439,6 +439,8 @@ export function UserPortfolio({ username }: UserPortfolioProps) {
         );
       })()}
 
+
+      
       {/* Contact Section - matches demo */}
       <section id="contact" className="py-20 px-4 bg-gradient-to-b from-gray-900 to-black">
         <div className="max-w-6xl mx-auto">
