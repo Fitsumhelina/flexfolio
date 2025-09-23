@@ -42,8 +42,8 @@ export function LandingPage() {
     },
     {
       icon: <Globe className="h-6 w-6" />,
-      title: "Custom Domain",
-      description: "Get your own unique URL like yourname.flexfolio.com",
+      title: "CMS dashboard",
+      description: "Control your portfolio content from the dashboard",
     },
   ];
 
