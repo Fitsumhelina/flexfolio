@@ -137,22 +137,12 @@ export function UserPortfolio({ username }: UserPortfolioProps) {
         </div>
 
         <div className="relative z-10 max-w-3xl mx-auto text-center px-4">
-          {/* Profile Image */}
-          {aboutData.profileImage && (
-            <div className="flex justify-center mb-6">
-              <img
-                src={aboutData.profileImage}
-                alt={aboutData.name}
-                className="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-blue-500/40 shadow-lg object-cover bg-gray-800"
-                style={{ objectPosition: "center" }}
-              />
-            </div>
-          )}
+          
 
-          <h2 className="text-xl md:text-2xl font-medium text-blue-300 mb-2 tracking-wide animate-fade-in">
+          <h2 className="text-xl md:text-7xl font-medium text-blue-300 mb-2 tracking-wide animate-fade-in">
             Hi, I'm <span className="font-bold">{aboutData.name}</span>
           </h2>
-          <h1 className="text-5xl md:text-7xl font-extrabold mb-6 bg-gradient-to-r from-blue-400 via-purple-300 to-pink-300 bg-clip-text text-transparent drop-shadow-lg animate-gradient-x">
+          <h1 className="text-5xl md:text-4xl font-extrabold mb-6 bg-gradient-to-r from-blue-400 via-purple-300 to-pink-300 bg-clip-text text-transparent drop-shadow-lg animate-gradient-x">
             {aboutData.title || "Full Stack Developer"}
           </h1>
           <p className="text-lg md:text-2xl text-gray-200 mb-8 leading-relaxed animate-fade-in-slow">
