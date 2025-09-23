@@ -46,12 +46,25 @@ interface User {
     projects?: any[]
     skills?: any[]
   }
+  createdAt?: string
+  updatedAt?: string
 }
 
 export function Dashboard() {
   const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const router = useRouter()
+  const [aboutForm, setAboutForm] = useState({
+    email: "",
+    phone: "",
+    location: "",
+    github: "",
+    x: "",
+    telegram: "",
+    linkedin: "",
+  })
+  const [isSavingAbout, setIsSavingAbout] = useState(false)
+  const [aboutMessage, setAboutMessage] = useState<string | null>(null)
 
   useEffect(() => {
     // Check if user is authenticated
@@ -66,6 +79,16 @@ export function Dashboard() {
     try {
       const parsedUser = JSON.parse(userData)
       setUser(parsedUser)
+      const about = parsedUser?.portfolioData?.about || {}
+      setAboutForm({
+        email: about.email || "",
+        phone: about.phone || "",
+        location: about.location || "",
+        github: about.github || "",
+        x: about.x || about.twitter || "",
+        telegram: about.telegram || "",
+        linkedin: about.linkedin || "",
+      })
     } catch (error) {
       console.error('Error parsing user data:', error)
       router.push('/login')
@@ -73,6 +96,60 @@ export function Dashboard() {
 
     setIsLoading(false)
   }, [router])
+
+  const handleAboutInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target
+    setAboutForm(prev => ({ ...prev, [name]: value }))
+  }
+
+  const handleSaveAbout = async () => {
+    if (!user) return
+    setIsSavingAbout(true)
+    setAboutMessage(null)
+    try {
+      const currentAbout = user.portfolioData?.about || {}
+      const mergedAbout = {
+        // preserve existing about fields
+        name: currentAbout.name || user.name,
+        title: currentAbout.title || "Full Stack Developer",
+        bio: currentAbout.bio || "",
+        experience: currentAbout.experience || "",
+        projectsCompleted: currentAbout.projectsCompleted || "",
+        profileImage: currentAbout.profileImage || "",
+        // contact
+        email: aboutForm.email,
+        phone: aboutForm.phone,
+        location: aboutForm.location,
+        // socials
+        github: aboutForm.github,
+        x: aboutForm.x,
+        telegram: aboutForm.telegram,
+        linkedin: aboutForm.linkedin,
+      }
+
+      const res = await fetch('/api/users/update-about', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: user._id, aboutData: mergedAbout }),
+      })
+      const data = await res.json()
+      if (!res.ok) {
+        throw new Error(data?.error || 'Failed to save')
+      }
+
+      const updatedUser = {
+        ...user,
+        portfolioData: { ...(user.portfolioData || {}), about: mergedAbout },
+      }
+      localStorage.setItem('user', JSON.stringify(updatedUser))
+      setUser(updatedUser)
+      setAboutMessage('Saved')
+    } catch (err: any) {
+      setAboutMessage(err?.message || 'Failed to save')
+    } finally {
+      setIsSavingAbout(false)
+    }
+  }
 
   const handleLogout = () => {
     localStorage.removeItem('isAuthenticated')
@@ -520,54 +597,100 @@ export function Dashboard() {
 
           <TabsContent value="content" className="space-y-6">
             <div className="grid lg:grid-cols-2 gap-6">
-              <Card className="bg-gradient-to-br from-blue-500/10 to-blue-600/10 border-blue-500/20">
+              <Card
+                className="bg-[linear-gradient(90deg,_rgba(34,9,145,1)_0%,_rgba(199,87,188,1)_50%,_rgba(96,83,237,1)_100%)] border-0 shadow-lg"
+              >
                 <CardHeader>
                   <CardTitle className="text-white flex items-center">
-                    <User className="h-5 w-5 mr-2 text-blue-400" />
+                    <User className="h-5 w-5 mr-2 text-white/80" />
                     About Section
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-gray-400 mb-4">
-                    Manage your personal information, bio, and contact details.
+                  <p className="text-white/80 mb-4">
+                    Manage your contact details and social links. These appear on your public portfolio.
                   </p>
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between p-3 bg-gray-800/50 rounded-lg">
-                      <div className="flex items-center">
-                        <Mail className="h-4 w-4 mr-2 text-gray-400" />
-                        <span className="text-sm text-gray-300">Email</span>
-                      </div>
-                      <Badge variant="outline" className="border-green-500/30 text-green-400">
-                        {user.portfolioData?.about?.email ? 'Set' : 'Not Set'}
-                      </Badge>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm text-white/80 mb-1">Email</label>
+                      <input
+                        name="email"
+                        value={aboutForm.email}
+                        onChange={handleAboutInput}
+                        className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder:text-white/40"
+                      />
                     </div>
-                    <div className="flex items-center justify-between p-3 bg-gray-800/50 rounded-lg">
-                      <div className="flex items-center">
-                        <Phone className="h-4 w-4 mr-2 text-gray-400" />
-                        <span className="text-sm text-gray-300">Phone</span>
-                      </div>
-                      <Badge variant="outline" className="border-green-500/30 text-green-400">
-                        {user.portfolioData?.about?.phone ? 'Set' : 'Not Set'}
-                      </Badge>
+                    <div>
+                      <label className="block text-sm text-white/80 mb-1">Phone</label>
+                      <input
+                        name="phone"
+                        value={aboutForm.phone}
+                        onChange={handleAboutInput}
+                        className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder:text-white/40"
+                      />
                     </div>
-                    <div className="flex items-center justify-between p-3 bg-gray-800/50 rounded-lg">
-                      <div className="flex items-center">
-                        <MapPin className="h-4 w-4 mr-2 text-gray-400" />
-                        <span className="text-sm text-gray-300">Location</span>
-                      </div>
-                      <Badge variant="outline" className="border-green-500/30 text-green-400">
-                        {user.portfolioData?.about?.location ? 'Set' : 'Not Set'}
-                      </Badge>
+                    <div className="md:col-span-2">
+                      <label className="block text-sm text-white/80 mb-1">Location</label>
+                      <input
+                        name="location"
+                        value={aboutForm.location}
+                        onChange={handleAboutInput}
+                        className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder:text-white/40"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm text-white/80 mb-1">GitHub URL</label>
+                      <input
+                        name="github"
+                        value={aboutForm.github}
+                        onChange={handleAboutInput}
+                        placeholder="https://github.com/username"
+                        className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder:text-white/40"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm text-white/80 mb-1">X (Twitter) URL</label>
+                      <input
+                        name="x"
+                        value={aboutForm.x}
+                        onChange={handleAboutInput}
+                        placeholder="https://x.com/username"
+                        className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder:text-white/40"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm text-white/80 mb-1">Telegram URL</label>
+                      <input
+                        name="telegram"
+                        value={aboutForm.telegram}
+                        onChange={handleAboutInput}
+                        placeholder="https://t.me/username"
+                        className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder:text-white/40"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm text-white/80 mb-1">LinkedIn URL</label>
+                      <input
+                        name="linkedin"
+                        value={aboutForm.linkedin}
+                        onChange={handleAboutInput}
+                        placeholder="https://www.linkedin.com/in/username"
+                        className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder:text-white/40"
+                      />
                     </div>
                   </div>
-                  <Button 
-                    variant="outline" 
-                    onClick={() => router.push('/dashboard/about')}
-                    className="w-full mt-4 border-gray-600 text-gray-300 hover:bg-gray-800/50"
-                  >
-                    <Edit className="h-4 w-4 mr-2" />
-                    Edit About Section
-                  </Button>
+                  <div className="flex items-center gap-3 mt-4">
+                    <Button
+                      onClick={handleSaveAbout}
+                      disabled={isSavingAbout}
+                      className="bg-[linear-gradient(90deg,_rgba(34,9,145,1)_0%,_rgba(199,87,188,1)_50%,_rgba(96,83,237,1)_100%)] hover:opacity-90 text-white"
+                    >
+                      {isSavingAbout ? "Saving..." : "Save"}
+                    </Button>
+                    {aboutMessage && (
+                      <span className="text-sm text-white/80">{aboutMessage}</span>
+                    )}
+                  </div>
                 </CardContent>
               </Card>
 
@@ -753,11 +876,11 @@ export function Dashboard() {
                       <div className="space-y-2">
                         <div className="flex justify-between text-sm">
                           <span className="text-gray-400">Member since</span>
-                          <span className="text-white">{new Date(user.createdAt).toLocaleDateString()}</span>
+                          <span className="text-white">{user.createdAt ? new Date(user.createdAt).toLocaleDateString() : '-'}</span>
                         </div>
                         <div className="flex justify-between text-sm">
                           <span className="text-gray-400">Last updated</span>
-                          <span className="text-white">{new Date(user.updatedAt).toLocaleDateString()}</span>
+                          <span className="text-white">{user.updatedAt ? new Date(user.updatedAt).toLocaleDateString() : '-'}</span>
                         </div>
                         <div className="flex justify-between text-sm">
                           <span className="text-gray-400">Portfolio URL</span>
