@@ -99,7 +99,7 @@ export function SkillsManager() {
       }
 
       const response = await fetch('/api/users/update-skills', {
-        method: 'POST',
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
