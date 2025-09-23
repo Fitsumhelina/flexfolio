@@ -123,45 +123,125 @@ export function UserPortfolio({ username }: UserPortfolioProps) {
     <div className="min-h-screen bg-black text-white">
       <Navigation />
       
-      {/* Hero Section with User Data (match demo) */}
-      <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      {/* Enhanced Hero Section with User Data */}
+      <section
+        id="home"
+        className="relative min-h-screen flex items-center justify-center overflow-hidden"
+      >
+        {/* Animated Gradient Background */}
         <div className="absolute inset-0 bg-gradient-to-br from-black via-gray-900 to-black" />
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute top-1/4 left-1/4 w-32 h-32 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-lg rotate-45" />
-          <div className="absolute top-3/4 right-1/4 w-24 h-24 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-lg rotate-12" />
-          <div className="absolute bottom-1/4 left-1/3 w-20 h-20 bg-gradient-to-br from-cyan-500/20 to-blue-500/20 rounded-lg -rotate-12" />
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-1/4 left-1/4 w-40 h-40 bg-gradient-to-br from-blue-500/30 to-purple-500/30 rounded-full blur-2xl animate-pulse" />
+          <div className="absolute top-2/3 right-1/4 w-32 h-32 bg-gradient-to-br from-purple-500/30 to-pink-500/30 rounded-full blur-2xl animate-pulse delay-200" />
+          <div className="absolute bottom-1/4 left-1/3 w-28 h-28 bg-gradient-to-br from-cyan-500/30 to-blue-500/30 rounded-full blur-2xl animate-pulse delay-500" />
         </div>
 
         <div className="relative z-10 max-w-3xl mx-auto text-center px-4">
-          <h2 className="text-2xl md:text-3xl font-semibold text-gray-300 mb-3">Hi, I'm {aboutData.name}</h2>
-          <h1 className="text-5xl md:text-7xl font-extrabold mb-6 bg-gradient-to-r from-white via-gray-200 to-gray-400 bg-clip-text text-transparent">
+          {/* Profile Image */}
+          {aboutData.profileImage && (
+            <div className="flex justify-center mb-6">
+              <img
+                src={aboutData.profileImage}
+                alt={aboutData.name}
+                className="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-blue-500/40 shadow-lg object-cover bg-gray-800"
+                style={{ objectPosition: "center" }}
+              />
+            </div>
+          )}
+
+          <h2 className="text-xl md:text-2xl font-medium text-blue-300 mb-2 tracking-wide animate-fade-in">
+            Hi, I'm <span className="font-bold">{aboutData.name}</span>
+          </h2>
+          <h1 className="text-5xl md:text-7xl font-extrabold mb-6 bg-gradient-to-r from-blue-400 via-purple-300 to-pink-300 bg-clip-text text-transparent drop-shadow-lg animate-gradient-x">
             {aboutData.title || "Full Stack Developer"}
           </h1>
-          <p className="text-lg md:text-xl text-gray-300 mb-8 leading-relaxed">
+          <p className="text-lg md:text-2xl text-gray-200 mb-8 leading-relaxed animate-fade-in-slow">
             {aboutData.bio}
           </p>
-          
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
-            <Button 
+
+          {/* Social Links */}
+          <div className="flex justify-center gap-4 mb-8">
+            {aboutData.github && (
+              <a
+                href={aboutData.github}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gray-400 hover:text-white transition-colors"
+                aria-label="GitHub"
+              >
+                <svg className="w-7 h-7" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 .5C5.73.5.5 5.73.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56 0-.28-.01-1.02-.02-2-3.2.7-3.88-1.54-3.88-1.54-.53-1.34-1.3-1.7-1.3-1.7-1.06-.72.08-.71.08-.71 1.17.08 1.78 1.2 1.78 1.2 1.04 1.78 2.73 1.27 3.4.97.11-.75.41-1.27.74-1.56-2.56-.29-5.26-1.28-5.26-5.7 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .98-.31 3.2 1.18a11.1 11.1 0 0 1 2.92-.39c.99 0 1.99.13 2.92.39 2.22-1.49 3.2-1.18 3.2-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.43-2.7 5.41-5.27 5.7.42.36.79 1.09.79 2.2 0 1.59-.01 2.87-.01 3.26 0 .31.21.68.8.56C20.71 21.39 24 17.08 24 12c0-6.27-5.23-11.5-12-11.5z"/>
+                </svg>
+              </a>
+            )}
+            {aboutData.linkedin && (
+              <a
+                href={aboutData.linkedin}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gray-400 hover:text-blue-400 transition-colors"
+                aria-label="LinkedIn"
+              >
+                <svg className="w-7 h-7" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M19 0h-14c-2.76 0-5 2.24-5 5v14c0 2.76 2.24 5 5 5h14c2.76 0 5-2.24 5-5v-14c0-2.76-2.24-5-5-5zm-11 19h-3v-9h3v9zm-1.5-10.28c-.97 0-1.75-.79-1.75-1.75s.78-1.75 1.75-1.75 1.75.79 1.75 1.75-.78 1.75-1.75 1.75zm13.5 10.28h-3v-4.5c0-1.08-.02-2.47-1.5-2.47-1.5 0-1.73 1.17-1.73 2.39v4.58h-3v-9h2.88v1.23h.04c.4-.75 1.38-1.54 2.84-1.54 3.04 0 3.6 2 3.6 4.59v4.72z"/>
+                </svg>
+              </a>
+            )}
+            {aboutData.email && (
+              <a
+                href={`mailto:${aboutData.email}`}
+                className="text-gray-400 hover:text-pink-400 transition-colors"
+                aria-label="Email"
+              >
+                <Mail className="w-7 h-7" />
+              </a>
+            )}
+          </div>
+
+          {/* Call to Action Buttons */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-10">
+            <Button
               size="lg"
-              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-lg px-8 py-4"
+              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-lg px-8 py-4 shadow-lg transition-all"
+              onClick={() => {
+                const contact = document.getElementById("contact");
+                if (contact) contact.scrollIntoView({ behavior: "smooth" });
+              }}
             >
               <Mail className="mr-2 h-5 w-5" />
               Get In Touch
             </Button>
-            
-            <Button 
-              variant="outline" 
+
+            <Button
+              variant="outline"
               size="lg"
-              className="border-gray-600 text-gray-300 hover:bg-gray-800 text-lg px-8 py-4"
+              className="border-gray-600 text-gray-300 hover:bg-gray-800 text-lg px-8 py-4 shadow-lg transition-all"
+              onClick={() => {
+                const projects = document.getElementById("projects");
+                if (projects) projects.scrollIntoView({ behavior: "smooth" });
+              }}
             >
               <ExternalLink className="mr-2 h-5 w-5" />
               View Projects
             </Button>
           </div>
 
-          {/* Down arrow */}
-          <div className="mt-10 text-gray-400">↓</div>
+          {/* Animated Down Arrow */}
+          <div className="mt-10 flex justify-center">
+            <button
+              aria-label="Scroll to About"
+              onClick={() => {
+                const about = document.getElementById("about");
+                if (about) about.scrollIntoView({ behavior: "smooth" });
+              }}
+              className="animate-bounce text-gray-400 hover:text-blue-400 transition-colors text-3xl"
+              style={{ background: "none", border: "none", outline: "none" }}
+            >
+              <svg className="w-8 h-8 mx-auto" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+          </div>
         </div>
       </section>
 
