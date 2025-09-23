@@ -131,6 +131,8 @@ interface User {
 export function Dashboard() {
   const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const [messageCount, setMessageCount] = useState(0)
+  const [unreadCount, setUnreadCount] = useState(0)
   const router = useRouter()
   const [aboutForm, setAboutForm] = useState({
     email: "",
@@ -157,6 +159,16 @@ export function Dashboard() {
     try {
       const parsedUser = JSON.parse(userData)
       setUser(parsedUser)
+      // Load message counts
+      fetch(`/api/messages?username=${parsedUser.username}`)
+        .then(res => res.json())
+        .then(data => {
+          if (Array.isArray(data)) {
+            setMessageCount(data.length)
+            setUnreadCount(data.filter((m: any) => !m.isRead).length)
+          }
+        })
+        .catch(() => {})
       const about = parsedUser?.portfolioData?.about || {}
       setAboutForm({
         email: about.email || "",
@@ -400,28 +412,18 @@ export function Dashboard() {
 
           <Card className="bg-gray-900/50 border-gray-700 hover:border-purple-500/50 transition-all duration-300">
             <CardContent className="p-6">
-              <div className="flex items-center justify-between">
+              <div
+                className="flex items-center justify-between cursor-pointer"
+                onClick={() => router.push('/dashboard/mail')}
+              >
                 <div>
                   <p className="text-gray-400 text-sm font-medium">Contact Messages</p>
-                  <p className="text-3xl font-bold text-purple-400">23</p>
-                  <p className="text-xs text-gray-500">+5 new</p>
+                  <p className="text-3xl font-bold text-purple-400">{messageCount}</p>
+                  <p className="text-xs text-gray-500">+{unreadCount} new</p>
                 </div>
                 <div className="w-12 h-12 bg-purple-500/20 rounded-lg flex items-center justify-center">
                   <Mail className="h-6 w-6 text-purple-400" />
                 </div>
-              </div>
-              <div className="mt-4 flex justify-end">
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  onClick={() => {
-                    const tabs = document.querySelector('[role=tablist]') as any
-                    // best-effort activate inbox tab
-                  }}
-                  className="border-gray-600 text-gray-300 hover:bg-gray-800/50"
-                >
-                  Open Inbox
-                </Button>
               </div>
             </CardContent>
           </Card>
