@@ -698,11 +698,11 @@ export function UserPortfolio({ username }: UserPortfolioProps) {
 
             {/* Title */}
             <h1 className="text-xl font-bold bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
-              flexfolio.
+              <a href="https://flexfolio.com" target="_blank" rel="noopener noreferrer">flexfolio.</a>
             </h1>
           </div>
             <div className="text-gray-400 text-sm">
-            &copy; {new Date().getFullYear()} made via FlexFolio. All rights reserved.
+            &copy; {new Date().getFullYear()} made via <a href="https://flexfolio.com" target="_blank" rel="noopener noreferrer">FlexFolio</a>.
             </div>
           </div>
         </div>
