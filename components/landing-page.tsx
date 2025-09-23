@@ -108,7 +108,7 @@ export function LandingPage() {
               Build Your Perfect
               <br />
               <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-                Portfolio
+                Portfolio in 5'
               </span>
             </h1>
 
