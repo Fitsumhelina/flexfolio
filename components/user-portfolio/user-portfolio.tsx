@@ -357,13 +357,13 @@ export function UserPortfolio({ username }: UserPortfolioProps) {
 
       {/* Skills Section - "My Technical Arsenal" */}
       {portfolioData.skills && portfolioData.skills.length > 0 && (() => {
-        // Group skills by category
-        const groupedSkills: { [category: string]: { id: string, name: string }[] } = {};
+        // Group skills by category, including proficiency
+        const groupedSkills: { [category: string]: { id: string, name: string, proficiency: number }[] } = {};
         (portfolioData.skills || []).forEach(skill => {
           if (!groupedSkills[skill.category]) {
             groupedSkills[skill.category] = [];
           }
-          groupedSkills[skill.category].push({ id: skill.id, name: skill.name });
+          groupedSkills[skill.category].push({ id: skill.id, name: skill.name, proficiency: skill.proficiency ?? 0 });
         });
 
         // Define icons for each category
@@ -399,6 +399,14 @@ export function UserPortfolio({ username }: UserPortfolioProps) {
           { key: "Cloud & DevOps", label: "Cloud & DevOps" },
         ];
 
+        // Helper to get color for proficiency bar based on category
+        const getBarColor = (category: string) => {
+          if (category === "Frontend") return "bg-cyan-400";
+          if (category === "Backend") return "bg-blue-400";
+          if (category === "Cloud & DevOps") return "bg-teal-400";
+          return "bg-gray-400";
+        };
+
         return (
           <section id="skills" className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-black to-gray-900">
             <div className="max-w-6xl mx-auto">
@@ -419,14 +427,28 @@ export function UserPortfolio({ username }: UserPortfolioProps) {
                       </div>
                       <h3 className="text-xl font-semibold text-white">{label}</h3>
                     </div>
-                    <ul className="space-y-2 mt-2">
+                    <ul className="space-y-4 mt-2">
                       {(groupedSkills[key] || []).map(skill => (
                         <li
                           key={skill.id}
-                          className="flex items-center text-gray-200 text-base pl-2"
+                          className="flex flex-col gap-1"
                         >
-                          <span className="inline-block w-2 h-2 rounded-full bg-cyan-400 mr-3"></span>
-                          {skill.name}
+                          <div className="flex items-center text-gray-200 text-base pl-2">
+                            <span className="inline-block w-2 h-2 rounded-full bg-cyan-400 mr-3"></span>
+                            {skill.name}
+                          </div>
+                          <div className="w-full h-3 bg-gray-800 rounded-full relative overflow-hidden">
+                            <div
+                              className={`${getBarColor(key)} h-3 rounded-full transition-all`}
+                              style={{
+                                width: `${Math.max(0, Math.min(skill.proficiency ?? 0, 100))}%`,
+                                minWidth: skill.proficiency > 0 ? "0.5rem" : "0"
+                              }}
+                            ></div>
+                            <span className="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-gray-300 font-medium select-none">
+                              {typeof skill.proficiency === "number" ? `${skill.proficiency}%` : ""}
+                            </span>
+                          </div>
                         </li>
                       ))}
                       {/* If no skills in this category, show a subtle placeholder */}
