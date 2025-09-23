@@ -683,7 +683,7 @@ export function Dashboard() {
                     <Button
                       onClick={handleSaveAbout}
                       disabled={isSavingAbout}
-                      className="bg-[linear-gradient(90deg,_rgba(34,9,145,1)_0%,_rgba(199,87,188,1)_50%,_rgba(96,83,237,1)_100%)] hover:opacity-90 text-white"
+                      className="bg-black/50 hover:bg/100 text-white"
                     >
                       {isSavingAbout ? "Saving..." : "Save"}
                     </Button>
