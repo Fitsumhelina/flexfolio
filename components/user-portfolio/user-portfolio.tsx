@@ -2,11 +2,6 @@
 
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { Hero } from "@/components/hero"
-import { About } from "@/components/about"
-import { Projects } from "@/components/projects"
-import { Skills } from "@/components/skills"
-import { Contact } from "@/components/contact"
 import { Navigation } from "@/components/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
