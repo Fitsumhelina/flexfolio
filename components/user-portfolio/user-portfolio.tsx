@@ -352,31 +352,92 @@ export function UserPortfolio({ username }: UserPortfolioProps) {
         </section>
       )}
 
-      {/* Skills Section */}
-      {portfolioData.skills && portfolioData.skills.length > 0 && (
-        <section id="skills" className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-black to-gray-900">
-          <div className="max-w-6xl mx-auto">
-            <h2 className="text-4xl md:text-5xl font-bold text-center mb-12 bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">Skills & Technologies</h2>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {portfolioData.skills.map((skill) => (
-                <div key={skill.id} className="bg-gray-800/50 rounded-lg p-6 border border-gray-700">
-                  <div className="flex justify-between items-center mb-2">
-                    <h3 className="text-lg font-semibold">{skill.name}</h3>
-                    <span className="text-sm text-gray-400">{skill.proficiency}%</span>
+      {/* Skills Section - "My Technical Arsenal" */}
+      {portfolioData.skills && portfolioData.skills.length > 0 && (() => {
+        // Group skills by category
+        const groupedSkills: { [category: string]: { id: string, name: string }[] } = {};
+        (portfolioData.skills || []).forEach(skill => {
+          if (!groupedSkills[skill.category]) {
+            groupedSkills[skill.category] = [];
+          }
+          groupedSkills[skill.category].push({ id: skill.id, name: skill.name });
+        });
+
+        // Define icons for each category
+        const categoryIcons: { [category: string]: JSX.Element } = {
+          "Frontend": (
+            <svg className="w-7 h-7 text-cyan-400" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+              <rect x="3" y="4" width="18" height="16" rx="2" className="stroke-cyan-400" />
+              <path d="M3 8h18" className="stroke-cyan-400" />
+              <circle cx="7" cy="6" r="1" className="fill-cyan-400" />
+              <circle cx="11" cy="6" r="1" className="fill-cyan-400" />
+            </svg>
+          ),
+          "Backend": (
+            <svg className="w-7 h-7 text-blue-400" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+              <ellipse cx="12" cy="7" rx="9" ry="4" className="stroke-blue-400" />
+              <path d="M3 7v6c0 2.21 4.03 4 9 4s9-1.79 9-4V7" className="stroke-blue-400" />
+              <path d="M3 13v4c0 2.21 4.03 4 9 4s9-1.79 9-4v-4" className="stroke-blue-400" />
+            </svg>
+          ),
+          "Databases & DevOps": (
+            <svg className="w-7 h-7 text-teal-400" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+              <ellipse cx="12" cy="6" rx="9" ry="3" className="stroke-teal-400" />
+              <path d="M3 6v6c0 1.66 4.03 3 9 3s9-1.34 9-3V6" className="stroke-teal-400" />
+              <path d="M3 12v6c0 1.66 4.03 3 9 3s9-1.34 9-3v-6" className="stroke-teal-400" />
+            </svg>
+          ),
+        };
+
+        // Define display order and pretty names
+        const displayCategories = [
+          { key: "Frontend", label: "Frontend" },
+          { key: "Backend", label: "Backend" },
+          { key: "Databases & DevOps", label: "Databases & DevOps" },
+        ];
+
+        return (
+          <section id="skills" className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-black to-gray-900">
+            <div className="max-w-6xl mx-auto">
+              <h2 className="text-4xl md:text-5xl font-bold text-center mb-12 bg-gradient-to-r from-cyan-300 to-blue-400 bg-clip-text text-transparent">
+                My Technical Skills
+              </h2>
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {displayCategories.map(({ key, label }) => (
+                  <div
+                    key={key}
+                    className={`bg-gray-900/60 border-2 ${
+                      key === "Frontend" ? "border-cyan-400" : key === "Backend" ? "border-blue-400" : "border-teal-400"
+                    } rounded-xl p-8 shadow-lg flex flex-col`}
+                  >
+                    <div className="flex items-center mb-4">
+                      <div className="mr-3">
+                        {categoryIcons[key]}
+                      </div>
+                      <h3 className="text-xl font-semibold text-white">{label}</h3>
+                    </div>
+                    <ul className="space-y-2 mt-2">
+                      {(groupedSkills[key] || []).map(skill => (
+                        <li
+                          key={skill.id}
+                          className="flex items-center text-gray-200 text-base pl-2"
+                        >
+                          <span className="inline-block w-2 h-2 rounded-full bg-cyan-400 mr-3"></span>
+                          {skill.name}
+                        </li>
+                      ))}
+                      {/* If no skills in this category, show a subtle placeholder */}
+                      {(groupedSkills[key] || []).length === 0 && (
+                        <li className="text-gray-500 italic">No skills listed</li>
+                      )}
+                    </ul>
                   </div>
-                  <div className="w-full bg-gray-700 rounded-full h-2 mb-2">
-                    <div 
-                      className="bg-gradient-to-r from-blue-500 to-purple-500 h-2 rounded-full transition-all duration-1000"
-                      style={{ width: `${skill.proficiency}%` }}
-                    ></div>
-                  </div>
-                  <p className="text-sm text-gray-400">{skill.category}</p>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </div>
-        </section>
-      )}
+          </section>
+        );
+      })()}
 
       {/* Contact Section - matches demo */}
       <section id="contact" className="py-20 px-4 bg-gradient-to-b from-gray-900 to-black">
