@@ -143,6 +143,12 @@ export function Dashboard() {
     x: "",
     telegram: "",
     linkedin: "",
+    heroTitle: "",
+    heroDescription: "",
+    heroBackgroundMode: "gradient" as "gradient" | "image",
+    heroGradientPreset: 1 as 1 | 2 | 3 | 4,
+    heroBackgroundImageUrl: "",
+    heroBackgroundBlurLevel: 0 as 0 | 1 | 2 | 3 | 4,
   })
   const [isSavingAbout, setIsSavingAbout] = useState(false)
   const [aboutMessage, setAboutMessage] = useState<string | null>(null)
@@ -179,6 +185,12 @@ export function Dashboard() {
         x: about.x || about.twitter || "",
         telegram: about.telegram || "",
         linkedin: about.linkedin || "",
+        heroTitle: about.heroTitle || about.title || "Full Stack Developer",
+        heroDescription: about.heroDescription || about.bio || "",
+        heroBackgroundMode: about.heroBackgroundMode || "gradient",
+        heroGradientPreset: (about.heroGradientPreset as 1|2|3|4) || 1,
+        heroBackgroundImageUrl: about.heroBackgroundImageUrl || "",
+        heroBackgroundBlurLevel: (about.heroBackgroundBlurLevel as 0|1|2|3|4) || 0,
       })
     } catch (error) {
       console.error('Error parsing user data:', error)
@@ -216,6 +228,13 @@ export function Dashboard() {
         x: aboutForm.x,
         telegram: aboutForm.telegram,
         linkedin: aboutForm.linkedin,
+        // hero settings
+        heroTitle: aboutForm.heroTitle,
+        heroDescription: aboutForm.heroDescription,
+        heroBackgroundMode: aboutForm.heroBackgroundMode,
+        heroGradientPreset: aboutForm.heroGradientPreset,
+        heroBackgroundImageUrl: aboutForm.heroBackgroundImageUrl,
+        heroBackgroundBlurLevel: aboutForm.heroBackgroundBlurLevel,
       }
 
       const res = await fetch('/api/users/update-about', {
@@ -742,62 +761,88 @@ export function Dashboard() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-white/80 mb-4">
-                    Manage your contact details and social links. These appear on your public portfolio.
-                  </p>
+                  <p className="text-white/80 mb-4">Customize your hero section.</p>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm text-white/80 mb-1">GitHub URL</label>
+                    <div className="md:col-span-2">
+                      <label className="block text-sm text-white/80 mb-1">Hero Title</label>
                       <input
-                        name="github"
-                        value={aboutForm.github}
+                        name="heroTitle"
+                        value={aboutForm.heroTitle}
                         onChange={handleAboutInput}
-                        placeholder="https://github.com/username"
+                        placeholder="e.g. Full Stack Developer"
+                        className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder:text-white/40"
+                      />
+                    </div>
+                    <div className="md:col-span-2">
+                      <label className="block text-sm text-white/80 mb-1">Hero Description</label>
+                      <input
+                        name="heroDescription"
+                        value={aboutForm.heroDescription}
+                        onChange={handleAboutInput}
+                        placeholder="Short intro shown under the title"
                         className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder:text-white/40"
                       />
                     </div>
                     <div>
-                      <label className="block text-sm text-white/80 mb-1">X (Twitter) URL</label>
-                      <input
-                        name="x"
-                        value={aboutForm.x}
-                        onChange={handleAboutInput}
-                        placeholder="https://x.com/username"
-                        className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder:text-white/40"
-                      />
+                      <label className="block text-sm text-white/80 mb-1">Background Mode</label>
+                      <select
+                        name="heroBackgroundMode"
+                        value={aboutForm.heroBackgroundMode}
+                        onChange={handleAboutInput as any}
+                        className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white"
+                      >
+                        <option value="gradient">Gradient</option>
+                        <option value="image">Image</option>
+                      </select>
                     </div>
+                    {aboutForm.heroBackgroundMode === 'gradient' ? (
+                      <div>
+                        <label className="block text-sm text-white/80 mb-1">Gradient Preset</label>
+                        <select
+                          name="heroGradientPreset"
+                          value={aboutForm.heroGradientPreset}
+                          onChange={(e) => setAboutForm(prev => ({ ...prev, heroGradientPreset: Number(e.target.value) as 1|2|3|4 }))}
+                          className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white"
+                        >
+                          <option value={1}>Preset 1</option>
+                          <option value={2}>Preset 2</option>
+                          <option value={3}>Preset 3</option>
+                          <option value={4}>Preset 4</option>
+                        </select>
+                      </div>
+                    ) : (
+                      <div>
+                        <label className="block text-sm text-white/80 mb-1">Background Image URL</label>
+                        <input
+                          name="heroBackgroundImageUrl"
+                          value={aboutForm.heroBackgroundImageUrl}
+                          onChange={handleAboutInput}
+                          placeholder="https://example.com/hero.jpg"
+                          className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder:text-white/40"
+                        />
+                      </div>
+                    )}
                     <div>
-                      <label className="block text-sm text-white/80 mb-1">Telegram URL</label>
-                      <input
-                        name="telegram"
-                        value={aboutForm.telegram}
-                        onChange={handleAboutInput}
-                        placeholder="https://t.me/username"
-                        className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder:text-white/40"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm text-white/80 mb-1">LinkedIn URL</label>
-                      <input
-                        name="linkedin"
-                        value={aboutForm.linkedin}
-                        onChange={handleAboutInput}
-                        placeholder="https://www.linkedin.com/in/username"
-                        className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder:text-white/40"
-                      />
+                      <label className="block text-sm text-white/80 mb-1">Background Blur Level</label>
+                      <select
+                        name="heroBackgroundBlurLevel"
+                        value={aboutForm.heroBackgroundBlurLevel}
+                        onChange={(e) => setAboutForm(prev => ({ ...prev, heroBackgroundBlurLevel: Number(e.target.value) as 0|1|2|3|4 }))}
+                        className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white"
+                      >
+                        <option value={0}>None</option>
+                        <option value={1}>Low</option>
+                        <option value={2}>Medium</option>
+                        <option value={3}>High</option>
+                        <option value={4}>Ultra</option>
+                      </select>
                     </div>
                   </div>
                   <div className="flex items-center gap-3 mt-4">
-                    <Button
-                      onClick={handleSaveAbout}
-                      disabled={isSavingAbout}
-                      className="bg-black/50 hover:bg/100 text-white"
-                    >
+                    <Button onClick={handleSaveAbout} disabled={isSavingAbout} className="bg-black/50 hover:bg/100 text-white">
                       {isSavingAbout ? "Saving..." : "Save"}
                     </Button>
-                    {aboutMessage && (
-                      <span className="text-sm text-white/80">{aboutMessage}</span>
-                    )}
+                    {aboutMessage && (<span className="text-sm text-white/80">{aboutMessage}</span>)}
                   </div>
                 </CardContent>
               </Card>
