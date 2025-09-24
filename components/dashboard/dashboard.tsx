@@ -1146,7 +1146,7 @@ export function Dashboard() {
                           const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(user, null, 2))
                           const a = document.createElement('a')
                           a.href = dataStr
-                          a.download = `portfolio-${user.username}.json`
+                          a.download = `flexfolio-${user.username}.json`
                           a.click()
                         }}
                       >
