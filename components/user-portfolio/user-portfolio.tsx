@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { ROUTES } from "@/lib/routes";
 import { Navigation } from "@/components/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -156,7 +157,7 @@ export function UserPortfolio({ username }: UserPortfolioProps) {
               removed.
             </p>
             <Button
-              onClick={() => router.push("/")}
+              onClick={() => router.push(ROUTES.HOME)}
               className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
             >
               Go Home
