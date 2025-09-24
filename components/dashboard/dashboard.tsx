@@ -1059,7 +1059,6 @@ export function Dashboard() {
                         type="text" 
                         value={user.name}
                         className="w-full bg-gray-800/50 border border-gray-600 rounded-lg px-3 py-2 text-white focus:border-orange-500 focus:outline-none"
-                        readOnly
                       />
                     </div>
                     <div>
@@ -1070,22 +1069,38 @@ export function Dashboard() {
                         type="email" 
                         value={user.email}
                         className="w-full bg-gray-800/50 border border-gray-600 rounded-lg px-3 py-2 text-white focus:border-orange-500 focus:outline-none"
-                        readOnly
                       />
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-300 mb-2">
                         Username
                       </label>
-                      <input 
-                        type="text" 
-                        value={user.username}
-                        className="w-full bg-gray-800/50 border border-gray-600 rounded-lg px-3 py-2 text-white focus:border-orange-500 focus:outline-none"
-                      />
+                    <input 
+                      type="text" 
+                      value={user.username}
+                      onChange={(e) => setUser(prev => prev ? ({ ...prev, username: e.target.value }) : prev)}
+                      className="w-full bg-gray-800/50 border border-gray-600 rounded-lg px-3 py-2 text-white focus:border-orange-500 focus:outline-none"
+                    />
                     </div>
                     <Button 
                       variant="outline" 
                       className="w-full border-gray-600 text-white-300 hover:bg-white/50"
+                      onClick={async () => {
+                        if (!user) return
+                        const res = await fetch('/api/users/update-account', {
+                          method: 'POST',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify({ userId: user._id, account: { username: user.username } })
+                        })
+                        const data = await res.json()
+                        if (res.ok && data?.user) {
+                          localStorage.setItem('user', JSON.stringify(data.user))
+                          setUser(data.user)
+                          alert('Account updated')
+                        } else {
+                          alert(data?.error || 'Failed to update')
+                        }
+                      }}
                     >
                       <Settings className="h-4 w-4 mr-2" />
                       Update Account Settings
@@ -1125,6 +1140,14 @@ export function Dashboard() {
                       <Button 
                         variant="outline" 
                         className="w-full border-gray-600 text-black-300 hover:bg-white/50"
+                        onClick={() => {
+                          if (!user) return
+                          const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(user, null, 2))
+                          const a = document.createElement('a')
+                          a.href = dataStr
+                          a.download = `portfolio-${user.username}.json`
+                          a.click()
+                        }}
                       >
                         <Download className="h-4 w-4 mr-2" />
                         Export Portfolio Data
@@ -1132,6 +1155,12 @@ export function Dashboard() {
                       <Button 
                         variant="outline" 
                         className="w-full border-gray-600 text-black-300 hover:bg-white/50"
+                        onClick={() => {
+                          if (!user) return
+                          const url = `${typeof window !== 'undefined' ? window.location.origin : ''}/${user.username}`
+                          navigator.clipboard.writeText(url)
+                          alert('Portfolio URL copied to clipboard')
+                        }}
                       >
                         <Link className="h-4 w-4 mr-2" />
                         Share Portfolio
