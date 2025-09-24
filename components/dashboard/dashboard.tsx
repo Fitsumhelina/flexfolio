@@ -1081,7 +1081,6 @@ export function Dashboard() {
                         type="text" 
                         value={user.username}
                         className="w-full bg-gray-800/50 border border-gray-600 rounded-lg px-3 py-2 text-white focus:border-orange-500 focus:outline-none"
-                        readOnly
                       />
                     </div>
                     <Button 
