@@ -734,12 +734,11 @@ export function Dashboard() {
           <TabsContent value="content" className="space-y-6">
             <div className="grid lg:grid-cols-2 gap-6">
               <Card
-                className="bg-card-gradient-content-about border-0 shadow-lg"
-              >
+                className="bg-card-gradient-content-about border-0 shadow-lg" >
                 <CardHeader>
                   <CardTitle className="text-white flex items-center">
                     <User className="h-5 w-5 mr-2 text-white/80" />
-                    About Section
+                    Hero Section
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -803,54 +802,72 @@ export function Dashboard() {
                 </CardContent>
               </Card>
 
-              <Card className="bg-gradient-to-br from-green-500/10 to-green-600/10 border-green-500/20">
+              <Card
+                className="bg-card-gradient-content-about border-0 shadow-lg"
+              >
                 <CardHeader>
                   <CardTitle className="text-white flex items-center">
-                    <Code className="h-5 w-5 mr-2 text-green-400" />
-                    Projects & Skills
+                    <User className="h-5 w-5 mr-2 text-white/80" />
+                    Social media Section
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-gray-400 mb-4">
-                    Showcase your work and highlight your technical skills.
+                  <p className="text-white/80 mb-4">
+                    Manage your contact details and social links. These appear on your public portfolio.
                   </p>
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between p-3 bg-gray-800/50 rounded-lg">
-                      <div className="flex items-center">
-                        <Code className="h-4 w-4 mr-2 text-gray-400" />
-                        <span className="text-sm text-gray-300">Projects</span>
-                      </div>
-                      <Badge variant="outline" className="border-green-500/30 text-green-400">
-                        {user.portfolioData?.projects?.length || 0} Added
-                      </Badge>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm text-white/80 mb-1">GitHub URL</label>
+                      <input
+                        name="github"
+                        value={aboutForm.github}
+                        onChange={handleAboutInput}
+                        placeholder="https://github.com/username"
+                        className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder:text-white/40"
+                      />
                     </div>
-                    <div className="flex items-center justify-between p-3 bg-gray-800/50 rounded-lg">
-                      <div className="flex items-center">
-                        <Zap className="h-4 w-4 mr-2 text-gray-400" />
-                        <span className="text-sm text-gray-300">Skills</span>
-                      </div>
-                      <Badge variant="outline" className="border-green-500/30 text-green-400">
-                        {user.portfolioData?.skills?.length || 0} Added
-                      </Badge>
+                    <div>
+                      <label className="block text-sm text-white/80 mb-1">X (Twitter) URL</label>
+                      <input
+                        name="x"
+                        value={aboutForm.x}
+                        onChange={handleAboutInput}
+                        placeholder="https://x.com/username"
+                        className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder:text-white/40"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm text-white/80 mb-1">Telegram URL</label>
+                      <input
+                        name="telegram"
+                        value={aboutForm.telegram}
+                        onChange={handleAboutInput}
+                        placeholder="https://t.me/username"
+                        className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder:text-white/40"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm text-white/80 mb-1">LinkedIn URL</label>
+                      <input
+                        name="linkedin"
+                        value={aboutForm.linkedin}
+                        onChange={handleAboutInput}
+                        placeholder="https://www.linkedin.com/in/username"
+                        className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder:text-white/40"
+                      />
                     </div>
                   </div>
-                  <div className="grid grid-cols-2 gap-2 mt-4">
-                    <Button 
-                      variant="outline" 
-                      onClick={() => router.push(ROUTES.DASHBOARD_PROJECTS)}
-                      className="border-gray-500 text-white hover:bg-gray-700 hover:border-gray-400"
+                  <div className="flex items-center gap-3 mt-4">
+                    <Button
+                      onClick={handleSaveAbout}
+                      disabled={isSavingAbout}
+                      className="bg-black/50 hover:bg/100 text-white"
                     >
-                      <Plus className="h-4 w-4 mr-2" />
-                      Add Project
+                      {isSavingAbout ? "Saving..." : "Save"}
                     </Button>
-                    <Button 
-                      variant="outline" 
-                      onClick={() => router.push(ROUTES.DASHBOARD_SKILLS)}
-                      className="border-gray-500 text-white hover:bg-gray-700 hover:border-gray-400"
-                    >
-                      <Plus className="h-4 w-4 mr-2" />
-                      Add Skill
-                    </Button>
+                    {aboutMessage && (
+                      <span className="text-sm text-white/80">{aboutMessage}</span>
+                    )}
                   </div>
                 </CardContent>
               </Card>
