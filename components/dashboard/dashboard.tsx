@@ -36,6 +36,7 @@ import {
   Trash2
 } from "lucide-react"
 import { useEffect as ReactUseEffect, useState as ReactUseState } from 'react'
+import { ROUTES } from '@/lib/routes'
 
 function Inbox({ user }: { user: User }) {
   const [messages, setMessages] = ReactUseState<Array<any>>([])
@@ -313,7 +314,7 @@ export function Dashboard() {
             <nav className="hidden md:flex items-center space-x-1">
               <Button 
                 variant="ghost" 
-                onClick={() => router.push('/')}
+                onClick={() => router.push(ROUTES.HOME)}
                 className="text-gray-300 hover:text-white hover:bg-gray-800/50"
               >
                 <Home className="h-4 w-4 mr-2" />
@@ -329,7 +330,7 @@ export function Dashboard() {
               </Button>
               <Button 
                 variant="ghost" 
-                onClick={() => router.push('/demo')}
+                onClick={() => router.push(ROUTES.DEMO)}
                 className="text-gray-300 hover:text-white hover:bg-gray-800/50"
               >
                 <Star className="h-4 w-4 mr-2" />
@@ -421,7 +422,7 @@ export function Dashboard() {
             <CardContent className="p-6">
               <div
                 className="flex items-center justify-between cursor-pointer"
-                onClick={() => router.push('/dashboard/mail')}
+                onClick={() => router.push(ROUTES.DASHBOARD_MAIL)}
               >
                 <div>
                   <p className="text-gray-400 text-sm font-medium">Contact Messages</p>
@@ -544,7 +545,7 @@ export function Dashboard() {
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => router.push("/dashboard/about")}
+                      onClick={() => router.push(ROUTES.DASHBOARD_ABOUT)}
                       className="text-black border-white/40 hover:bg-white/10 hover:border-white/60 hover:text-white"
                     >
                       <Edit className="h-4 w-4 mr-2" />
@@ -574,7 +575,7 @@ export function Dashboard() {
                     <Button 
                       variant="outline" 
                       size="sm"
-                      onClick={() => router.push('/dashboard/projects')}
+                      onClick={() => router.push(ROUTES.DASHBOARD_PROJECTS)}
                       className="border-white/40 text-black hover:bg-white/10 hover:border-white/60 hover:text-white"
                     >
                       <Plus className="h-4 w-4 mr-2" />
@@ -604,7 +605,7 @@ export function Dashboard() {
                     <Button 
                       variant="outline" 
                       size="sm"
-                      onClick={() => router.push('/dashboard/skills')}
+                      onClick={() => router.push(ROUTES.DASHBOARD_SKILLS)}
                       className="border-white/40 text-black hover:bg-white/10 hover:border-white/60 hover:text-white"
                     >
                       <Plus className="h-4 w-4 mr-2" />
@@ -623,7 +624,7 @@ export function Dashboard() {
                   <div className="flex items-center justify-between">
                     <CardTitle className="text-white">Recent Projects</CardTitle>
                     <Button 
-                      onClick={() => router.push('/dashboard/projects')}
+                      onClick={() => router.push(ROUTES.DASHBOARD_PROJECTS)}
                       className="bg-blue-500 hover:bg-blue-600 text-white"
                     >
                       <Plus className="h-4 w-4 mr-2" />
@@ -648,7 +649,7 @@ export function Dashboard() {
                           <Button 
                             variant="ghost" 
                             size="sm" 
-                            onClick={() => router.push('/dashboard/projects')}
+                            onClick={() => router.push(ROUTES.DASHBOARD_PROJECTS)}
                             className="text-gray-400 hover:text-white"
                           >
                             <Edit className="h-4 w-4" />
@@ -666,7 +667,7 @@ export function Dashboard() {
                         <h4 className="text-white font-medium mb-2">No Projects Yet</h4>
                         <p className="text-gray-400 text-sm mb-4">Start building your portfolio by adding your first project.</p>
                         <Button 
-                          onClick={() => router.push('/dashboard/projects')}
+                          onClick={() => router.push(ROUTES.DASHBOARD_PROJECTS)}
                           className="bg-blue-500 hover:bg-blue-600 text-white"
                         >
                           <Plus className="h-4 w-4 mr-2" />
@@ -689,14 +690,14 @@ export function Dashboard() {
                 <CardContent>
                   <div className="grid grid-cols-2 gap-4">
                     <Button 
-                      onClick={() => router.push('/dashboard/projects')}
+                      onClick={() => router.push(ROUTES.DASHBOARD_PROJECTS)}
                       className="bg-blue-500 hover:bg-blue-600 text-white h-auto p-6 flex flex-col items-center space-y-3 group"
                     >
                       <Plus className="h-6 w-6" />
                       <span className="font-medium">New Project</span>
                     </Button>
                     <Button 
-                      onClick={() => router.push('/dashboard/about')}
+                      onClick={() => router.push(ROUTES.DASHBOARD_ABOUT)}
                       className="bg-purple-500 hover:bg-purple-600 text-white h-auto p-6 flex flex-col items-center space-y-3 group"
                     >
                       <Edit className="h-6 w-6" />
@@ -867,7 +868,7 @@ export function Dashboard() {
                   <div className="grid grid-cols-2 gap-2 mt-4">
                     <Button 
                       variant="outline" 
-                      onClick={() => router.push('/dashboard/projects')}
+                      onClick={() => router.push(ROUTES.DASHBOARD_PROJECTS)}
                       className="border-gray-500 text-white hover:bg-gray-700 hover:border-gray-400"
                     >
                       <Plus className="h-4 w-4 mr-2" />
@@ -875,7 +876,7 @@ export function Dashboard() {
                     </Button>
                     <Button 
                       variant="outline" 
-                      onClick={() => router.push('/dashboard/skills')}
+                      onClick={() => router.push(ROUTES.DASHBOARD_SKILLS)}
                       className="border-gray-500 text-white hover:bg-gray-700 hover:border-gray-400"
                     >
                       <Plus className="h-4 w-4 mr-2" />
