@@ -982,7 +982,7 @@ export function Dashboard() {
           </TabsContent>
 
           <TabsContent value="design" className="space-y-6">
-            <Card className="bg-gradient-to-br from-purple-500/10 to-purple-600/10 border-purple-500/20">
+            <Card className="bg-black border-2 border-gradient-to-r from-purple-500/10 to-purple-600/10 border-purple-500/20">
               <CardHeader>
                 <CardTitle className="text-white flex items-center">
                   <Palette className="h-5 w-5 mr-2 text-purple-400" />
@@ -1015,7 +1015,7 @@ export function Dashboard() {
                   <div className="border border-gray-600 rounded-xl p-4 hover:border-gray-500 cursor-pointer transition-all duration-300 bg-gradient-to-br from-gray-800/50 to-gray-900/50 opacity-60">
                     <div className="w-full h-32 bg-gradient-to-br from-blue-900 to-purple-900 rounded-lg mb-3 relative">
                       <div className="absolute top-2 right-2">
-                        <Badge variant="outline" className="border-gray-500 text-gray-400">Soon</Badge>
+                        <Badge variant="outline" className="border-white text-white">Soon</Badge>
                       </div>
                     </div>
                     <h4 className="font-semibold text-white mb-1">Blue Theme</h4>
@@ -1042,7 +1042,7 @@ export function Dashboard() {
 
           <TabsContent value="settings" className="space-y-6">
             <div className="grid lg:grid-cols-2 gap-6">
-              <Card className="bg-gradient-to-br from-orange-500/10 to-orange-600/10 border-orange-500/20">
+              <Card className="bg-black  border-orange-500/20">
                 <CardHeader>
                   <CardTitle className="text-white flex items-center">
                     <User className="h-5 w-5 mr-2 text-orange-400" />
@@ -1086,7 +1086,7 @@ export function Dashboard() {
                     </div>
                     <Button 
                       variant="outline" 
-                      className="w-full border-gray-600 text-gray-300 hover:bg-gray-800/50 hover:border-orange-500"
+                      className="w-full border-gray-600 text-white-300 hover:bg-green-800/50 hover:border-green-500"
                     >
                       <Settings className="h-4 w-4 mr-2" />
                       Update Account Settings
