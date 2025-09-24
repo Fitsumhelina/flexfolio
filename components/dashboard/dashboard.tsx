@@ -432,7 +432,9 @@ export function Dashboard() {
 
           <Card className="bg-gray-900/50 border-gray-700 hover:border-orange-500/50 transition-all duration-300">
             <CardContent className="p-6">
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between cursor-pointer"
+              onClick={() => router.push(ROUTES.DASHBOARD_SKILLS)}
+              >
                 <div>
                   <p className="text-gray-400 text-sm font-medium">Skills Listed</p>
                   <p className="text-3xl font-bold text-orange-400">{user.portfolioData?.skills?.length || 0}</p>
