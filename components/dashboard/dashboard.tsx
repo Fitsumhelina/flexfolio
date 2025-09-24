@@ -830,7 +830,7 @@ export function Dashboard() {
                         name="heroBackgroundMode"
                         value={aboutForm.heroBackgroundMode}
                         onChange={handleAboutInput as any}
-                        className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white"
+                        className="w-full bg-black border border-white/20 rounded-lg px-3 py-2 text-white"
                       >
                         <option value="gradient">Gradient</option>
                         <option value="image">Image</option>
@@ -843,7 +843,7 @@ export function Dashboard() {
                           name="heroGradientPreset"
                           value={aboutForm.heroGradientPreset}
                           onChange={(e) => setAboutForm(prev => ({ ...prev, heroGradientPreset: Number(e.target.value) as 1|2|3|4 }))}
-                          className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white"
+                          className="w-full bg-black border border-white/20 rounded-lg px-3 py-2 text-white"
                         >
                           <option value={1}>Preset 1</option>
                           <option value={2}>Preset 2</option>
@@ -869,7 +869,7 @@ export function Dashboard() {
                         name="heroBackgroundBlurLevel"
                         value={aboutForm.heroBackgroundBlurLevel}
                         onChange={(e) => setAboutForm(prev => ({ ...prev, heroBackgroundBlurLevel: Number(e.target.value) as 0|1|2|3|4 }))}
-                        className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white"
+                        className="w-full bg-black border border-white/20 rounded-lg px-3 py-2 text-white"
                       >
                         <option value={0}>None</option>
                         <option value={1}>Low</option>
@@ -882,7 +882,7 @@ export function Dashboard() {
                   {/* Gradient Preview & Picker */}
                   <div className="mt-6 space-y-3">
                     <div className="text-sm text-white/80">Preview</div>
-                    <div className="relative h-24 rounded-lg overflow-hidden border border-white/20">
+                    <div className="relative h-54 rounded-lg overflow-hidden border border-white/20">
                       {aboutForm.heroBackgroundMode === 'image' && aboutForm.heroBackgroundImageUrl ? (
                         <img src={aboutForm.heroBackgroundImageUrl} alt="preview" className={`w-full h-full object-cover opacity-50 ${`hero-blur-${aboutForm.heroBackgroundBlurLevel}`}`} />
                       ) : (
