@@ -1055,21 +1055,23 @@ export function Dashboard() {
                       <label className="block text-sm font-medium text-gray-300 mb-2">
                         Full Name
                       </label>
-                      <input 
-                        type="text" 
-                        value={user.name}
-                        className="w-full bg-gray-800/50 border border-gray-600 rounded-lg px-3 py-2 text-white focus:border-orange-500 focus:outline-none"
-                      />
+                    <input 
+                      type="text" 
+                      value={user.name}
+                      onChange={(e) => setUser(prev => prev ? ({ ...prev, name: e.target.value }) : prev)}
+                      className="w-full bg-gray-800/50 border border-gray-600 rounded-lg px-3 py-2 text-white focus:border-orange-500 focus:outline-none"
+                    />
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-300 mb-2">
                         Email Address
                       </label>
-                      <input 
-                        type="email" 
-                        value={user.email}
-                        className="w-full bg-gray-800/50 border border-gray-600 rounded-lg px-3 py-2 text-white focus:border-orange-500 focus:outline-none"
-                      />
+                    <input 
+                      type="email" 
+                      value={user.email}
+                      onChange={(e) => setUser(prev => prev ? ({ ...prev, email: e.target.value }) : prev)}
+                      className="w-full bg-gray-800/50 border border-gray-600 rounded-lg px-3 py-2 text-white focus:border-orange-500 focus:outline-none"
+                    />
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-300 mb-2">
@@ -1084,13 +1086,13 @@ export function Dashboard() {
                     </div>
                     <Button 
                       variant="outline" 
-                      className="w-full border-gray-600 text-white-300 hover:bg-white/50"
+                      className="text-white bg-green-500 hover:bg-green-600"
                       onClick={async () => {
                         if (!user) return
                         const res = await fetch('/api/users/update-account', {
                           method: 'POST',
                           headers: { 'Content-Type': 'application/json' },
-                          body: JSON.stringify({ userId: user._id, account: { username: user.username } })
+                          body: JSON.stringify({ userId: user._id, account: { name: user.name, email: user.email, username: user.username } })
                         })
                         const data = await res.json()
                         if (res.ok && data?.user) {
@@ -1102,8 +1104,7 @@ export function Dashboard() {
                         }
                       }}
                     >
-                      <Settings className="h-4 w-4 mr-2" />
-                      Update Account Settings
+                      Update
                     </Button>
                   </div>
                 </CardContent>
