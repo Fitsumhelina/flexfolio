@@ -19,6 +19,7 @@ export async function POST(request: NextRequest) {
     if (typeof account.name === 'string') allowed['name'] = account.name
     if (typeof account.username === 'string') allowed['username'] = account.username
     if (typeof account.email === 'string') allowed['email'] = account.email
+    if (typeof account.isActive === 'boolean') allowed['isActive'] = account.isActive
 
     if (Object.keys(allowed).length === 0) {
       return NextResponse.json({ error: 'No valid fields to update' }, { status: 400 })
