@@ -272,7 +272,7 @@ export function UserPortfolio({ username }: UserPortfolioProps) {
             <Button
               variant="outline"
               size="lg"
-              className="border-gray-600 text-white text-lg px-8 py-4 shadow-lg transition-all bg-gradient-to-r from-[#2A7B9B] via-[#50BB88] via-[#57C785] to-[#EDDD53] hover:brightness-110"
+              className="border-gray-600 text-white text-lg px-8 py-4 shadow-lg transition-all bg-button-gradient-multicolor hover:brightness-110"
               onClick={() => {
                 const projects = document.getElementById("projects");
                 if (projects) projects.scrollIntoView({ behavior: "smooth" });
