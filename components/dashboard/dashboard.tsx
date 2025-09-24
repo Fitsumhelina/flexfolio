@@ -390,8 +390,10 @@ export function Dashboard() {
 
             <div className="flex items-center space-x-3">
               <div className="hidden sm:flex items-center space-x-2 bg-gray-800/50 rounded-lg px-3 py-1">
-                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                <span className="text-sm text-gray-300">Live</span>
+                <div className={`w-2 h-2 rounded-full animate-pulse ${user.isActive !== false ? 'bg-green-500' : 'bg-red-500'}`}></div>
+                <span className={`text-sm ${user.isActive !== false ? 'text-gray-300' : 'text-red-400'}`}>
+                  {user.isActive !== false ? 'Live' : 'Down'}
+                </span>
               </div>
               <Button 
                 variant="outline" 
