@@ -1095,7 +1095,7 @@ export function Dashboard() {
                 </CardContent>
               </Card>
 
-              <Card className="bg-gradient-to-br from-red-500/10 to-red-600/10 border-red-500/20">
+              <Card className="bg-black border-red-500/20">
                 <CardHeader>
                   <CardTitle className="text-white flex items-center">
                     <LogOut className="h-5 w-5 mr-2 text-red-400" />
@@ -1125,14 +1125,14 @@ export function Dashboard() {
                     <div className="space-y-3">
                       <Button 
                         variant="outline" 
-                        className="w-full border-gray-600 text-gray-300 hover:bg-gray-800/50"
+                        className="w-full border-gray-600 text-black-300 hover:bg-white/50"
                       >
                         <Download className="h-4 w-4 mr-2" />
                         Export Portfolio Data
                       </Button>
                       <Button 
                         variant="outline" 
-                        className="w-full border-gray-600 text-gray-300 hover:bg-gray-800/50"
+                        className="w-full border-gray-600 text-black-300 hover:bg-white/50"
                       >
                         <Link className="h-4 w-4 mr-2" />
                         Share Portfolio
@@ -1140,7 +1140,7 @@ export function Dashboard() {
                       <Button 
                         variant="outline" 
                         onClick={handleLogout}
-                        className="w-full border-red-500/30 text-red-400 hover:bg-red-500/10 hover:border-red-500"
+                        className="w-full border-red-500/30 text-red-400 hover:bg-red-white/50"
                       >
                         <LogOut className="h-4 w-4 mr-2" />
                         Sign Out
