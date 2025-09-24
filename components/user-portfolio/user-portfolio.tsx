@@ -586,12 +586,12 @@ export function UserPortfolio({ username }: UserPortfolioProps) {
                   {displayCategories.map(({ key, label }) => (
                     <div
                       key={key}
-                      className={`bg-gray-900/60 border-2 ${
+                      className={`bg-gray-900/60 border-2 transition-colors duration-200  ${
                         key === "Frontend"
-                          ? "border-cyan-400"
+                          ? "border-cyan-400 hover:border-cyan-300"
                           : key === "Backend"
-                          ? "border-blue-400"
-                          : "border-teal-400"
+                          ? "border-blue-400 hover:border-blue-300"
+                          : "border-teal-400 hover:border-teal-300"
                       } rounded-xl p-8 shadow-lg flex flex-col`}
                     >
                       <div className="flex items-center mb-4">
