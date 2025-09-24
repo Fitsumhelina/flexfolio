@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
+import { ROUTES } from "@/lib/routes"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -53,12 +54,7 @@ export function SkillsManager() {
   const categories = [
     "Frontend",
     "Backend", 
-    "Database",
-    "Cloud & DevOps",
-    "Mobile",
-    "Design",
-    "Tools",
-    "Other"
+    "DevOps",
   ]
 
   useEffect(() => {
@@ -67,7 +63,7 @@ export function SkillsManager() {
     const userData = localStorage.getItem('user')
 
     if (!isAuthenticated || !userData) {
-      router.push('/login')
+    router.push(ROUTES.LOGIN)
       return
     }
 
@@ -76,7 +72,7 @@ export function SkillsManager() {
       setUser(parsedUser)
     } catch (error) {
       console.error('Error parsing user data:', error)
-      router.push('/login')
+    router.push(ROUTES.LOGIN)
     }
 
     setIsLoading(false)
@@ -104,7 +100,7 @@ export function SkillsManager() {
       }
 
       const response = await fetch('/api/users/update-skills', {
-        method: 'POST',
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -228,7 +224,7 @@ export function SkillsManager() {
             <div className="flex items-center space-x-4">
               <Button 
                 variant="ghost" 
-                onClick={() => router.push('/dashboard')}
+                onClick={() => router.push(ROUTES.DASHBOARD)}
                 className="text-gray-300 hover:text-white"
               >
                 <ArrowLeft className="h-4 w-4 mr-2" />

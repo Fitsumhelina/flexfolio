@@ -35,6 +35,85 @@ import {
   Download,
   Trash2
 } from "lucide-react"
+import { useEffect as ReactUseEffect, useState as ReactUseState } from 'react'
+import { ROUTES } from '@/lib/routes'
+
+function Inbox({ user }: { user: User }) {
+  const [messages, setMessages] = ReactUseState<Array<any>>([])
+  const [selectedId, setSelectedId] = ReactUseState<string | null>(null)
+  const [loading, setLoading] = ReactUseState(true)
+  const selected = messages.find(m => m.id === selectedId) || null
+
+  const load = async () => {
+    setLoading(true)
+    try {
+      const res = await fetch(`/api/messages?username=${user.username}`)
+      const data = await res.json()
+      if (Array.isArray(data)) setMessages(data)
+    } catch (e) {
+      // ignore
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  ReactUseEffect(() => { load() }, [])
+
+  const handleDelete = async (id: string) => {
+    if (!confirm('Delete this message?')) return
+    await fetch(`/api/messages/${id}`, { method: 'DELETE' })
+    if (selectedId === id) setSelectedId(null)
+    load()
+  }
+
+  const markRead = async (id: string) => {
+    await fetch(`/api/messages/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ isRead: true }) })
+    load()
+  }
+
+  return (
+    <div className="grid md:grid-cols-3 gap-4">
+      <div className="md:col-span-1 border border-gray-700 rounded-lg overflow-hidden">
+        <div className="px-3 py-2 bg-gray-800/60 text-gray-200">Inbox</div>
+        <div className="max-h-96 overflow-auto divide-y divide-gray-800">
+          {loading ? (
+            <div className="p-4 text-gray-400">Loading...</div>
+          ) : messages.length === 0 ? (
+            <div className="p-4 text-gray-400">No messages</div>
+          ) : (
+            messages.map(m => (
+              <button key={m.id} onClick={() => { setSelectedId(m.id); markRead(m.id) }} className={`w-full text-left p-3 hover:bg-gray-800/50 ${selectedId===m.id ? 'bg-gray-800/70' : ''}`}>
+                <div className="flex justify-between">
+                  <span className="text-white">{m.fromName}</span>
+                  {!m.isRead && <span className="text-xs text-blue-400">New</span>}
+                </div>
+                <div className="text-xs text-gray-400">{m.fromEmail}</div>
+                <div className="text-sm text-gray-300 truncate">{m.subject || '(no subject)'}</div>
+              </button>
+            ))
+          )}
+        </div>
+      </div>
+      <div className="md:col-span-2 border border-gray-700 rounded-lg p-4 min-h-64">
+        {selected ? (
+          <div className="space-y-2">
+            <div className="flex justify-between items-center">
+              <div>
+                <div className="text-white text-lg">{selected.subject || '(no subject)'}</div>
+                <div className="text-sm text-gray-400">From {selected.fromName} &lt;{selected.fromEmail}&gt;</div>
+              </div>
+              <button onClick={() => handleDelete(selected.id)} className="text-red-400 hover:text-red-300">Delete</button>
+            </div>
+            <div className="h-px bg-gray-700 my-2" />
+            <div className="whitespace-pre-wrap text-gray-200">{selected.body}</div>
+          </div>
+        ) : (
+          <div className="text-gray-400">Select a message to preview</div>
+        )}
+      </div>
+    </div>
+  )
+}
 
 interface User {
   _id: string
@@ -46,12 +125,27 @@ interface User {
     projects?: any[]
     skills?: any[]
   }
+  createdAt?: string
+  updatedAt?: string
 }
 
 export function Dashboard() {
   const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const [messageCount, setMessageCount] = useState(0)
+  const [unreadCount, setUnreadCount] = useState(0)
   const router = useRouter()
+  const [aboutForm, setAboutForm] = useState({
+    email: "",
+    phone: "",
+    location: "",
+    github: "",
+    x: "",
+    telegram: "",
+    linkedin: "",
+  })
+  const [isSavingAbout, setIsSavingAbout] = useState(false)
+  const [aboutMessage, setAboutMessage] = useState<string | null>(null)
 
   useEffect(() => {
     // Check if user is authenticated
@@ -66,6 +160,26 @@ export function Dashboard() {
     try {
       const parsedUser = JSON.parse(userData)
       setUser(parsedUser)
+      // Load message counts
+      fetch(`/api/messages?username=${parsedUser.username}`)
+        .then(res => res.json())
+        .then(data => {
+          if (Array.isArray(data)) {
+            setMessageCount(data.length)
+            setUnreadCount(data.filter((m: any) => !m.isRead).length)
+          }
+        })
+        .catch(() => {})
+      const about = parsedUser?.portfolioData?.about || {}
+      setAboutForm({
+        email: about.email || "",
+        phone: about.phone || "",
+        location: about.location || "",
+        github: about.github || "",
+        x: about.x || about.twitter || "",
+        telegram: about.telegram || "",
+        linkedin: about.linkedin || "",
+      })
     } catch (error) {
       console.error('Error parsing user data:', error)
       router.push('/login')
@@ -73,6 +187,60 @@ export function Dashboard() {
 
     setIsLoading(false)
   }, [router])
+
+  const handleAboutInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target
+    setAboutForm(prev => ({ ...prev, [name]: value }))
+  }
+
+  const handleSaveAbout = async () => {
+    if (!user) return
+    setIsSavingAbout(true)
+    setAboutMessage(null)
+    try {
+      const currentAbout = user.portfolioData?.about || {}
+      const mergedAbout = {
+        // preserve existing about fields
+        name: currentAbout.name || user.name,
+        title: currentAbout.title || "Full Stack Developer",
+        bio: currentAbout.bio || "",
+        experience: currentAbout.experience || "",
+        projectsCompleted: currentAbout.projectsCompleted || "",
+        profileImage: currentAbout.profileImage || "",
+        // contact
+        email: aboutForm.email,
+        phone: aboutForm.phone,
+        location: aboutForm.location,
+        // socials
+        github: aboutForm.github,
+        x: aboutForm.x,
+        telegram: aboutForm.telegram,
+        linkedin: aboutForm.linkedin,
+      }
+
+      const res = await fetch('/api/users/update-about', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: user._id, aboutData: mergedAbout }),
+      })
+      const data = await res.json()
+      if (!res.ok) {
+        throw new Error(data?.error || 'Failed to save')
+      }
+
+      const updatedUser = {
+        ...user,
+        portfolioData: { ...(user.portfolioData || {}), about: mergedAbout },
+      }
+      localStorage.setItem('user', JSON.stringify(updatedUser))
+      setUser(updatedUser)
+      setAboutMessage('Saved')
+    } catch (err: any) {
+      setAboutMessage(err?.message || 'Failed to save')
+    } finally {
+      setIsSavingAbout(false)
+    }
+  }
 
   const handleLogout = () => {
     localStorage.removeItem('isAuthenticated')
@@ -89,7 +257,28 @@ export function Dashboard() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-black flex items-center justify-center">
-        <div className="text-white">Loading...</div>
+        <div className="flex flex-col items-center space-y-6">
+          <div className="w-16 h-16 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 animate-pulse flex items-center justify-center">
+            <svg className="w-8 h-8 text-white animate-spin" fill="none" viewBox="0 0 24 24">
+              <circle
+                className="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="4"
+              ></circle>
+              <path
+                className="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+              ></path>
+            </svg>
+          </div>
+          <div className="w-64 h-6 bg-gray-800 rounded mb-2 animate-pulse" />
+          <div className="w-48 h-4 bg-gray-800 rounded animate-pulse" />
+          <div className="w-40 h-4 bg-gray-800 rounded animate-pulse" />
+        </div>
       </div>
     )
   }
@@ -105,9 +294,16 @@ export function Dashboard() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-4">
-              <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl flex items-center justify-center shadow-lg">
-                <span className="text-white font-bold text-lg">F</span>
-              </div>
+            <div className="flex-shrink-0 flex items-center space-x-3">
+            {/* Logo */}
+            <div className="w-8 h-8 flex items-center justify-center">
+              <img
+                src="/logo.png"
+                alt="flexfolio logo"
+                className="w-8 h-10 object-contain"
+              />
+            </div>
+          </div>
               <div>
                 <span className="text-xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">FlexFolio</span>
                 <p className="text-xs text-gray-400">Dashboard</p>
@@ -118,7 +314,7 @@ export function Dashboard() {
             <nav className="hidden md:flex items-center space-x-1">
               <Button 
                 variant="ghost" 
-                onClick={() => router.push('/')}
+                onClick={() => router.push(ROUTES.HOME)}
                 className="text-gray-300 hover:text-white hover:bg-gray-800/50"
               >
                 <Home className="h-4 w-4 mr-2" />
@@ -134,7 +330,7 @@ export function Dashboard() {
               </Button>
               <Button 
                 variant="ghost" 
-                onClick={() => router.push('/demo')}
+                onClick={() => router.push(ROUTES.DEMO)}
                 className="text-gray-300 hover:text-white hover:bg-gray-800/50"
               >
                 <Star className="h-4 w-4 mr-2" />
@@ -150,7 +346,7 @@ export function Dashboard() {
               <Button 
                 variant="outline" 
                 onClick={handleViewPortfolio}
-                className="border-gray-600 text-gray-300 hover:bg-gray-800/50 hover:border-gray-500"
+                className=" text-white/80  bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg hover:text-white"
               >
                 <ExternalLink className="h-4 w-4 mr-2" />
                 Portfolio
@@ -224,11 +420,14 @@ export function Dashboard() {
 
           <Card className="bg-gray-900/50 border-gray-700 hover:border-purple-500/50 transition-all duration-300">
             <CardContent className="p-6">
-              <div className="flex items-center justify-between">
+              <div
+                className="flex items-center justify-between cursor-pointer"
+                onClick={() => router.push(ROUTES.DASHBOARD_MAIL)}
+              >
                 <div>
                   <p className="text-gray-400 text-sm font-medium">Contact Messages</p>
-                  <p className="text-3xl font-bold text-purple-400">23</p>
-                  <p className="text-xs text-gray-500">+5 new</p>
+                  <p className="text-3xl font-bold text-purple-400">{messageCount}</p>
+                  <p className="text-xs text-gray-500">+{unreadCount} new</p>
                 </div>
                 <div className="w-12 h-12 bg-purple-500/20 rounded-lg flex items-center justify-center">
                   <Mail className="h-6 w-6 text-purple-400" />
@@ -254,7 +453,7 @@ export function Dashboard() {
         </div>
 
         {/* Portfolio URL */}
-        <Card className="bg-gradient-to-r from-gray-900/50 to-gray-800/50 border-gray-700/50 mb-8 backdrop-blur-sm">
+        <Card className="bg-gray-900/50 border-gray-700 hover:border-blue-500/50 transition-all duration-300 mb-4">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div className="flex-1">
@@ -276,7 +475,7 @@ export function Dashboard() {
                       const url = `${typeof window !== 'undefined' ? window.location.origin : 'localhost:3000'}/${user.username}`
                       navigator.clipboard.writeText(url)
                     }}
-                    className="border-gray-500 text-white hover:bg-gray-700 hover:border-gray-400"
+                    className="text-white/80 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg hover:text-white"
                   >
                     Copy
                   </Button>
@@ -304,6 +503,10 @@ export function Dashboard() {
               <FileText className="h-4 w-4 mr-2" />
               Content
             </TabsTrigger>
+            <TabsTrigger value="inbox" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-purple-600 data-[state=active]:text-white">
+              <Mail className="h-4 w-4 mr-2" />
+              Inbox
+            </TabsTrigger>
             <TabsTrigger value="design" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-purple-600 data-[state=active]:text-white">
               <Palette className="h-4 w-4 mr-2" />
               Design
@@ -317,29 +520,33 @@ export function Dashboard() {
           <TabsContent value="overview" className="space-y-6">
             {/* Quick Actions Grid */}
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              <Card className="bg-gradient-to-br from-blue-500/10 to-blue-600/10 border-blue-500/20 hover:border-blue-500/40 transition-all duration-300 group">
+              <Card
+                className="transition-all duration-300 group border-0 rounded-xl shadow-lg bg-card-gradient-about"
+              >
                 <CardHeader>
-                  <CardTitle className="flex items-center text-white group-hover:text-blue-300 transition-colors">
-                    <User className="h-5 w-5 mr-2 text-blue-400" />
+                  <CardTitle className="flex items-center text-white group-hover:text-blue-100 transition-colors">
+                    <User className="h-5 w-5 mr-2 text-white/80" />
                     About Section
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-gray-400 mb-4 text-sm">
-                    {user.portfolioData?.about?.bio ? 
-                      `${user.portfolioData.about.bio.substring(0, 100)}...` : 
-                      "No bio added yet"
-                    }
+                  <p className="text-white/80 mb-4 text-sm">
+                    {user.portfolioData?.about?.bio
+                      ? `${user.portfolioData.about.bio.substring(0, 100)}...`
+                      : "No bio added yet"}
                   </p>
                   <div className="flex items-center justify-between">
-                    <Badge variant="outline" className="border-blue-500/30 text-blue-400">
-                      {user.portfolioData?.about?.bio ? 'Complete' : 'Incomplete'}
+                    <Badge
+                      variant="outline"
+                      className="border-white/30 text-white/90 bg-white/10"
+                    >
+                      {user.portfolioData?.about?.bio ? "Complete" : "Incomplete"}
                     </Badge>
-                    <Button 
-                      variant="outline" 
+                    <Button
+                      variant="outline"
                       size="sm"
-                      onClick={() => router.push('/dashboard/about')}
-                      className="border-gray-600 text-gray-300 hover:bg-gray-800/50 hover:border-gray-500"
+                      onClick={() => router.push(ROUTES.DASHBOARD_ABOUT)}
+                      className="text-black border-white/40 hover:bg-white/10 hover:border-white/60 hover:text-white"
                     >
                       <Edit className="h-4 w-4 mr-2" />
                       Edit
@@ -348,26 +555,28 @@ export function Dashboard() {
                 </CardContent>
               </Card>
 
-              <Card className="bg-gradient-to-br from-green-500/10 to-green-600/10 border-green-500/20 hover:border-green-500/40 transition-all duration-300 group">
+              <Card
+                className="bg-card-gradient-projects border-0 transition-all duration-300 group"
+              >
                 <CardHeader>
-                  <CardTitle className="flex items-center text-white group-hover:text-green-300 transition-colors">
-                    <Code className="h-5 w-5 mr-2 text-green-400" />
+                  <CardTitle className="flex items-center text-white  transition-colors">
+                    <Code className="h-5 w-5 mr-2 text-[#57C785]" />
                     Projects
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-gray-400 mb-4 text-sm">
+                  <p className="text-white/90 mb-4 text-sm">
                     {user.portfolioData?.projects?.length || 0} projects added
                   </p>
                   <div className="flex items-center justify-between">
-                    <Badge variant="outline" className="border-green-500/30 text-green-400">
+                    <Badge variant="outline" className="border-[#57C785]/30 text-[#57C785] bg-white/10">
                       {user.portfolioData?.projects?.length || 0} Active
                     </Badge>
                     <Button 
                       variant="outline" 
                       size="sm"
-                      onClick={() => router.push('/dashboard/projects')}
-                      className="border-gray-500 text-white hover:bg-gray-700 hover:border-gray-400"
+                      onClick={() => router.push(ROUTES.DASHBOARD_PROJECTS)}
+                      className="border-white/40 text-black hover:bg-white/10 hover:border-white/60 hover:text-white"
                     >
                       <Plus className="h-4 w-4 mr-2" />
                       Add
@@ -376,26 +585,28 @@ export function Dashboard() {
                 </CardContent>
               </Card>
 
-              <Card className="bg-gradient-to-br from-purple-500/10 to-purple-600/10 border-purple-500/20 hover:border-purple-500/40 transition-all duration-300 group">
+              <Card
+                className="bg-card-gradient-skills border-0 transition-all duration-300 group"
+              >
                 <CardHeader>
-                  <CardTitle className="flex items-center text-white group-hover:text-purple-300 transition-colors">
-                    <Zap className="h-5 w-5 mr-2 text-purple-400" />
+                  <CardTitle className="flex items-center text-white group-hover:text-pink-200 transition-colors">
+                    <Zap className="h-5 w-5 mr-2 text-pink-300" />
                     Skills
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-gray-400 mb-4 text-sm">
+                  <p className="text-white/90 mb-4 text-sm">
                     {user.portfolioData?.skills?.length || 0} skills added
                   </p>
                   <div className="flex items-center justify-between">
-                    <Badge variant="outline" className="border-purple-500/30 text-purple-400">
+                    <Badge variant="outline" className="border-pink-400/30 text-pink-200 bg-white/10">
                       {user.portfolioData?.skills?.length || 0} Skills
                     </Badge>
                     <Button 
                       variant="outline" 
                       size="sm"
-                      onClick={() => router.push('/dashboard/skills')}
-                      className="border-gray-500 text-white hover:bg-gray-700 hover:border-gray-400"
+                      onClick={() => router.push(ROUTES.DASHBOARD_SKILLS)}
+                      className="border-white/40 text-black hover:bg-white/10 hover:border-white/60 hover:text-white"
                     >
                       <Plus className="h-4 w-4 mr-2" />
                       Add
@@ -413,7 +624,7 @@ export function Dashboard() {
                   <div className="flex items-center justify-between">
                     <CardTitle className="text-white">Recent Projects</CardTitle>
                     <Button 
-                      onClick={() => router.push('/dashboard/projects')}
+                      onClick={() => router.push(ROUTES.DASHBOARD_PROJECTS)}
                       className="bg-blue-500 hover:bg-blue-600 text-white"
                     >
                       <Plus className="h-4 w-4 mr-2" />
@@ -438,7 +649,7 @@ export function Dashboard() {
                           <Button 
                             variant="ghost" 
                             size="sm" 
-                            onClick={() => router.push('/dashboard/projects')}
+                            onClick={() => router.push(ROUTES.DASHBOARD_PROJECTS)}
                             className="text-gray-400 hover:text-white"
                           >
                             <Edit className="h-4 w-4" />
@@ -456,7 +667,7 @@ export function Dashboard() {
                         <h4 className="text-white font-medium mb-2">No Projects Yet</h4>
                         <p className="text-gray-400 text-sm mb-4">Start building your portfolio by adding your first project.</p>
                         <Button 
-                          onClick={() => router.push('/dashboard/projects')}
+                          onClick={() => router.push(ROUTES.DASHBOARD_PROJECTS)}
                           className="bg-blue-500 hover:bg-blue-600 text-white"
                         >
                           <Plus className="h-4 w-4 mr-2" />
@@ -479,14 +690,14 @@ export function Dashboard() {
                 <CardContent>
                   <div className="grid grid-cols-2 gap-4">
                     <Button 
-                      onClick={() => router.push('/dashboard/projects')}
+                      onClick={() => router.push(ROUTES.DASHBOARD_PROJECTS)}
                       className="bg-blue-500 hover:bg-blue-600 text-white h-auto p-6 flex flex-col items-center space-y-3 group"
                     >
                       <Plus className="h-6 w-6" />
                       <span className="font-medium">New Project</span>
                     </Button>
                     <Button 
-                      onClick={() => router.push('/dashboard/about')}
+                      onClick={() => router.push(ROUTES.DASHBOARD_ABOUT)}
                       className="bg-purple-500 hover:bg-purple-600 text-white h-auto p-6 flex flex-col items-center space-y-3 group"
                     >
                       <Edit className="h-6 w-6" />
@@ -510,56 +721,116 @@ export function Dashboard() {
             </div>
           </TabsContent>
 
+        <TabsContent value="inbox" className="space-y-6">
+          <Card className="bg-gray-900/50 border-gray-700">
+            <CardHeader>
+              <CardTitle className="text-white flex items-center">
+                <Mail className="h-5 w-5 mr-2 text-blue-400" />
+                Messages
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Inbox user={user} />
+            </CardContent>
+          </Card>
+        </TabsContent>
+
           <TabsContent value="content" className="space-y-6">
             <div className="grid lg:grid-cols-2 gap-6">
-              <Card className="bg-gradient-to-br from-blue-500/10 to-blue-600/10 border-blue-500/20">
+              <Card
+                className="bg-card-gradient-content-about border-0 shadow-lg"
+              >
                 <CardHeader>
                   <CardTitle className="text-white flex items-center">
-                    <User className="h-5 w-5 mr-2 text-blue-400" />
+                    <User className="h-5 w-5 mr-2 text-white/80" />
                     About Section
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-gray-400 mb-4">
-                    Manage your personal information, bio, and contact details.
+                  <p className="text-white/80 mb-4">
+                    Manage your contact details and social links. These appear on your public portfolio.
                   </p>
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between p-3 bg-gray-800/50 rounded-lg">
-                      <div className="flex items-center">
-                        <Mail className="h-4 w-4 mr-2 text-gray-400" />
-                        <span className="text-sm text-gray-300">Email</span>
-                      </div>
-                      <Badge variant="outline" className="border-green-500/30 text-green-400">
-                        {user.portfolioData?.about?.email ? 'Set' : 'Not Set'}
-                      </Badge>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm text-white/80 mb-1">Email</label>
+                      <input
+                        name="email"
+                        value={aboutForm.email}
+                        onChange={handleAboutInput}
+                        className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder:text-white/40"
+                      />
                     </div>
-                    <div className="flex items-center justify-between p-3 bg-gray-800/50 rounded-lg">
-                      <div className="flex items-center">
-                        <Phone className="h-4 w-4 mr-2 text-gray-400" />
-                        <span className="text-sm text-gray-300">Phone</span>
-                      </div>
-                      <Badge variant="outline" className="border-green-500/30 text-green-400">
-                        {user.portfolioData?.about?.phone ? 'Set' : 'Not Set'}
-                      </Badge>
+                    <div>
+                      <label className="block text-sm text-white/80 mb-1">Phone</label>
+                      <input
+                        name="phone"
+                        value={aboutForm.phone}
+                        onChange={handleAboutInput}
+                        className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder:text-white/40"
+                      />
                     </div>
-                    <div className="flex items-center justify-between p-3 bg-gray-800/50 rounded-lg">
-                      <div className="flex items-center">
-                        <MapPin className="h-4 w-4 mr-2 text-gray-400" />
-                        <span className="text-sm text-gray-300">Location</span>
-                      </div>
-                      <Badge variant="outline" className="border-green-500/30 text-green-400">
-                        {user.portfolioData?.about?.location ? 'Set' : 'Not Set'}
-                      </Badge>
+                    <div className="md:col-span-2">
+                      <label className="block text-sm text-white/80 mb-1">Location</label>
+                      <input
+                        name="location"
+                        value={aboutForm.location}
+                        onChange={handleAboutInput}
+                        className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder:text-white/40"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm text-white/80 mb-1">GitHub URL</label>
+                      <input
+                        name="github"
+                        value={aboutForm.github}
+                        onChange={handleAboutInput}
+                        placeholder="https://github.com/username"
+                        className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder:text-white/40"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm text-white/80 mb-1">X (Twitter) URL</label>
+                      <input
+                        name="x"
+                        value={aboutForm.x}
+                        onChange={handleAboutInput}
+                        placeholder="https://x.com/username"
+                        className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder:text-white/40"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm text-white/80 mb-1">Telegram URL</label>
+                      <input
+                        name="telegram"
+                        value={aboutForm.telegram}
+                        onChange={handleAboutInput}
+                        placeholder="https://t.me/username"
+                        className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder:text-white/40"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm text-white/80 mb-1">LinkedIn URL</label>
+                      <input
+                        name="linkedin"
+                        value={aboutForm.linkedin}
+                        onChange={handleAboutInput}
+                        placeholder="https://www.linkedin.com/in/username"
+                        className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder:text-white/40"
+                      />
                     </div>
                   </div>
-                  <Button 
-                    variant="outline" 
-                    onClick={() => router.push('/dashboard/about')}
-                    className="w-full mt-4 border-gray-600 text-gray-300 hover:bg-gray-800/50"
-                  >
-                    <Edit className="h-4 w-4 mr-2" />
-                    Edit About Section
-                  </Button>
+                  <div className="flex items-center gap-3 mt-4">
+                    <Button
+                      onClick={handleSaveAbout}
+                      disabled={isSavingAbout}
+                      className="bg-black/50 hover:bg/100 text-white"
+                    >
+                      {isSavingAbout ? "Saving..." : "Save"}
+                    </Button>
+                    {aboutMessage && (
+                      <span className="text-sm text-white/80">{aboutMessage}</span>
+                    )}
+                  </div>
                 </CardContent>
               </Card>
 
@@ -597,7 +868,7 @@ export function Dashboard() {
                   <div className="grid grid-cols-2 gap-2 mt-4">
                     <Button 
                       variant="outline" 
-                      onClick={() => router.push('/dashboard/projects')}
+                      onClick={() => router.push(ROUTES.DASHBOARD_PROJECTS)}
                       className="border-gray-500 text-white hover:bg-gray-700 hover:border-gray-400"
                     >
                       <Plus className="h-4 w-4 mr-2" />
@@ -605,7 +876,7 @@ export function Dashboard() {
                     </Button>
                     <Button 
                       variant="outline" 
-                      onClick={() => router.push('/dashboard/skills')}
+                      onClick={() => router.push(ROUTES.DASHBOARD_SKILLS)}
                       className="border-gray-500 text-white hover:bg-gray-700 hover:border-gray-400"
                     >
                       <Plus className="h-4 w-4 mr-2" />
@@ -745,11 +1016,11 @@ export function Dashboard() {
                       <div className="space-y-2">
                         <div className="flex justify-between text-sm">
                           <span className="text-gray-400">Member since</span>
-                          <span className="text-white">{new Date(user.createdAt).toLocaleDateString()}</span>
+                          <span className="text-white">{user.createdAt ? new Date(user.createdAt).toLocaleDateString() : '-'}</span>
                         </div>
                         <div className="flex justify-between text-sm">
                           <span className="text-gray-400">Last updated</span>
-                          <span className="text-white">{new Date(user.updatedAt).toLocaleDateString()}</span>
+                          <span className="text-white">{user.updatedAt ? new Date(user.updatedAt).toLocaleDateString() : '-'}</span>
                         </div>
                         <div className="flex justify-between text-sm">
                           <span className="text-gray-400">Portfolio URL</span>
@@ -789,6 +1060,31 @@ export function Dashboard() {
           </TabsContent>
         </Tabs>
       </main>
+      {/* Footer */}
+      <footer className="border-t border-gray-800 py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex flex-col md:flex-row justify-between items-center">
+          <div className="flex-shrink-0 flex items-center space-x-3">
+            {/* Logo */}
+            <div className="w-8 h-8 flex items-center justify-center">
+              <img
+                src="/logo.png"
+                alt="flexfolio logo"
+                className="w-8 h-10 object-contain"
+              />
+            </div>
+
+            {/* Title */}
+            <h1 className="text-xl font-bold bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
+              <a href="https://flexfolio.com" target="_blank" rel="noopener noreferrer">flexfolio.</a>
+            </h1>
+          </div>
+            <div className="text-gray-400 text-sm">
+            &copy; {new Date().getFullYear()} made via <a href="https://flexfolio.com" target="_blank" rel="noopener noreferrer">FlexFolio</a>.
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
   )
 }

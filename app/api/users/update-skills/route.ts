@@ -6,6 +6,28 @@ export async function PUT(request: NextRequest) {
   try {
     const { userId, skill, isEdit } = await request.json()
 
+    // Enforce allowed categories
+    const allowed = new Map([
+      ['frontend', 'Frontend'],
+      ['backend', 'Backend'],
+      ['devops', 'DevOps'],
+    ])
+    if (!skill?.category) {
+      return NextResponse.json(
+        { error: 'Skill category is required' },
+        { status: 400 }
+      )
+    }
+    const normalizedKey = String(skill.category).toLowerCase().replace(/[^a-z]/g, '')
+    const normalizedCategory = allowed.get(normalizedKey)
+    if (!normalizedCategory) {
+      return NextResponse.json(
+        { error: 'Invalid category. Use Frontend, Backend, or DevOps' },
+        { status: 400 }
+      )
+    }
+    skill.category = normalizedCategory
+
     if (!userId || !skill) {
       return NextResponse.json(
         { error: 'User ID and skill data are required' },

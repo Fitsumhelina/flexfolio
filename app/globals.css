@@ -123,3 +123,27 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer utilities {
+  /* Reusable gradient backgrounds for dashboard/user portfolio cards */
+  .bg-card-gradient-about {
+    background-image: linear-gradient(90deg, rgba(0,178,255,1) 0%, rgba(87,100,199,1) 50%, rgba(237,83,234,1) 100%);
+  }
+
+  .bg-card-gradient-projects {
+    background-image: linear-gradient(90deg, rgba(42,123,155,1) 0%, rgba(87,199,133,1) 50%, rgba(204,237,83,1) 100%);
+  }
+
+  .bg-card-gradient-skills {
+    background-image: linear-gradient(90deg, rgba(237,0,194,1) 0%, rgba(199,87,188,1) 50%, rgba(168,83,237,1) 100%);
+  }
+
+  .bg-card-gradient-content-about {
+    background-image: linear-gradient(90deg, rgba(34,9,145,1) 0%, rgba(199,87,188,1) 50%, rgba(96,83,237,1) 100%);
+  }
+
+  /* Multicolor accent button gradient used on user portfolio hero */
+  .bg-button-gradient-multicolor {
+    background-image: linear-gradient(90deg, #2A7B9B 0%, #50BB88 33%, #57C785 66%, #EDDD53 100%);
+  }
+}

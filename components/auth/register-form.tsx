@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import { ROUTES } from "@/lib/routes"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -95,7 +96,7 @@ export function RegisterForm() {
         localStorage.setItem('isAuthenticated', 'true')
         
         // Redirect to dashboard
-        router.push('/dashboard')
+        router.push(ROUTES.DASHBOARD)
       } else {
         setError(data.error || 'Registration failed')
       }
@@ -253,7 +254,7 @@ export function RegisterForm() {
             <p className="text-gray-400 text-sm">
               Already have an account?{" "}
               <button
-                onClick={() => router.push('/login')}
+                onClick={() => router.push(ROUTES.LOGIN)}
                 className="text-blue-400 hover:text-blue-300 underline"
               >
                 Sign in
