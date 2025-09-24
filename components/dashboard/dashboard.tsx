@@ -152,6 +152,7 @@ export function Dashboard() {
   })
   const [isSavingAbout, setIsSavingAbout] = useState(false)
   const [aboutMessage, setAboutMessage] = useState<string | null>(null)
+  
 
   useEffect(() => {
     // Check if user is authenticated
@@ -205,7 +206,7 @@ export function Dashboard() {
     setAboutForm(prev => ({ ...prev, [name]: value }))
   }
 
-  const handleSaveAbout = async () => {
+  const saveAboutPartial = async (updates: Partial<any>) => {
     if (!user) return
     setIsSavingAbout(true)
     setAboutMessage(null)
@@ -220,21 +221,23 @@ export function Dashboard() {
         projectsCompleted: currentAbout.projectsCompleted || "",
         profileImage: currentAbout.profileImage || "",
         // contact
-        email: aboutForm.email,
-        phone: aboutForm.phone,
-        location: aboutForm.location,
+        email: currentAbout.email ?? aboutForm.email,
+        phone: currentAbout.phone ?? aboutForm.phone,
+        location: currentAbout.location ?? aboutForm.location,
         // socials
-        github: aboutForm.github,
-        x: aboutForm.x,
-        telegram: aboutForm.telegram,
-        linkedin: aboutForm.linkedin,
-        // hero settings
-        heroTitle: aboutForm.heroTitle,
-        heroDescription: aboutForm.heroDescription,
-        heroBackgroundMode: aboutForm.heroBackgroundMode,
-        heroGradientPreset: aboutForm.heroGradientPreset,
-        heroBackgroundImageUrl: aboutForm.heroBackgroundImageUrl,
-        heroBackgroundBlurLevel: aboutForm.heroBackgroundBlurLevel,
+        github: currentAbout.github ?? aboutForm.github,
+        x: currentAbout.x ?? aboutForm.x,
+        telegram: currentAbout.telegram ?? aboutForm.telegram,
+        linkedin: currentAbout.linkedin ?? aboutForm.linkedin,
+        // hero settings (defaults preserved; will be overridden by updates)
+        heroTitle: currentAbout.heroTitle ?? aboutForm.heroTitle,
+        heroDescription: currentAbout.heroDescription ?? aboutForm.heroDescription,
+        heroBackgroundMode: currentAbout.heroBackgroundMode ?? aboutForm.heroBackgroundMode,
+        heroGradientPreset: currentAbout.heroGradientPreset ?? aboutForm.heroGradientPreset,
+        heroBackgroundImageUrl: currentAbout.heroBackgroundImageUrl ?? aboutForm.heroBackgroundImageUrl,
+        heroBackgroundBlurLevel: currentAbout.heroBackgroundBlurLevel ?? aboutForm.heroBackgroundBlurLevel,
+        // apply incoming updates last
+        ...updates,
       }
 
       const res = await fetch('/api/users/update-about', {
@@ -259,6 +262,26 @@ export function Dashboard() {
     } finally {
       setIsSavingAbout(false)
     }
+  }
+
+  const handleSaveHero = async () => {
+    await saveAboutPartial({
+      heroTitle: aboutForm.heroTitle,
+      heroDescription: aboutForm.heroDescription,
+      heroBackgroundMode: aboutForm.heroBackgroundMode,
+      heroGradientPreset: aboutForm.heroGradientPreset,
+      heroBackgroundImageUrl: aboutForm.heroBackgroundImageUrl,
+      heroBackgroundBlurLevel: aboutForm.heroBackgroundBlurLevel,
+    })
+  }
+
+  const handleSaveSocial = async () => {
+    await saveAboutPartial({
+      github: aboutForm.github,
+      x: aboutForm.x,
+      telegram: aboutForm.telegram,
+      linkedin: aboutForm.linkedin,
+    })
   }
 
   const handleLogout = () => {
@@ -813,14 +836,14 @@ export function Dashboard() {
                     ) : (
                       <div>
                         <label className="block text-sm text-white/80 mb-1">Background Image URL</label>
-                        <input
+                      <input
                           name="heroBackgroundImageUrl"
                           value={aboutForm.heroBackgroundImageUrl}
-                          onChange={handleAboutInput}
+                        onChange={handleAboutInput}
                           placeholder="https://example.com/hero.jpg"
-                          className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder:text-white/40"
-                        />
-                      </div>
+                        className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder:text-white/40"
+                      />
+                    </div>
                     )}
                     <div>
                       <label className="block text-sm text-white/80 mb-1">Background Blur Level</label>
@@ -838,9 +861,30 @@ export function Dashboard() {
                       </select>
                     </div>
                   </div>
+                  {/* Gradient Preview & Picker */}
+                  <div className="mt-6 space-y-3">
+                    <div className="text-sm text-white/80">Preview</div>
+                    <div className="relative h-24 rounded-lg overflow-hidden border border-white/20">
+                      {aboutForm.heroBackgroundMode === 'image' && aboutForm.heroBackgroundImageUrl ? (
+                        <img src={aboutForm.heroBackgroundImageUrl} alt="preview" className={`w-full h-full object-cover opacity-50 ${`hero-blur-${aboutForm.heroBackgroundBlurLevel}`}`} />
+                      ) : (
+                        <div className={`hero-animated-bg ${aboutForm.heroGradientPreset===2?'hero-bg-2':aboutForm.heroGradientPreset===3?'hero-bg-3':aboutForm.heroGradientPreset===4?'hero-bg-4':'hero-bg-1'} ${`hero-blur-${aboutForm.heroBackgroundBlurLevel}`}`} />
+                      )}
+                    </div>
+                    {aboutForm.heroBackgroundMode === 'gradient' && (
+                      <div className="grid grid-cols-4 gap-2">
+                        {[1,2,3,4].map(p => (
+                          <button key={p} type="button" onClick={() => setAboutForm(prev => ({ ...prev, heroGradientPreset: p as 1|2|3|4 }))} className={`h-10 rounded border ${aboutForm.heroGradientPreset===p?'border-white':'border-white/20'} relative overflow-hidden`}>
+                            <div className={`absolute inset-0 hero-animated-bg ${p===2?'hero-bg-2':p===3?'hero-bg-3':p===4?'hero-bg-4':'hero-bg-1'}`} />
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
                   <div className="flex items-center gap-3 mt-4">
-                    <Button onClick={handleSaveAbout} disabled={isSavingAbout} className="bg-black/50 hover:bg/100 text-white">
-                      {isSavingAbout ? "Saving..." : "Save"}
+                    <Button onClick={handleSaveHero} disabled={isSavingAbout} className="bg-black/50 hover:bg/100 text-white">
+                      {isSavingAbout ? "Saving..." : "Save Hero"}
                     </Button>
                     {aboutMessage && (<span className="text-sm text-white/80">{aboutMessage}</span>)}
                   </div>
@@ -904,11 +948,11 @@ export function Dashboard() {
                   </div>
                   <div className="flex items-center gap-3 mt-4">
                     <Button
-                      onClick={handleSaveAbout}
+                      onClick={handleSaveSocial}
                       disabled={isSavingAbout}
                       className="bg-black/50 hover:bg/100 text-white"
                     >
-                      {isSavingAbout ? "Saving..." : "Save"}
+                      {isSavingAbout ? "Saving..." : "Save Social"}
                     </Button>
                     {aboutMessage && (
                       <span className="text-sm text-white/80">{aboutMessage}</span>
