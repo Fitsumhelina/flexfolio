@@ -150,9 +150,11 @@ export function Dashboard() {
     heroBackgroundImageUrl: "",
     heroBackgroundBlurLevel: 0 as 0 | 1 | 2 | 3 | 4,
   })
-  const [isSavingAbout, setIsSavingAbout] = useState(false)
-  const [aboutMessage, setAboutMessage] = useState<string | null>(null)
-  
+  // Separate saving and message state for hero and social
+  const [isSavingHero, setIsSavingHero] = useState(false)
+  const [isSavingSocial, setIsSavingSocial] = useState(false)
+  const [heroMessage, setHeroMessage] = useState<string | null>(null)
+  const [socialMessage, setSocialMessage] = useState<string | null>(null)
 
   useEffect(() => {
     // Check if user is authenticated
@@ -206,10 +208,15 @@ export function Dashboard() {
     setAboutForm(prev => ({ ...prev, [name]: value }))
   }
 
-  const saveAboutPartial = async (updates: Partial<any>) => {
+  // Accepts a callback for setting saving/message state
+  const saveAboutPartial = async (
+    updates: Partial<any>,
+    setSaving: (v: boolean) => void,
+    setMessage: (v: string | null) => void
+  ) => {
     if (!user) return
-    setIsSavingAbout(true)
-    setAboutMessage(null)
+    setSaving(true)
+    setMessage(null)
     try {
       const currentAbout = user.portfolioData?.about || {}
       const mergedAbout = {
@@ -256,32 +263,40 @@ export function Dashboard() {
       }
       localStorage.setItem('user', JSON.stringify(updatedUser))
       setUser(updatedUser)
-      setAboutMessage('Saved')
+      setMessage('Saved')
     } catch (err: any) {
-      setAboutMessage(err?.message || 'Failed to save')
+      setMessage(err?.message || 'Failed to save')
     } finally {
-      setIsSavingAbout(false)
+      setSaving(false)
     }
   }
 
   const handleSaveHero = async () => {
-    await saveAboutPartial({
-      heroTitle: aboutForm.heroTitle,
-      heroDescription: aboutForm.heroDescription,
-      heroBackgroundMode: aboutForm.heroBackgroundMode,
-      heroGradientPreset: aboutForm.heroGradientPreset,
-      heroBackgroundImageUrl: aboutForm.heroBackgroundImageUrl,
-      heroBackgroundBlurLevel: aboutForm.heroBackgroundBlurLevel,
-    })
+    await saveAboutPartial(
+      {
+        heroTitle: aboutForm.heroTitle,
+        heroDescription: aboutForm.heroDescription,
+        heroBackgroundMode: aboutForm.heroBackgroundMode,
+        heroGradientPreset: aboutForm.heroGradientPreset,
+        heroBackgroundImageUrl: aboutForm.heroBackgroundImageUrl,
+        heroBackgroundBlurLevel: aboutForm.heroBackgroundBlurLevel,
+      },
+      setIsSavingHero,
+      setHeroMessage
+    )
   }
 
   const handleSaveSocial = async () => {
-    await saveAboutPartial({
-      github: aboutForm.github,
-      x: aboutForm.x,
-      telegram: aboutForm.telegram,
-      linkedin: aboutForm.linkedin,
-    })
+    await saveAboutPartial(
+      {
+        github: aboutForm.github,
+        x: aboutForm.x,
+        telegram: aboutForm.telegram,
+        linkedin: aboutForm.linkedin,
+      },
+      setIsSavingSocial,
+      setSocialMessage
+    )
   }
 
   const handleLogout = () => {
@@ -883,10 +898,10 @@ export function Dashboard() {
                   </div>
 
                   <div className="flex items-center gap-3 mt-4">
-                    <Button onClick={handleSaveHero} disabled={isSavingAbout} className="bg-black/50 hover:bg/100 text-white">
-                      {isSavingAbout ? "Saving..." : "Save Hero"}
+                    <Button onClick={handleSaveHero} disabled={isSavingHero} className="bg-black/50 hover:bg/100 text-white">
+                      {isSavingHero ? "Saving..." : "Save Hero"}
                     </Button>
-                    {aboutMessage && (<span className="text-sm text-white/80">{aboutMessage}</span>)}
+                    {heroMessage && (<span className="text-sm text-white/80">{heroMessage}</span>)}
                   </div>
                 </CardContent>
               </Card>
@@ -949,13 +964,13 @@ export function Dashboard() {
                   <div className="flex items-center gap-3 mt-4">
                     <Button
                       onClick={handleSaveSocial}
-                      disabled={isSavingAbout}
+                      disabled={isSavingSocial}
                       className="bg-black/50 hover:bg/100 text-white"
                     >
-                      {isSavingAbout ? "Saving..." : "Save Social"}
+                      {isSavingSocial ? "Saving..." : "Save Social"}
                     </Button>
-                    {aboutMessage && (
-                      <span className="text-sm text-white/80">{aboutMessage}</span>
+                    {socialMessage && (
+                      <span className="text-sm text-white/80">{socialMessage}</span>
                     )}
                   </div>
                 </CardContent>
