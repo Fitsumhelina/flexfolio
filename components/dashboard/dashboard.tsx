@@ -574,7 +574,8 @@ export function Dashboard() {
             {/* Quick Actions Grid */}
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               <Card
-                className="transition-all duration-300 group border-0 rounded-xl shadow-lg bg-card-gradient-about"
+                className="transition-all duration-300 group rounded-xl shadow-lg bg-black border-2 border-gradient-to-r from-cyan-400 via-indigo-500 to-pink-400"
+               
               >
                 <CardHeader>
                   <CardTitle className="flex items-center text-white group-hover:text-blue-100 transition-colors">
@@ -591,7 +592,7 @@ export function Dashboard() {
                   <div className="flex items-center justify-between">
                     <Badge
                       variant="outline"
-                      className="border-white/30 text-white/90 bg-white/10"
+                      className="border-[#57C785]/30 text-[#57C785] bg-white/10"
                     >
                       {user.portfolioData?.about?.bio ? "Complete" : "Incomplete"}
                     </Badge>
@@ -609,7 +610,8 @@ export function Dashboard() {
               </Card>
 
               <Card
-                className="bg-card-gradient-projects border-0 transition-all duration-300 group"
+                className="transition-all duration-300 group rounded-xl shadow-lg bg-black border-2 border-gradient-to-r from-cyan-400 via-indigo-500 to-pink-400"
+               
               >
                 <CardHeader>
                   <CardTitle className="flex items-center text-white  transition-colors">
@@ -639,7 +641,8 @@ export function Dashboard() {
               </Card>
 
               <Card
-                className="bg-card-gradient-skills border-0 transition-all duration-300 group"
+                className="transition-all duration-300 group rounded-xl shadow-lg bg-black border-2 border-gradient-to-r from-cyan-400 via-indigo-500 to-pink-400"
+               
               >
                 <CardHeader>
                   <CardTitle className="flex items-center text-white group-hover:text-pink-200 transition-colors">
