@@ -382,7 +382,9 @@ export function Dashboard() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           <Card className="bg-gray-900/50 border-gray-700 hover:border-blue-500/50 transition-all duration-300">
             <CardContent className="p-6">
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between"
+              onClick={() => router.push(ROUTES.DASHBOARD_MAIL)}
+              >
                 <div>
                   <p className="text-gray-400 text-sm font-medium">Total Projects</p>
                   <p className="text-3xl font-bold text-blue-400">{user.portfolioData?.projects?.length || 0}</p>
