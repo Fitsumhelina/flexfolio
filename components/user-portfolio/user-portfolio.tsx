@@ -563,14 +563,14 @@ export function UserPortfolio({ username }: UserPortfolioProps) {
           const displayCategories = [
             { key: "Frontend", label: "Frontend" },
             { key: "Backend", label: "Backend" },
-            { key: "Cloud & DevOps", label: "Cloud & DevOps" },
+            { key: "DevOps", label: "Cloud & DevOps" },
           ];
 
           // Helper to get color for proficiency bar based on category
           const getBarColor = (category: string) => {
             if (category === "Frontend") return "bg-cyan-400";
             if (category === "Backend") return "bg-blue-400";
-            if (category === "Cloud & DevOps") return "bg-teal-400";
+            if (category === "DevOps") return "bg-teal-400";
             return "bg-gray-400";
           };
 
