@@ -120,6 +120,7 @@ interface User {
   name: string
   email: string
   username: string
+  isActive?: boolean
   portfolioData?: {
     about?: any
     projects?: any[]
@@ -427,8 +428,11 @@ export function Dashboard() {
             </div>
             <div className="hidden lg:flex items-center space-x-4">
               <div className="text-right">
-                <p className="text-sm text-gray-400">Last updated</p>
-                <p className="text-sm text-white">{new Date().toLocaleDateString()}</p>
+                <p className="text-sm text-gray-400">Status</p>
+                <div className="flex items-center justify-end gap-2">
+                  <span className={`w-2 h-2 rounded-full ${user.isActive !== false ? 'bg-green-500' : 'bg-red-500'}`}></span>
+                  <span className="text-sm text-white">{user.isActive !== false ? 'Active' : 'Inactive'}</span>
+                </div>
               </div>
             </div>
           </div>
@@ -1083,6 +1087,17 @@ export function Dashboard() {
                       onChange={(e) => setUser(prev => prev ? ({ ...prev, username: e.target.value }) : prev)}
                       className="w-full bg-gray-800/50 border border-gray-600 rounded-lg px-3 py-2 text-white focus:border-orange-500 focus:outline-none"
                     />
+                    <div className="mt-3 flex items-center gap-3">
+                      <label className="text-sm text-gray-300">Portfolio Status</label>
+                      <select
+                        value={user.isActive !== false ? 'active' : 'inactive'}
+                        onChange={(e) => setUser(prev => prev ? ({ ...prev, isActive: e.target.value === 'active' }) : prev)}
+                        className="bg-gray-800/50 border border-gray-600 rounded-lg px-2 py-1 text-white"
+                      >
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                      </select>
+                    </div>
                     </div>
                     <Button 
                       variant="outline" 
@@ -1092,7 +1107,7 @@ export function Dashboard() {
                         const res = await fetch('/api/users/update-account', {
                           method: 'POST',
                           headers: { 'Content-Type': 'application/json' },
-                          body: JSON.stringify({ userId: user._id, account: { name: user.name, email: user.email, username: user.username } })
+                          body: JSON.stringify({ userId: user._id, account: { name: user.name, email: user.email, username: user.username, isActive: user.isActive !== false } })
                         })
                         const data = await res.json()
                         if (res.ok && data?.user) {
