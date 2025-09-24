@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { ROUTES } from "@/lib/routes";
 
 interface AboutData {
   name: string;
@@ -118,7 +119,7 @@ export function Navigation() {
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => router.push("/dashboard")}
+                onClick={() => router.push(ROUTES.DASHBOARD)}
                 className="text-gray-400 hover:text-blue-400 hover:bg-blue-400/10 transition-colors"
               >
                 <Settings className="h-4 w-4" />
@@ -185,7 +186,7 @@ export function Navigation() {
 
             <div className="h-px bg-gray-600 my-2"></div>
             <button
-              onClick={() => router.push("/dashboard")}
+              onClick={() => router.push(ROUTES.DASHBOARD)}
               className="flex items-center space-x-2 px-3 py-2 text-gray-400 hover:text-blue-400 hover:bg-blue-400/10 transition-colors rounded-lg w-full"
             >
               <Settings className="h-4 w-4" />
