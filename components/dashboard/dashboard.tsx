@@ -322,14 +322,6 @@ export function Dashboard() {
               </Button>
               <Button 
                 variant="ghost" 
-                onClick={handleViewPortfolio}
-                className="text-gray-300 hover:text-white hover:bg-gray-800/50"
-              >
-                <Eye className="h-4 w-4 mr-2" />
-                View Portfolio
-              </Button>
-              <Button 
-                variant="ghost" 
                 onClick={() => router.push(ROUTES.DEMO)}
                 className="text-gray-300 hover:text-white hover:bg-gray-800/50"
               >
