@@ -520,7 +520,7 @@ export function Dashboard() {
             {/* Quick Actions Grid */}
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               <Card
-                className="transition-all duration-300 group border-0 rounded-xl shadow-lg bg-[linear-gradient(90deg,_rgba(0,178,255,1)_0%,_rgba(87,100,199,1)_50%,_rgba(237,83,234,1)_100%)]"
+                className="transition-all duration-300 group border-0 rounded-xl shadow-lg bg-card-gradient-about"
               >
                 <CardHeader>
                   <CardTitle className="flex items-center text-white group-hover:text-blue-100 transition-colors">
@@ -555,7 +555,7 @@ export function Dashboard() {
               </Card>
 
               <Card
-                className="bg-[linear-gradient(90deg,_rgba(42,123,155,1)_0%,_rgba(87,199,133,1)_50%,_rgba(204,237,83,1)_100%)] border-0 transition-all duration-300 group"
+                className="bg-card-gradient-projects border-0 transition-all duration-300 group"
               >
                 <CardHeader>
                   <CardTitle className="flex items-center text-white  transition-colors">
@@ -585,7 +585,7 @@ export function Dashboard() {
               </Card>
 
               <Card
-                className="bg-[linear-gradient(90deg,_rgba(237,0,194,1)_0%,_rgba(199,87,188,1)_50%,_rgba(168,83,237,1)_100%)] border-0 transition-all duration-300 group"
+                className="bg-card-gradient-skills border-0 transition-all duration-300 group"
               >
                 <CardHeader>
                   <CardTitle className="flex items-center text-white group-hover:text-pink-200 transition-colors">
@@ -737,7 +737,7 @@ export function Dashboard() {
           <TabsContent value="content" className="space-y-6">
             <div className="grid lg:grid-cols-2 gap-6">
               <Card
-                className="bg-[linear-gradient(90deg,_rgba(34,9,145,1)_0%,_rgba(199,87,188,1)_50%,_rgba(96,83,237,1)_100%)] border-0 shadow-lg"
+                className="bg-card-gradient-content-about border-0 shadow-lg"
               >
                 <CardHeader>
                   <CardTitle className="text-white flex items-center">
