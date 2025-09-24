@@ -180,15 +180,15 @@ export function UserPortfolio({ username }: UserPortfolioProps) {
   const aboutData = portfolioData.about || {
     name: user.name,
     title: "Full Stack Developer",
-    bio: "I'm a passionate developer who loves creating amazing digital experiences.",
+    bio: "your bio here.",
     experience: "1+",
     projectsCompleted: "5+",
     email: user.email,
     phone: "",
     location: "",
     profileImage: "",
-    heroTitle: "Full Stack Developer",
-    heroDescription: "",
+    heroTitle: "Your Title here",
+    heroDescription: "your bio here",
     heroBackgroundMode: "gradient",
     heroGradientPreset: 1,
     heroBackgroundImageUrl: "",
@@ -233,7 +233,7 @@ export function UserPortfolio({ username }: UserPortfolioProps) {
             {aboutData.heroTitle || aboutData.title || "Full Stack Developer"}
           </h1>
           <p className="text-lg md:text-2xl text-gray-200 mb-8 leading-relaxed animate-fade-in-slow">
-            {aboutData.heroDescription || aboutData.bio}
+            {aboutData.heroDescription}
           </p>
 
           {/* Social Links */}
