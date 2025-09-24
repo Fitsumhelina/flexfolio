@@ -1042,7 +1042,7 @@ export function Dashboard() {
 
           <TabsContent value="settings" className="space-y-6">
             <div className="grid lg:grid-cols-2 gap-6">
-              <Card className="bg-black  border-orange-500/20">
+              <Card className="bg-black  border-green-500/20">
                 <CardHeader>
                   <CardTitle className="text-white flex items-center">
                     <User className="h-5 w-5 mr-2 text-orange-400" />
@@ -1086,7 +1086,7 @@ export function Dashboard() {
                     </div>
                     <Button 
                       variant="outline" 
-                      className="w-full border-gray-600 text-white-300 hover:bg-green-800/50 hover:border-green-500"
+                      className="w-full border-gray-600 text-white-300 hover:bg-white/50"
                     >
                       <Settings className="h-4 w-4 mr-2" />
                       Update Account Settings
