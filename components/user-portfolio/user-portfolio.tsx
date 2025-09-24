@@ -28,6 +28,14 @@ interface UserData {
       profileImage?: string;
       github?: string;
       linkedin?: string;
+      x?: string;
+      telegram?: string;
+      heroTitle?: string;
+      heroDescription?: string;
+      heroBackgroundMode?: "gradient" | "image";
+      heroGradientPreset?: 1 | 2 | 3 | 4;
+      heroBackgroundImageUrl?: string;
+      heroBackgroundBlurLevel?: 0 | 1 | 2 | 3 | 4;
     };
     projects?: Array<{
       id: string;
@@ -179,6 +187,12 @@ export function UserPortfolio({ username }: UserPortfolioProps) {
     phone: "",
     location: "",
     profileImage: "",
+    heroTitle: "Full Stack Developer",
+    heroDescription: "",
+    heroBackgroundMode: "gradient",
+    heroGradientPreset: 1,
+    heroBackgroundImageUrl: "",
+    heroBackgroundBlurLevel: 0,
   };
 
   return (
@@ -190,23 +204,36 @@ export function UserPortfolio({ username }: UserPortfolioProps) {
         id="home"
         className="relative min-h-screen flex items-center justify-center overflow-hidden"
       >
-        {/* Animated Gradient Background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-black via-gray-900 to-black" />
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-1/4 left-1/4 w-40 h-40 bg-gradient-to-br from-blue-500/30 to-purple-500/30 rounded-full blur-2xl animate-pulse" />
-          <div className="absolute top-2/3 right-1/4 w-32 h-32 bg-gradient-to-br from-purple-500/30 to-pink-500/30 rounded-full blur-2xl animate-pulse delay-200" />
-          <div className="absolute bottom-1/4 left-1/3 w-28 h-28 bg-gradient-to-br from-cyan-500/30 to-blue-500/30 rounded-full blur-2xl animate-pulse delay-500" />
-        </div>
+        {/* Animated/Custom Background based on user preference */}
+        {aboutData.heroBackgroundMode === 'image' && aboutData.heroBackgroundImageUrl ? (
+          <img
+            src={aboutData.heroBackgroundImageUrl}
+            alt="hero background"
+            className={`absolute inset-0 w-full h-full object-cover opacity-40 ${`hero-blur-${aboutData.heroBackgroundBlurLevel ?? 0}`}`}
+          />
+        ) : (
+          <div
+            className={`hero-animated-bg ${
+              (aboutData.heroGradientPreset as number) === 2
+                ? 'hero-bg-2'
+                : (aboutData.heroGradientPreset as number) === 3
+                ? 'hero-bg-3'
+                : (aboutData.heroGradientPreset as number) === 4
+                ? 'hero-bg-4'
+                : 'hero-bg-1'
+            } ${`hero-blur-${aboutData.heroBackgroundBlurLevel ?? 0}`}`}
+          />
+        )}
 
         <div className="relative z-10 max-w-3xl mx-auto text-center px-4">
           <h2 className="text-xl md:text-7xl font-medium text-blue-300 mb-2 tracking-wide animate-fade-in">
             Hi, I'm <span className="font-bold">{aboutData.name}</span>
           </h2>
-          <h1 className="text-5xl md:text-4xl font-extrabold mb-6 bg-gradient-to-r from-blue-400 via-purple-300 to-pink-300 bg-clip-text text-transparent drop-shadow-lg animate-gradient-x">
-            {aboutData.title || "Full Stack Developer"}
+          <h1 className="text-5xl md:text-6xl font-extrabold mb-6 bg-gradient-to-r from-blue-400 via-purple-300 to-pink-300 bg-clip-text text-transparent drop-shadow-lg animate-gradient-x">
+            {aboutData.heroTitle || aboutData.title || "Full Stack Developer"}
           </h1>
           <p className="text-lg md:text-2xl text-gray-200 mb-8 leading-relaxed animate-fade-in-slow">
-            {aboutData.bio}
+            {aboutData.heroDescription || aboutData.bio}
           </p>
 
           {/* Social Links */}
