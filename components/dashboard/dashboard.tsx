@@ -382,8 +382,8 @@ export function Dashboard() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           <Card className="bg-gray-900/50 border-gray-700 hover:border-blue-500/50 transition-all duration-300">
             <CardContent className="p-6">
-              <div className="flex items-center justify-between"
-              onClick={() => router.push(ROUTES.DASHBOARD_MAIL)}
+              <div className="flex items-center justify-between cursor-pointer"
+              onClick={() => router.push(ROUTES.DASHBOARD_PROJECTS)}
               >
                 <div>
                   <p className="text-gray-400 text-sm font-medium">Total Projects</p>
@@ -399,7 +399,7 @@ export function Dashboard() {
 
           <Card className="bg-gray-900/50 border-gray-700 hover:border-green-500/50 transition-all duration-300">
             <CardContent className="p-6">
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between cursor-pointer">
                 <div>
                   <p className="text-gray-400 text-sm font-medium">Page Views</p>
                   <p className="text-3xl font-bold text-green-400">2,847</p>
