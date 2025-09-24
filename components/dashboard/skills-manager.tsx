@@ -54,7 +54,7 @@ export function SkillsManager() {
   const categories = [
     "Frontend",
     "Backend", 
-    "Cloud & DevOps",
+    "DevOps",
   ]
 
   useEffect(() => {
