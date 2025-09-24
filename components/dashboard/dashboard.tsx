@@ -898,7 +898,7 @@ export function Dashboard() {
                   </div>
 
                   <div className="flex items-center gap-3 mt-4">
-                    <Button onClick={handleSaveHero} disabled={isSavingHero} className="bg-black/50 hover:bg/100 text-white">
+                    <Button onClick={handleSaveHero} disabled={isSavingHero} className="bg-green-500 hover:bg-green-600 text-white">
                       {isSavingHero ? "Saving..." : "Save Hero"}
                     </Button>
                     {heroMessage && (<span className="text-sm text-white/80">{heroMessage}</span>)}
@@ -965,7 +965,7 @@ export function Dashboard() {
                     <Button
                       onClick={handleSaveSocial}
                       disabled={isSavingSocial}
-                      className="bg-black/50 hover:bg/100 text-white"
+                      className="bg-green-500 hover:bg-green-600 text-white"
                     >
                       {isSavingSocial ? "Saving..." : "Save Social"}
                     </Button>
