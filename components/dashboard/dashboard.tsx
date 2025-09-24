@@ -748,33 +748,6 @@ export function Dashboard() {
                   </p>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm text-white/80 mb-1">Email</label>
-                      <input
-                        name="email"
-                        value={aboutForm.email}
-                        onChange={handleAboutInput}
-                        className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder:text-white/40"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm text-white/80 mb-1">Phone</label>
-                      <input
-                        name="phone"
-                        value={aboutForm.phone}
-                        onChange={handleAboutInput}
-                        className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder:text-white/40"
-                      />
-                    </div>
-                    <div className="md:col-span-2">
-                      <label className="block text-sm text-white/80 mb-1">Location</label>
-                      <input
-                        name="location"
-                        value={aboutForm.location}
-                        onChange={handleAboutInput}
-                        className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder:text-white/40"
-                      />
-                    </div>
-                    <div>
                       <label className="block text-sm text-white/80 mb-1">GitHub URL</label>
                       <input
                         name="github"
