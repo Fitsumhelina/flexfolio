@@ -100,7 +100,7 @@ export function UserHero({ aboutData }: HeroProps) {
 
       <div className="relative z-10 max-w-3xl mx-auto text-center px-4">
         <h2 className="text-xl md:text-7xl font-medium text-blue-300 mb-2 tracking-wide animate-fade-in">
-          Hi, I'm <span className="font-bold">{aboutData.name}</span>
+          Hi, I'm <span className="font-bold">{aboutData.name || "Developer"}</span>
         </h2>
         <h1 className="text-5xl md:text-6xl font-extrabold mb-6 bg-gradient-to-r from-blue-400 via-purple-300 to-pink-300 bg-clip-text text-transparent drop-shadow-lg animate-gradient-x">
           {aboutData.heroTitle || aboutData.title || "Full Stack Developer"}
