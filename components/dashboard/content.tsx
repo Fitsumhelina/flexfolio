@@ -72,7 +72,17 @@ export function DashboardContent({
           <CardContent>
             <p className="text-white/80 mb-4">Customize your hero section.</p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="md:col-span-2">
+              <div>
+                <label className="block text-sm text-white/80 mb-1">Name</label>
+                <input
+                  name="name"
+                  value={aboutForm.name}
+                  onChange={handleAboutInput}
+                  placeholder="e.g. John Doe"
+                  className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder:text-white/40"
+                />
+              </div>
+              <div>
                 <label className="block text-sm text-white/80 mb-1">Hero Title</label>
                 <input
                   name="heroTitle"
