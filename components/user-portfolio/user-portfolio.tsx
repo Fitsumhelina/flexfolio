@@ -234,7 +234,7 @@ export function UserPortfolio({ username }: UserPortfolioProps) {
               const id = (aboutData as any).heroPatternId || 'liquid-ether'
               const props = (aboutData as any).heroPatternProps || {}
               try {
-                const Liquid = require("@/components/LiquidEther").default
+                const Liquid = require("@/components/backgrounds/LiquidEther").default
                 if (id === 'liquid-ether') {
                   return (
                     <div className={`absolute inset-0 ${`hero-blur-${aboutData.heroBackgroundBlurLevel ?? 0}`}`}>

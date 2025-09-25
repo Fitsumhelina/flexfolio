@@ -16,7 +16,7 @@ import {
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ROUTES } from "@/lib/routes";
-import ShinyText from './ShinyText'
+import ShinyText from './ui/ShinyText'
 
 
 interface AboutData {

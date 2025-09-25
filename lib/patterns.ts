@@ -15,7 +15,7 @@ export const PATTERNS: PatternEntry[] = [
   {
     id: "liquid-ether",
     label: "Liquid Ether",
-    component: dynamic(() => import("@/components/LiquidEther").then(m => m.default), { ssr: false }) as any,
+    component: dynamic(() => import("@/components/backgrounds/LiquidEther").then(m => m.default), { ssr: false }) as any,
     defaults: {
       colors: ["#5227FF", "#FF9FFC", "#B19EEF"],
       autoDemo: true,
