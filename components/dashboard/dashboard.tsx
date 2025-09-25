@@ -892,153 +892,155 @@ export function Dashboard() {
                             ))}
                           </select>
                         </div>
-                        {/* Pattern controls: Cursor Size, Auto Speed, Auto Demo */}
-                        <div className="md:col-span-2 mt-4">
-                          <div className="flex flex-col md:flex-row md:items-end gap-6">
-                            <div className="flex flex-col gap-3 min-w-[220px]">
-                              <div>
-                                <label className="block text-sm text-white/80 mb-1">Cursor Size</label>
-                                <input
-                                  type="number"
-                                  value={(aboutForm.heroPatternProps?.cursorSize as number) ?? 100}
-                                  onChange={(e) =>
-                                    setAboutForm((prev) => ({
-                                      ...prev,
-                                      heroPatternProps: {
-                                        ...prev.heroPatternProps,
-                                        cursorSize: Number(e.target.value),
-                                      },
-                                    }))
-                                  }
-                                  className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white"
-                                />
+                        {/* Pattern controls: Only for liquid-ether */}
+                        {aboutForm.heroPatternId === "liquid-ether" && (
+                          <div className="md:col-span-2 mt-4">
+                            <div className="flex flex-col md:flex-row md:items-end gap-6">
+                              <div className="flex flex-col gap-3 min-w-[220px]">
+                                <div>
+                                  <label className="block text-sm text-white/80 mb-1">Cursor Size</label>
+                                  <input
+                                    type="number"
+                                    value={(aboutForm.heroPatternProps?.cursorSize as number) ?? 100}
+                                    onChange={(e) =>
+                                      setAboutForm((prev) => ({
+                                        ...prev,
+                                        heroPatternProps: {
+                                          ...prev.heroPatternProps,
+                                          cursorSize: Number(e.target.value),
+                                        },
+                                      }))
+                                    }
+                                    className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white"
+                                  />
+                                </div>
+                                <div>
+                                  <label className="block text-sm text-white/80 mb-1">Animation Speed</label>
+                                  <input
+                                    type="number"
+                                    step="0.1"
+                                    value={(aboutForm.heroPatternProps?.autoSpeed as number) ?? 1.5}
+                                    onChange={(e) =>
+                                      setAboutForm((prev) => ({
+                                        ...prev,
+                                        heroPatternProps: {
+                                          ...prev.heroPatternProps,
+                                          autoSpeed: Number(e.target.value),
+                                        },
+                                      }))
+                                    }
+                                    className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white"
+                                  />
+                                </div>
+                                <div className="flex items-center gap-2 mt-2">
+                                  <input
+                                    id="autodemo"
+                                    type="checkbox"
+                                    checked={(aboutForm.heroPatternProps?.autoDemo as boolean) ?? true}
+                                    onChange={(e) =>
+                                      setAboutForm((prev) => ({
+                                        ...prev,
+                                        heroPatternProps: {
+                                          ...prev.heroPatternProps,
+                                          autoDemo: e.target.checked,
+                                        },
+                                      }))
+                                    }
+                                    className="accent-white"
+                                  />
+                                  <label htmlFor="autodemo" className="text-sm text-white/80">
+                                    Auto Demo
+                                  </label>
+                                </div>
                               </div>
-                              <div>
-                                <label className="block text-sm text-white/80 mb-1">Animation Speed</label>
-                                <input
-                                  type="number"
-                                  step="0.1"
-                                  value={(aboutForm.heroPatternProps?.autoSpeed as number) ?? 0.5}
-                                  onChange={(e) =>
-                                    setAboutForm((prev) => ({
-                                      ...prev,
-                                      heroPatternProps: {
-                                        ...prev.heroPatternProps,
-                                        autoSpeed: Number(e.target.value),
-                                      },
-                                    }))
-                                  }
-                                  className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white"
-                                />
+                              <div className="flex-1">
+                                <label className="block text-sm text-white/80 mb-2">Colors</label>
+                                {(() => {
+                                  const entry = PATTERNS.find((p) => p.id === aboutForm.heroPatternId);
+                                  const defaults = (entry?.defaults?.colors as string[]) || [];
+                                  const currentColors: string[] = (aboutForm.heroPatternProps?.colors as string[]) || defaults;
+                                  const normalized =
+                                    Array.isArray(currentColors) && currentColors.length > 0
+                                      ? currentColors
+                                      : defaults;
+                                  return (
+                                    <div className="flex flex-col gap-2">
+                                      {normalized.map((c, idx) => (
+                                        <div key={idx} className="flex items-center gap-3">
+                                          <input
+                                            type="color"
+                                            value={/^#/.test(c) ? c : `#${c.replace(/[^0-9a-fA-F]/g, "")}`}
+                                            onChange={(e) => {
+                                              const hex = e.target.value;
+                                              setAboutForm((prev) => {
+                                                const arr = [
+                                                  ...((prev.heroPatternProps?.colors as string[]) || defaults),
+                                                ];
+                                                arr[idx] = hex;
+                                                return {
+                                                  ...prev,
+                                                  heroPatternProps: {
+                                                    ...(prev.heroPatternProps || {}),
+                                                    colors: arr,
+                                                  },
+                                                };
+                                              });
+                                            }}
+                                            className="h-10 w-14 bg-transparent border border-white/20 rounded"
+                                          />
+                                          <span className="text-xs text-white/70">{c}</span>
+                                          <button
+                                            type="button"
+                                            onClick={() =>
+                                              setAboutForm((prev) => {
+                                                const arr = [
+                                                  ...((prev.heroPatternProps?.colors as string[]) || defaults),
+                                                ];
+                                                if (arr.length <= 1) return prev;
+                                                arr.splice(idx, 1);
+                                                return {
+                                                  ...prev,
+                                                  heroPatternProps: {
+                                                    ...(prev.heroPatternProps || {}),
+                                                    colors: arr,
+                                                  },
+                                                };
+                                              })
+                                            }
+                                            className="text-xs text-red-400 hover:text-red-300"
+                                          >
+                                            Remove
+                                          </button>
+                                        </div>
+                                      ))}
+                                      <button
+                                        type="button"
+                                        onClick={() =>
+                                          setAboutForm((prev) => {
+                                            const arr = [
+                                              ...((prev.heroPatternProps?.colors as string[]) || defaults),
+                                            ];
+                                            if (arr.length >= 6) return prev;
+                                            return {
+                                              ...prev,
+                                              heroPatternProps: {
+                                                ...(prev.heroPatternProps || {}),
+                                                colors: [...arr, "#FFFFFF"],
+                                              },
+                                            };
+                                          })
+                                        }
+                                        className="text-xs text-blue-300 hover:text-blue-200"
+                                      >
+                                        + Add color
+                                      </button>
+                                    </div>
+                                  );
+                                })()}
                               </div>
-                              <div className="flex items-center gap-2 mt-2">
-                                <input
-                                  id="autodemo"
-                                  type="checkbox"
-                                  checked={(aboutForm.heroPatternProps?.autoDemo as boolean) ?? true}
-                                  onChange={(e) =>
-                                    setAboutForm((prev) => ({
-                                      ...prev,
-                                      heroPatternProps: {
-                                        ...prev.heroPatternProps,
-                                        autoDemo: e.target.checked,
-                                      },
-                                    }))
-                                  }
-                                  className="accent-white"
-                                />
-                                <label htmlFor="autodemo" className="text-sm text-white/80">
-                                  Auto Demo
-                                </label>
-                              </div>
-                            </div>
-                            <div className="flex-1">
-                              <label className="block text-sm text-white/80 mb-2">Colors</label>
-                              {(() => {
-                                const entry = PATTERNS.find((p) => p.id === aboutForm.heroPatternId);
-                                const defaults = (entry?.defaults?.colors as string[]) || [];
-                                const currentColors: string[] = (aboutForm.heroPatternProps?.colors as string[]) || defaults;
-                                const normalized =
-                                  Array.isArray(currentColors) && currentColors.length > 0
-                                    ? currentColors
-                                    : defaults;
-                                return (
-                                  <div className="flex flex-col gap-2">
-                                    {normalized.map((c, idx) => (
-                                      <div key={idx} className="flex items-center gap-3">
-                                        <input
-                                          type="color"
-                                          value={/^#/.test(c) ? c : `#${c.replace(/[^0-9a-fA-F]/g, "")}`}
-                                          onChange={(e) => {
-                                            const hex = e.target.value;
-                                            setAboutForm((prev) => {
-                                              const arr = [
-                                                ...((prev.heroPatternProps?.colors as string[]) || defaults),
-                                              ];
-                                              arr[idx] = hex;
-                                              return {
-                                                ...prev,
-                                                heroPatternProps: {
-                                                  ...(prev.heroPatternProps || {}),
-                                                  colors: arr,
-                                                },
-                                              };
-                                            });
-                                          }}
-                                          className="h-10 w-14 bg-transparent border border-white/20 rounded"
-                                        />
-                                        <span className="text-xs text-white/70">{c}</span>
-                                        <button
-                                          type="button"
-                                          onClick={() =>
-                                            setAboutForm((prev) => {
-                                              const arr = [
-                                                ...((prev.heroPatternProps?.colors as string[]) || defaults),
-                                              ];
-                                              if (arr.length <= 1) return prev;
-                                              arr.splice(idx, 1);
-                                              return {
-                                                ...prev,
-                                                heroPatternProps: {
-                                                  ...(prev.heroPatternProps || {}),
-                                                  colors: arr,
-                                                },
-                                              };
-                                            })
-                                          }
-                                          className="text-xs text-red-400 hover:text-red-300"
-                                        >
-                                          Remove
-                                        </button>
-                                      </div>
-                                    ))}
-                                    <button
-                                      type="button"
-                                      onClick={() =>
-                                        setAboutForm((prev) => {
-                                          const arr = [
-                                            ...((prev.heroPatternProps?.colors as string[]) || defaults),
-                                          ];
-                                          if (arr.length >= 6) return prev;
-                                          return {
-                                            ...prev,
-                                            heroPatternProps: {
-                                              ...(prev.heroPatternProps || {}),
-                                              colors: [...arr, "#FFFFFF"],
-                                            },
-                                          };
-                                        })
-                                      }
-                                      className="text-xs text-blue-300 hover:text-blue-200"
-                                    >
-                                      + Add color
-                                    </button>
-                                  </div>
-                                );
-                              })()}
                             </div>
                           </div>
-                        </div>
+                        )}
                       </>
                     ) : null}
 
@@ -1072,8 +1074,14 @@ export function Dashboard() {
                           if (!entry) return null
                           const Comp: any = entry.component
                           const defaults = entry.defaults || {}
-                          const props = { ...defaults, ...(aboutForm.heroPatternProps || {}), style: { width: '100%', height: '100%', position: 'absolute', inset: 0 } }
-                          return <Comp {...props} />
+                          let patternProps = { ...defaults, ...(aboutForm.heroPatternProps || {}) }
+                          if (aboutForm.heroPatternId === "liquid-ether") {
+                            if (typeof patternProps.autoSpeed === "undefined") {
+                              patternProps.autoSpeed = 1.5
+                            }
+                          }
+                          patternProps.style = { width: '100%', height: '100%', position: 'absolute', inset: 0 }
+                          return <Comp {...patternProps} />
                         })()
                       ) : (
                         <div className={`hero-animated-bg ${aboutForm.heroGradientPreset===2?'hero-bg-2':aboutForm.heroGradientPreset===3?'hero-bg-3':aboutForm.heroGradientPreset===4?'hero-bg-4':'hero-bg-1'} ${`hero-blur-${aboutForm.heroBackgroundBlurLevel}`}`} />
