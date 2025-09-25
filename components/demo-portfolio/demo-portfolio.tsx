@@ -58,16 +58,11 @@ export function DemoPortfolio() {
             Join thousands of developers who have already created their perfect portfolio with FlexFolio
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button 
-              onClick={() => router.push('/register')}
-              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
-            >
-              Get Started Free
-            </Button>
+    
             <Button 
               variant="outline"
               onClick={() => window.open('https://dev-fitsum.vercel.app', '_blank')}
-              className="border-gray-600 text-gray-300 hover:bg-gray-800"
+              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
             >
               <ExternalLink className="h-4 w-4 mr-2" />
               View Live Demo
