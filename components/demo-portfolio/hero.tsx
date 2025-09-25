@@ -39,69 +39,140 @@ export function Hero() {
         />
       </div>
 
-      <div className="relative z-10 text-center max-w-4xl mx-auto px-4">
-        <div className="mb-4">
-          <h2 className="text-2xl md:text-3xl font-semibold text-gray-300">Hi, I'm {demoUserData.name}</h2>
-        </div>
-        <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-white via-gray-200 to-gray-400 bg-clip-text text-transparent">
+      <div className="relative z-10 max-w-3xl mx-auto text-center px-4">
+        <h2 className="text-xl md:text-7xl font-medium text-blue-300 mb-2 tracking-wide animate-fade-in">
+          Hi, I'm <span className="font-bold">{demoUserData.name}</span>
+        </h2>
+        <h1 className="text-5xl md:text-6xl font-extrabold mb-6 bg-gradient-to-r from-blue-400 via-purple-300 to-pink-300 bg-clip-text text-transparent drop-shadow-lg animate-gradient-x">
           {demoUserData.heroTitle}
         </h1>
-        <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-2xl mx-auto leading-relaxed">
+        <p className="text-lg md:text-2xl text-gray-200 mb-8 leading-relaxed animate-fade-in-slow">
           {demoUserData.heroDescription}
         </p>
 
-        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
-          <Button
-            size="lg"
-            onClick={scrollToProjects}
-            className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white border-0"
-          >
-            <ExternalLink className="h-5 w-5 mr-2" />
-            View My Work
-          </Button>
-          <Button
-            variant="outline"
-            size="lg"
-            onClick={scrollToContact}
-            className="border-white/20 text-white hover:bg-white/10 bg-transparent"
-          >
-            <Mail className="h-5 w-5 mr-2" />
-            Get In Touch
-          </Button>
-        </div>
-
-        <div className="flex justify-center space-x-6">
+       {/* Social Links */}
+        <div className="flex justify-center gap-4 mb-8">
           {demoUserData.github && (
             <a
               href={demoUserData.github}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-gray-400 hover:text-white transition-colors"
+              className="transition-transform hover:scale-110"
+              aria-label="GitHub"
             >
-              <Github className="h-6 w-6" />
+              <img
+                src="https://cdn-icons-png.flaticon.com/128/270/270798.png"
+                alt="GitHub"
+                className="w-7 h-7"
+              />
             </a>
           )}
+
           {demoUserData.linkedin && (
             <a
               href={demoUserData.linkedin}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-gray-400 hover:text-white transition-colors"
+              className="transition-transform hover:scale-110"
+              aria-label="LinkedIn"
             >
-              <Linkedin className="h-6 w-6" />
+              <img
+                src="https://cdn-icons-png.flaticon.com/512/174/174857.png"
+                alt="LinkedIn"
+                className="w-7 h-7"
+              />
             </a>
           )}
-          {demoUserData.email && (
-            <a href={`mailto:${demoUserData.email}`} className="text-gray-400 hover:text-white transition-colors">
-              <Mail className="h-6 w-6" />
+
+          {demoUserData.telegram && (
+            <a
+              href={demoUserData.telegram}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="transition-transform hover:scale-110"
+              aria-label="Telegram"
+            >
+              <img
+                src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg"
+                alt="Telegram"
+                className="w-7 h-7"
+              />
+            </a>
+          )}
+
+          {demoUserData.x && (
+            <a
+              href={demoUserData.x}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="transition-transform hover:scale-110"
+              aria-label="X"
+            >
+              <img
+                src="https://cdn-icons-png.flaticon.com/128/5969/5969020.png"
+                alt="X"
+                className="w-7 h-7"
+              />
             </a>
           )}
         </div>
-      </div>
 
-      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
-        <ArrowDown className="h-6 w-6 text-gray-400" />
-      </div>
+
+          {/* Call to Action Buttons */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-10">
+            <Button
+              size="lg"
+              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-lg px-8 py-4 shadow-lg transition-all"
+              onClick={() => {
+                const contact = document.getElementById("contact");
+                if (contact) contact.scrollIntoView({ behavior: "smooth" });
+              }}
+            >
+              <Mail className="mr-2 h-5 w-5" />
+              Get In Touch
+            </Button>
+
+            <Button
+              variant="outline"
+              size="lg"
+              className="border-gray-600 text-white text-lg px-8 py-4 shadow-lg transition-all bg-button-gradient-multicolor hover:brightness-110"
+              onClick={() => {
+                const projects = document.getElementById("projects");
+                if (projects) projects.scrollIntoView({ behavior: "smooth" });
+              }}
+            >
+              <ExternalLink className="mr-2 h-5 w-5" />
+              View Projects
+            </Button>
+          </div>
+
+          {/* Animated Down Arrow */}
+          <div className="mt-10 flex justify-center">
+            <button
+              aria-label="Scroll to About"
+              onClick={() => {
+                const about = document.getElementById("about");
+                if (about) about.scrollIntoView({ behavior: "smooth" });
+              }}
+              className="animate-bounce text-gray-400 hover:text-blue-400 transition-colors text-3xl"
+              style={{ background: "none", border: "none", outline: "none" }}
+            >
+              <svg
+                className="w-8 h-8 mx-auto"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M19 9l-7 7-7-7"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
     </section>
   )
 }
