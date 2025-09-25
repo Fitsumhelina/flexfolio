@@ -153,12 +153,21 @@ export function Dashboard() {
     heroBackgroundBlurLevel: 0 as 0 | 1 | 2 | 3 | 4,
     heroPatternId: "liquid-ether" as string,
     heroPatternProps: {} as Record<string, any>,
+    // About section fields
+    name: "",
+    title: "",
+    bio: "",
+    experience: "",
+    projectsCompleted: "",
+    profileImage: ""
   })
-  // Separate saving and message state for hero and social
+  // Separate saving and message state for hero, social, and about
   const [isSavingHero, setIsSavingHero] = useState(false)
   const [isSavingSocial, setIsSavingSocial] = useState(false)
+  const [isSavingAbout, setIsSavingAbout] = useState(false)
   const [heroMessage, setHeroMessage] = useState<string | null>(null)
   const [socialMessage, setSocialMessage] = useState<string | null>(null)
+  const [aboutMessage, setAboutMessage] = useState<string | null>(null)
 
   useEffect(() => {
     // Check if user is authenticated
@@ -200,6 +209,13 @@ export function Dashboard() {
         heroBackgroundBlurLevel: (about.heroBackgroundBlurLevel as 0|1|2|3|4) || 0,
         heroPatternId: (about as any).heroPatternId || "liquid-ether",
         heroPatternProps: (about as any).heroPatternProps || {},
+        // About section fields
+        name: about.name || parsedUser.name || "",
+        title: about.title || "Full Stack Developer",
+        bio: about.bio || "I'm a passionate developer who loves creating amazing digital experiences.",
+        experience: about.experience || "1+",
+        projectsCompleted: about.projectsCompleted || "5+",
+        profileImage: about.profileImage || ""
       })
     } catch (error) {
       console.error('Error parsing user data:', error)
@@ -306,6 +322,21 @@ export function Dashboard() {
       },
       setIsSavingSocial,
       setSocialMessage
+    )
+  }
+
+  const handleSaveAbout = async () => {
+    await saveAboutPartial(
+      {
+        name: aboutForm.name,
+        title: aboutForm.title,
+        bio: aboutForm.bio,
+        experience: aboutForm.experience,
+        projectsCompleted: aboutForm.projectsCompleted,
+        profileImage: aboutForm.profileImage,
+      },
+      setIsSavingAbout,
+      setAboutMessage
     )
   }
 
@@ -1172,6 +1203,96 @@ export function Dashboard() {
                     </Button>
                     {socialMessage && (
                       <span className="text-sm text-white/80">{socialMessage}</span>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* About Section */}
+              <Card className="bg-card-gradient-content-about border-0 shadow-lg">
+                <CardHeader>
+                  <CardTitle className="text-white flex items-center">
+                    <User className="h-5 w-5 mr-2 text-white/80" />
+                    About Section
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-white/80 mb-4">
+                    Manage your personal information and professional details. These appear in your about section.
+                  </p>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm text-white/80 mb-1">Full Name</label>
+                      <input
+                        name="name"
+                        value={aboutForm.name}
+                        onChange={handleAboutInput}
+                        placeholder="John Doe"
+                        className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder:text-white/40"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm text-white/80 mb-1">Professional Title</label>
+                      <input
+                        name="title"
+                        value={aboutForm.title}
+                        onChange={handleAboutInput}
+                        placeholder="Full Stack Developer"
+                        className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder:text-white/40"
+                      />
+                    </div>
+                    <div className="md:col-span-2">
+                      <label className="block text-sm text-white/80 mb-1">Bio</label>
+                      <textarea
+                        name="bio"
+                        value={aboutForm.bio}
+                        onChange={handleAboutInput as any}
+                        placeholder="Tell us about yourself..."
+                        rows={4}
+                        className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder:text-white/40 resize-none"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm text-white/80 mb-1">Years of Experience</label>
+                      <input
+                        name="experience"
+                        value={aboutForm.experience}
+                        onChange={handleAboutInput}
+                        placeholder="5+"
+                        className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder:text-white/40"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm text-white/80 mb-1">Projects Completed</label>
+                      <input
+                        name="projectsCompleted"
+                        value={aboutForm.projectsCompleted}
+                        onChange={handleAboutInput}
+                        placeholder="50+"
+                        className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder:text-white/40"
+                      />
+                    </div>
+                    <div className="md:col-span-2">
+                      <label className="block text-sm text-white/80 mb-1">Profile Image URL</label>
+                      <input
+                        name="profileImage"
+                        value={aboutForm.profileImage}
+                        onChange={handleAboutInput}
+                        placeholder="https://example.com/profile.jpg"
+                        className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder:text-white/40"
+                      />
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3 mt-4">
+                    <Button
+                      onClick={handleSaveAbout}
+                      disabled={isSavingAbout}
+                      className="bg-green-500 hover:bg-green-600 text-white"
+                    >
+                      {isSavingAbout ? "Saving..." : "Save About"}
+                    </Button>
+                    {aboutMessage && (
+                      <span className="text-sm text-white/80">{aboutMessage}</span>
                     )}
                   </div>
                 </CardContent>
