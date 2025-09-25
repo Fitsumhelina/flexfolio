@@ -37,6 +37,7 @@ import {
 } from "lucide-react"
 import { useEffect as ReactUseEffect, useState as ReactUseState } from 'react'
 import { ROUTES } from '@/lib/routes'
+import { PATTERNS } from '@/lib/patterns'
 
 function Inbox({ user }: { user: User }) {
   const [messages, setMessages] = ReactUseState<Array<any>>([])
@@ -146,10 +147,12 @@ export function Dashboard() {
     linkedin: "",
     heroTitle: "",
     heroDescription: "",
-    heroBackgroundMode: "gradient" as "gradient" | "image",
+    heroBackgroundMode: "gradient" as "gradient" | "image" | "pattern",
     heroGradientPreset: 1 as 1 | 2 | 3 | 4,
     heroBackgroundImageUrl: "",
     heroBackgroundBlurLevel: 0 as 0 | 1 | 2 | 3 | 4,
+    heroPatternId: "liquid-ether" as string,
+    heroPatternProps: {} as Record<string, any>,
   })
   // Separate saving and message state for hero and social
   const [isSavingHero, setIsSavingHero] = useState(false)
@@ -191,10 +194,12 @@ export function Dashboard() {
         linkedin: about.linkedin || "",
         heroTitle: about.heroTitle || about.title || "Full Stack Developer",
         heroDescription: about.heroDescription || about.bio || "",
-        heroBackgroundMode: about.heroBackgroundMode || "gradient",
+        heroBackgroundMode: (about as any).heroBackgroundMode || "gradient",
         heroGradientPreset: (about.heroGradientPreset as 1|2|3|4) || 1,
         heroBackgroundImageUrl: about.heroBackgroundImageUrl || "",
         heroBackgroundBlurLevel: (about.heroBackgroundBlurLevel as 0|1|2|3|4) || 0,
+        heroPatternId: (about as any).heroPatternId || "liquid-ether",
+        heroPatternProps: (about as any).heroPatternProps || {},
       })
     } catch (error) {
       console.error('Error parsing user data:', error)
@@ -244,6 +249,8 @@ export function Dashboard() {
         heroGradientPreset: currentAbout.heroGradientPreset ?? aboutForm.heroGradientPreset,
         heroBackgroundImageUrl: currentAbout.heroBackgroundImageUrl ?? aboutForm.heroBackgroundImageUrl,
         heroBackgroundBlurLevel: currentAbout.heroBackgroundBlurLevel ?? aboutForm.heroBackgroundBlurLevel,
+        heroPatternId: (currentAbout as any).heroPatternId ?? aboutForm.heroPatternId,
+        heroPatternProps: (currentAbout as any).heroPatternProps ?? aboutForm.heroPatternProps,
         // apply incoming updates last
         ...updates,
       }
@@ -281,6 +288,8 @@ export function Dashboard() {
         heroGradientPreset: aboutForm.heroGradientPreset,
         heroBackgroundImageUrl: aboutForm.heroBackgroundImageUrl,
         heroBackgroundBlurLevel: aboutForm.heroBackgroundBlurLevel,
+        heroPatternId: aboutForm.heroPatternId,
+        heroPatternProps: aboutForm.heroPatternProps,
       },
       setIsSavingHero,
       setHeroMessage
@@ -840,6 +849,7 @@ export function Dashboard() {
                       >
                         <option value="gradient">Gradient</option>
                         <option value="image">Image</option>
+                        <option value="pattern">Pattern</option>
                       </select>
                     </div>
                     {aboutForm.heroBackgroundMode === 'gradient' ? (
@@ -857,17 +867,96 @@ export function Dashboard() {
                           <option value={4}>Preset 4</option>
                         </select>
                       </div>
-                    ) : (
+                    ) : aboutForm.heroBackgroundMode === 'image' ? (
                       <div>
                         <label className="block text-sm text-white/80 mb-1">Background Image URL</label>
-                      <input
+                        <input
                           name="heroBackgroundImageUrl"
                           value={aboutForm.heroBackgroundImageUrl}
-                        onChange={handleAboutInput}
+                          onChange={handleAboutInput}
                           placeholder="https://example.com/hero.jpg"
-                        className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder:text-white/40"
-                      />
-                    </div>
+                          className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder:text-white/40"
+                        />
+                      </div>
+                    ) : (
+                      <div className="space-y-3">
+                        <div>
+                          <label className="block text-sm text-white/80 mb-1">Pattern</label>
+                          <select
+                            value={aboutForm.heroPatternId}
+                            onChange={(e) => setAboutForm(prev => ({ ...prev, heroPatternId: e.target.value }))}
+                            className="w-full bg-black border border-white/20 rounded-lg px-3 py-2 text-white"
+                          >
+                            {PATTERNS.map(p => (
+                              <option key={p.id} value={p.id}>{p.label}</option>
+                            ))}
+                          </select>
+                        </div>
+                        <div>
+                          <label className="block text-sm text-white/80 mb-2">Colors</label>
+                          {(() => {
+                            const entry = PATTERNS.find(p => p.id === aboutForm.heroPatternId)
+                            const defaults = (entry?.defaults?.colors as string[]) || []
+                            const currentColors: string[] = (aboutForm.heroPatternProps?.colors as string[]) || defaults
+                            const normalized = Array.isArray(currentColors) && currentColors.length > 0 ? currentColors : defaults
+                            return (
+                              <div className="space-y-2">
+                                {normalized.map((c, idx) => (
+                                  <div key={idx} className="flex items-center gap-3">
+                                    <input
+                                      type="color"
+                                      value={/^#/.test(c) ? c : `#${c.replace(/[^0-9a-fA-F]/g,'')}`}
+                                      onChange={(e) => {
+                                        const hex = e.target.value
+                                        setAboutForm(prev => {
+                                          const arr = ([...(prev.heroPatternProps?.colors as string[]) || defaults])
+                                          arr[idx] = hex
+                                          return { ...prev, heroPatternProps: { ...(prev.heroPatternProps||{}), colors: arr } }
+                                        })
+                                      }}
+                                      className="h-10 w-14 bg-transparent border border-white/20 rounded"
+                                    />
+                                    <span className="text-xs text-white/70">{c}</span>
+                                    <button
+                                      type="button"
+                                      onClick={() => setAboutForm(prev => {
+                                        const arr = ([...(prev.heroPatternProps?.colors as string[]) || defaults])
+                                        if (arr.length <= 1) return prev
+                                        arr.splice(idx,1)
+                                        return { ...prev, heroPatternProps: { ...(prev.heroPatternProps||{}), colors: arr } }
+                                      })}
+                                      className="text-xs text-red-400 hover:text-red-300"
+                                    >Remove</button>
+                                  </div>
+                                ))}
+                                <button
+                                  type="button"
+                                  onClick={() => setAboutForm(prev => {
+                                    const arr = ([...(prev.heroPatternProps?.colors as string[]) || defaults])
+                                    if (arr.length >= 6) return prev
+                                    return { ...prev, heroPatternProps: { ...(prev.heroPatternProps||{}), colors: [...arr, '#FFFFFF'] } }
+                                  })}
+                                  className="text-xs text-blue-300 hover:text-blue-200"
+                                >+ Add color</button>
+                              </div>
+                            )
+                          })()}
+                        </div>
+                        <div className="grid grid-cols-2 gap-3">
+                          <div>
+                            <label className="block text-sm text-white/80 mb-1">Cursor Size</label>
+                            <input type="number" value={(aboutForm.heroPatternProps?.cursorSize as number) ?? 100} onChange={(e) => setAboutForm(prev => ({ ...prev, heroPatternProps: { ...prev.heroPatternProps, cursorSize: Number(e.target.value) } }))} className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white" />
+                          </div>
+                          <div>
+                            <label className="block text-sm text-white/80 mb-1">Auto Speed</label>
+                            <input type="number" step="0.1" value={(aboutForm.heroPatternProps?.autoSpeed as number) ?? 0.5} onChange={(e) => setAboutForm(prev => ({ ...prev, heroPatternProps: { ...prev.heroPatternProps, autoSpeed: Number(e.target.value) } }))} className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white" />
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <input id="autodemo" type="checkbox" checked={(aboutForm.heroPatternProps?.autoDemo as boolean) ?? true} onChange={(e) => setAboutForm(prev => ({ ...prev, heroPatternProps: { ...prev.heroPatternProps, autoDemo: e.target.checked } }))} className="accent-white" />
+                          <label htmlFor="autodemo" className="text-sm text-white/80">Auto Demo</label>
+                        </div>
+                      </div>
                     )}
                     <div>
                       <label className="block text-sm text-white/80 mb-1">Background Blur Level</label>
@@ -891,6 +980,15 @@ export function Dashboard() {
                     <div className="relative h-54 rounded-lg overflow-hidden border border-white/20">
                       {aboutForm.heroBackgroundMode === 'image' && aboutForm.heroBackgroundImageUrl ? (
                         <img src={aboutForm.heroBackgroundImageUrl} alt="preview" className={`w-full h-full object-cover opacity-50 ${`hero-blur-${aboutForm.heroBackgroundBlurLevel}`}`} />
+                      ) : aboutForm.heroBackgroundMode === 'pattern' ? (
+                        (() => {
+                          const entry = PATTERNS.find(p => p.id === aboutForm.heroPatternId)
+                          if (!entry) return null
+                          const Comp: any = entry.component
+                          const defaults = entry.defaults || {}
+                          const props = { ...defaults, ...(aboutForm.heroPatternProps || {}), style: { width: '100%', height: '100%', position: 'absolute', inset: 0 } }
+                          return <Comp {...props} />
+                        })()
                       ) : (
                         <div className={`hero-animated-bg ${aboutForm.heroGradientPreset===2?'hero-bg-2':aboutForm.heroGradientPreset===3?'hero-bg-3':aboutForm.heroGradientPreset===4?'hero-bg-4':'hero-bg-1'} ${`hero-blur-${aboutForm.heroBackgroundBlurLevel}`}`} />
                       )}
