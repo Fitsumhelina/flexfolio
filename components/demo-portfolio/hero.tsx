@@ -4,6 +4,9 @@ import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { ArrowDown, Github, Linkedin, Mail, ExternalLink } from "lucide-react"
 import { demoUserData } from "@/lib/demo-data"
+import dynamic from "next/dynamic"
+
+const Particles = dynamic(() => import("@/components/backgrounds/Particles").then(m => m.default), { ssr: false })
 
 export function Hero() {
   const scrollToProjects = () => {
@@ -19,11 +22,21 @@ export function Hero() {
       {/* Background gradient */}
       <div className="absolute inset-0 bg-gradient-to-br from-black via-gray-900 to-black" />
 
-      {/* Animated geometric shapes */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-1/4 left-1/4 w-32 h-32 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-lg rotate-45 animate-pulse" />
-        <div className="absolute top-3/4 right-1/4 w-24 h-24 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-lg rotate-12 animate-pulse delay-1000" />
-        <div className="absolute bottom-1/4 left-1/3 w-20 h-20 bg-gradient-to-br from-cyan-500/20 to-blue-500/20 rounded-lg -rotate-12 animate-pulse delay-2000" />
+      {/* Particles Background */}
+      <div className="absolute inset-0">
+        <Particles 
+          particleCount={200}
+          particleSpread={10}
+          speed={0.1}
+          particleColors={['#ffffff', '#ffffff']}
+          particleBaseSize={100}
+          moveParticlesOnHover={true}
+          alphaParticles={false}
+          disableRotation={false}
+          particleHoverFactor={1}
+          sizeRandomness={1}
+          cameraDistance={20}
+        />
       </div>
 
       <div className="relative z-10 text-center max-w-4xl mx-auto px-4">
