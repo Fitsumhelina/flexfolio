@@ -61,11 +61,11 @@ export function DemoPortfolio() {
     
             <Button 
               variant="outline"
-              onClick={() => window.open('https://dev-fitsum.vercel.app', '_blank')}
+              onClick={() => window.open('/register', '_blank')}
               className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
             >
               <ExternalLink className="h-4 w-4 mr-2" />
-              View Live Demo
+              Start Here
             </Button>
           </div>
         </div>
