@@ -248,6 +248,13 @@ export function UserPortfolio({ username }: UserPortfolioProps) {
                       <LightRays {...props} />
                     </div>
                   )
+                } else if (id === 'particles') {
+                  const Particles = require("@/components/backgrounds/Particles").default
+                  return (
+                    <div className={`absolute inset-0 ${`hero-blur-${aboutData.heroBackgroundBlurLevel ?? 0}`}`}>
+                      <Particles {...props} />
+                    </div>
+                  )
                 }
               } catch {}
             }
