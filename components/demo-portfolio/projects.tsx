@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { ExternalLink, Github } from "lucide-react"
 import { demoProjects } from "@/lib/demo-data"
 
-export function Projects() {
+export function DemoProjects() {
   return (
     <section id="projects" className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-gray-900 to-black">
       <div className="max-w-7xl mx-auto">

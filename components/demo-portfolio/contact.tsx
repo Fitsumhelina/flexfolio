@@ -5,7 +5,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Mail, Phone, MapPin, Send } from "lucide-react"
 import { demoUserData } from "@/lib/demo-data"
 
-export function Contact() {
+export function DemoContact() {
   return (
     <section id="contact" className="py-20 px-4 bg-gradient-to-b from-gray-900 to-black">
       <div className="max-w-6xl mx-auto">

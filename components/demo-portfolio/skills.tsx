@@ -3,7 +3,7 @@
 import { Card, CardContent } from "@/components/ui/card"
 import { demoSkills } from "@/lib/demo-data"
 
-export function Skills() {
+export function DemoSkills() {
   // Group skills by category
   const groupedSkills: { [category: string]: typeof demoSkills } = {}
   demoSkills.forEach((skill) => {

@@ -4,7 +4,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { demoUserData } from "@/lib/demo-data"
 import ShinyText from "../ui/ShinyText"
 
-export function About() {
+export function DemoAbout() {
   return (
     <section id="about" className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-black to-gray-900">
       <h2 className="text-4xl md:text-5xl font-bold text-center mb-16 bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">

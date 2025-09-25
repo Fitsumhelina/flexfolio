@@ -8,7 +8,7 @@ import dynamic from "next/dynamic"
 
 const Particles = dynamic(() => import("@/components/backgrounds/Particles").then(m => m.default), { ssr: false })
 
-export function Hero() {
+export function DemoHero() {
   const scrollToProjects = () => {
     document.getElementById("projects")?.scrollIntoView({ behavior: "smooth" })
   }
