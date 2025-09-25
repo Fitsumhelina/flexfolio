@@ -1,6 +1,6 @@
 import dynamic from "next/dynamic"
 
-export type PatternId = "liquid-ether" | "light-rays" | string
+export type PatternId = "liquid-ether" | "light-rays" | "particles" | string
 
 export type PatternEntry = {
   id: PatternId
@@ -40,6 +40,24 @@ export const PATTERNS: PatternEntry[] = [
       pulsating: false,
       fadeDistance: 1.0,
       saturation: 1.0,
+    },
+  },
+  {
+    id: "particles",
+    label: "Particles",
+    component: dynamic(() => import("@/components/backgrounds/Particles").then(m => m.default), { ssr: false }) as any,
+    defaults: {
+      particleColors: ['#ffffff', '#ffffff'],
+      particleCount: 200,
+      particleSpread: 10,
+      speed: 0.1,
+      particleBaseSize: 100,
+      moveParticlesOnHover: true,
+      alphaParticles: false,
+      disableRotation: false,
+      particleHoverFactor: 1,
+      sizeRandomness: 1,
+      cameraDistance: 20,
     },
   },
 ]
