@@ -645,7 +645,20 @@ export function Dashboard() {
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => router.push(ROUTES.DASHBOARD_ABOUT)}
+                      onClick={() => {
+                        // Switch to content tab and scroll to about section
+                        const tabsList = document.querySelector('[role="tablist"]')
+                        const contentTab = document.querySelector('[data-state="inactive"][value="content"]') as HTMLElement
+                        if (contentTab) {
+                          contentTab.click()
+                          setTimeout(() => {
+                            const aboutSection = document.querySelector('[data-card="about-section"]')
+                            if (aboutSection) {
+                              aboutSection.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                            }
+                          }, 100)
+                        }
+                      }}
                       className="text-black border-white/40 hover:bg-white/10 hover:border-white/60 hover:text-white"
                     >
                       <Edit className="h-4 w-4 mr-2" />
@@ -799,7 +812,19 @@ export function Dashboard() {
                       <span className="font-medium">New Project</span>
                     </Button>
                     <Button 
-                      onClick={() => router.push(ROUTES.DASHBOARD_ABOUT)}
+                      onClick={() => {
+                        // Switch to content tab and scroll to about section
+                        const contentTab = document.querySelector('[data-state="inactive"][value="content"]') as HTMLElement
+                        if (contentTab) {
+                          contentTab.click()
+                          setTimeout(() => {
+                            const aboutSection = document.querySelector('[data-card="about-section"]')
+                            if (aboutSection) {
+                              aboutSection.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                            }
+                          }, 100)
+                        }
+                      }}
                       className="bg-purple-500 hover:bg-purple-600 text-white h-auto p-6 flex flex-col items-center space-y-3 group"
                     >
                       <Edit className="h-6 w-6" />
@@ -1209,7 +1234,7 @@ export function Dashboard() {
               </Card>
 
               {/* About Section */}
-              <Card className="bg-card-gradient-content-about border-0 shadow-lg">
+              <Card className="bg-card-gradient-content-about border-0 shadow-lg" data-card="about-section">
                 <CardHeader>
                   <CardTitle className="text-white flex items-center">
                     <User className="h-5 w-5 mr-2 text-white/80" />

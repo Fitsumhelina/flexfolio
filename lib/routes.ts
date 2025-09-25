@@ -5,7 +5,6 @@ export const ROUTES = {
   DEMO: '/demo',
   DASHBOARD: '/dashboard',
   DASHBOARD_MAIL: '/dashboard/mail',
-  DASHBOARD_ABOUT: '/dashboard/about',
   DASHBOARD_PROJECTS: '/dashboard/projects',
   DASHBOARD_SKILLS: '/dashboard/skills',
 } as const;
