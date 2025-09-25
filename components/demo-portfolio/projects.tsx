@@ -3,43 +3,11 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { ExternalLink, Github } from "lucide-react"
-
-const demoProjects = [
-  {
-    id: "p1",
-    title: "Modern Dashboard",
-    description:
-      "A responsive analytics dashboard with charts, theming, and realtime data.",
-    tech: ["Next.js", "Tailwind", "TypeScript"],
-    image: "/project-placeholder.png",
-    github: "#",
-    live: "#",
-  },
-  {
-    id: "p2",
-    title: "E‑commerce Storefront",
-    description:
-      "Product listings, cart, and checkout flows with clean UI and state mgmt.",
-    tech: ["React", "Zustand", "Stripe"],
-    image: "/project-placeholder.png",
-    github: "#",
-    live: "#",
-  },
-  {
-    id: "p3",
-    title: "Team Tasks App",
-    description:
-      "Collaborative task management with roles, comments, and activity feed.",
-    tech: ["Next.js", "Prisma", "PostgreSQL"],
-    image: "/project-placeholder.png",
-    github: "#",
-    live: "#",
-  },
-];
+import { demoProjects } from "@/lib/demo-data"
 
 export function Projects() {
   return (
-    <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-gray-900 to-black">
+    <section id="projects" className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-gray-900 to-black">
       <div className="max-w-7xl mx-auto">
         <h2 className="text-4xl md:text-5xl font-bold text-center mb-12 bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
           Featured Projects
@@ -78,18 +46,18 @@ export function Projects() {
                       className="border-gray-600 text-gray-300 hover:bg-gray-700 bg-transparent"
                       onClick={() => window.open(project.github as string, "_blank")}
                     >
-                      <ExternalLink className="h-4 w-4 mr-2" />
+                      <Github className="h-4 w-4 mr-2" />
                       Code
                     </Button>
                   )}
                   {project.live && project.live !== "#" && (
                     <Button
                       size="sm"
-                      className="bg-blue-600 hover:bg-blue-700"
+                      className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
                       onClick={() => window.open(project.live as string, "_blank")}
                     >
                       <ExternalLink className="h-4 w-4 mr-2" />
-                      Live
+                      Live Demo
                     </Button>
                   )}
                 </div>
