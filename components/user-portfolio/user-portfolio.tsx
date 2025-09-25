@@ -413,11 +413,12 @@ export function UserPortfolio({ username }: UserPortfolioProps) {
         className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-black to-gray-900"
       >
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-4xl md:text-5xl font-bold text-center mb-12 bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
-            {aboutData.title || "About Me"}
-          </h2>
+          <p className="mb-2">you better hear it from me right?</p>
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
+              <h2 className="text-4xl md:text-5xl font-bold  mb-12 bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
+              {aboutData.title || "About Me"}
+              </h2>
               <p className="text-lg md:text-xl text-gray-300 leading-relaxed mb-10">
                 {aboutData.bio}
               </p>
