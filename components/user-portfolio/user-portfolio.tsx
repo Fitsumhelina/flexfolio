@@ -255,6 +255,13 @@ export function UserPortfolio({ username }: UserPortfolioProps) {
                       <Particles {...props} />
                     </div>
                   )
+                } else if (id === 'dot-grid') {
+                  const DotGrid = require("@/components/backgrounds/DotGrid").default
+                  return (
+                    <div className={`absolute inset-0 ${`hero-blur-${aboutData.heroBackgroundBlurLevel ?? 0}`}`}>
+                      <DotGrid {...props} />
+                    </div>
+                  )
                 }
               } catch {}
             }
