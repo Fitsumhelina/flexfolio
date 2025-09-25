@@ -1,10 +1,10 @@
 "use client"
 
-import { Hero } from "@/components/demo-portfolio/hero"
-import { About } from "@/components/demo-portfolio/about"
-import { Projects } from "@/components/demo-portfolio/projects"
-import { Skills } from "@/components/demo-portfolio/skills"
-import { Contact } from "@/components/demo-portfolio/contact"
+import { DemoHero } from "@/components/demo-portfolio/hero"
+import { DemoAbout } from "@/components/demo-portfolio/about"
+import { DemoProjects } from "@/components/demo-portfolio/projects"
+import { DemoSkills } from "@/components/demo-portfolio/skills"
+import { DemoContact } from "@/components/demo-portfolio/contact"
 import { Button } from "@/components/ui/button"
 import { ArrowLeft, ExternalLink } from "lucide-react"
 import { useRouter } from "next/navigation"
@@ -44,11 +44,12 @@ export function DemoPortfolio() {
       {/* Original Portfolio Content */}
       <DemoNavigation />
       <br />
-      <Hero />
-      <About />
-      <Projects />
-      <Skills />
-      <Contact />
+      <br />
+      <DemoHero />
+      <DemoAbout />
+      <DemoProjects />
+      <DemoSkills />
+      <DemoContact />
 
       {/* Demo Footer */}
       <div className="bg-gray-900 border-t border-gray-800 py-8">
