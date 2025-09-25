@@ -234,11 +234,18 @@ export function UserPortfolio({ username }: UserPortfolioProps) {
               const id = (aboutData as any).heroPatternId || 'liquid-ether'
               const props = (aboutData as any).heroPatternProps || {}
               try {
-                const Liquid = require("@/components/backgrounds/LiquidEther").default
                 if (id === 'liquid-ether') {
+                  const Liquid = require("@/components/backgrounds/LiquidEther").default
                   return (
                     <div className={`absolute inset-0 ${`hero-blur-${aboutData.heroBackgroundBlurLevel ?? 0}`}`}>
                       <Liquid {...props} />
+                    </div>
+                  )
+                } else if (id === 'light-rays') {
+                  const LightRays = require("@/components/backgrounds/LightRays").default
+                  return (
+                    <div className={`absolute inset-0 ${`hero-blur-${aboutData.heroBackgroundBlurLevel ?? 0}`}`}>
+                      <LightRays {...props} />
                     </div>
                   )
                 }

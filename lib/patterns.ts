@@ -1,6 +1,6 @@
 import dynamic from "next/dynamic"
 
-export type PatternId = "liquid-ether" | string
+export type PatternId = "liquid-ether" | "light-rays" | string
 
 export type PatternEntry = {
   id: PatternId
@@ -21,6 +21,25 @@ export const PATTERNS: PatternEntry[] = [
       autoDemo: true,
       autoSpeed: 0.5,
       cursorSize: 100,
+    },
+  },
+  {
+    id: "light-rays",
+    label: "Light Rays",
+    component: dynamic(() => import("@/components/backgrounds/LightRays").then(m => m.default), { ssr: false }) as any,
+    defaults: {
+      raysOrigin: "top-center",
+      raysColor: "#00ffff",
+      raysSpeed: 1.5,
+      lightSpread: 0.8,
+      rayLength: 1.2,
+      followMouse: true,
+      mouseInfluence: 0.1,
+      noiseAmount: 0.1,
+      distortion: 0.05,
+      pulsating: false,
+      fadeDistance: 1.0,
+      saturation: 1.0,
     },
   },
 ]
