@@ -2,66 +2,16 @@
 
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
-import { ArrowDown, Github, Linkedin, Mail } from "lucide-react"
-
-interface AboutData {
-  name: string
-  title: string
-  bio: string
-  email: string
-  github?: string
-  linkedin?: string
-}
+import { ArrowDown, Github, Linkedin, Mail, ExternalLink } from "lucide-react"
+import { demoUserData } from "@/lib/demo-data"
 
 export function Hero() {
-  const [aboutData, setAboutData] = useState<AboutData | null>(null)
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    const fetchAboutData = async () => {
-      try {
-        console.log("[v0] Hero: Fetching about data")
-        const response = await fetch("/api/about")
-        console.log("[v0] Hero: API response status:", response.status)
-        if (response.ok) {
-          const data = await response.json()
-          console.log("[v0] Hero: Received about data:", data.name)
-          setAboutData(data)
-        } else {
-          console.error("[v0] Hero: API response not ok:", response.status)
-        }
-      } catch (error) {
-        console.error("[v0] Hero: Error fetching about data:", error)
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    fetchAboutData()
-  }, [])
-
   const scrollToProjects = () => {
     document.getElementById("projects")?.scrollIntoView({ behavior: "smooth" })
   }
 
   const scrollToContact = () => {
     document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })
-  }
-
-  if (loading) {
-    return (
-      <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-black via-gray-900 to-black" />
-        <div className="relative z-10 text-center max-w-4xl mx-auto px-4">
-          <div className="h-16 bg-gray-800 rounded animate-pulse mb-6" />
-          <div className="h-8 bg-gray-800 rounded animate-pulse mb-8 max-w-2xl mx-auto" />
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
-            <div className="h-12 w-32 bg-gray-800 rounded animate-pulse" />
-            <div className="h-12 w-32 bg-gray-800 rounded animate-pulse" />
-          </div>
-        </div>
-      </section>
-    )
   }
 
   return (
@@ -78,13 +28,13 @@ export function Hero() {
 
       <div className="relative z-10 text-center max-w-4xl mx-auto px-4">
         <div className="mb-4">
-          <h2 className="text-2xl md:text-3xl font-semibold text-gray-300">Hi, I'm {aboutData?.name || "Developer"}</h2>
+          <h2 className="text-2xl md:text-3xl font-semibold text-gray-300">Hi, I'm {demoUserData.name}</h2>
         </div>
         <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-white via-gray-200 to-gray-400 bg-clip-text text-transparent">
-          {aboutData?.title || "Full Stack Developer"}
+          {demoUserData.heroTitle}
         </h1>
         <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-2xl mx-auto leading-relaxed">
-          {aboutData?.bio || "Crafting digital experiences with modern technologies and innovative solutions"}
+          {demoUserData.heroDescription}
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
@@ -93,6 +43,7 @@ export function Hero() {
             onClick={scrollToProjects}
             className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white border-0"
           >
+            <ExternalLink className="h-5 w-5 mr-2" />
             View My Work
           </Button>
           <Button
@@ -101,14 +52,15 @@ export function Hero() {
             onClick={scrollToContact}
             className="border-white/20 text-white hover:bg-white/10 bg-transparent"
           >
+            <Mail className="h-5 w-5 mr-2" />
             Get In Touch
           </Button>
         </div>
 
         <div className="flex justify-center space-x-6">
-          {aboutData?.github && (
+          {demoUserData.github && (
             <a
-              href={aboutData.github}
+              href={demoUserData.github}
               target="_blank"
               rel="noopener noreferrer"
               className="text-gray-400 hover:text-white transition-colors"
@@ -116,9 +68,9 @@ export function Hero() {
               <Github className="h-6 w-6" />
             </a>
           )}
-          {aboutData?.linkedin && (
+          {demoUserData.linkedin && (
             <a
-              href={aboutData.linkedin}
+              href={demoUserData.linkedin}
               target="_blank"
               rel="noopener noreferrer"
               className="text-gray-400 hover:text-white transition-colors"
@@ -126,8 +78,8 @@ export function Hero() {
               <Linkedin className="h-6 w-6" />
             </a>
           )}
-          {aboutData?.email && (
-            <a href={`mailto:${aboutData.email}`} className="text-gray-400 hover:text-white transition-colors">
+          {demoUserData.email && (
+            <a href={`mailto:${demoUserData.email}`} className="text-gray-400 hover:text-white transition-colors">
               <Mail className="h-6 w-6" />
             </a>
           )}
