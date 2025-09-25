@@ -257,9 +257,18 @@ export function UserPortfolio({ username }: UserPortfolioProps) {
                   )
                 } else if (id === 'dot-grid') {
                   const DotGrid = require("@/components/backgrounds/DotGrid").default
+                  // Merge saved props with updated defaults for tiny dots
+                  const mergedProps = {
+                    dotSize: 5,
+                    gap: 25,
+                    proximity: 80,
+                    shockRadius: 150,
+                    shockStrength: 3,
+                    ...props
+                  }
                   return (
                     <div className={`absolute inset-0 ${`hero-blur-${aboutData.heroBackgroundBlurLevel ?? 0}`}`}>
-                      <DotGrid {...props} />
+                      <DotGrid {...mergedProps} />
                     </div>
                   )
                 }
