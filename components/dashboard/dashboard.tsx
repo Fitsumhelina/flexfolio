@@ -159,7 +159,8 @@ export function Dashboard() {
     bio: "",
     experience: "",
     projectsCompleted: "",
-    profileImage: ""
+    profileImage: "",
+    profileImageBorderColor: "#3B82F6" // Default blue border color
   })
   // Separate saving and message state for hero, social, and about
   const [isSavingHero, setIsSavingHero] = useState(false)
@@ -215,7 +216,8 @@ export function Dashboard() {
         bio: about.bio || "I'm a passionate developer who loves creating amazing digital experiences.",
         experience: about.experience || "1+",
         projectsCompleted: about.projectsCompleted || "5+",
-        profileImage: about.profileImage || ""
+        profileImage: about.profileImage || "",
+        profileImageBorderColor: about.profileImageBorderColor || "#3B82F6"
       })
     } catch (error) {
       console.error('Error parsing user data:', error)
@@ -334,6 +336,7 @@ export function Dashboard() {
         experience: aboutForm.experience,
         projectsCompleted: aboutForm.projectsCompleted,
         profileImage: aboutForm.profileImage,
+        profileImageBorderColor: aboutForm.profileImageBorderColor,
       },
       setIsSavingAbout,
       setAboutMessage
@@ -1246,18 +1249,9 @@ export function Dashboard() {
                     Manage your personal information and professional details. These appear in your about section.
                   </p>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                
                     <div>
-                      <label className="block text-sm text-white/80 mb-1">Full Name</label>
-                      <input
-                        name="name"
-                        value={aboutForm.name}
-                        onChange={handleAboutInput}
-                        placeholder="John Doe"
-                        className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder:text-white/40"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm text-white/80 mb-1">Professional Title</label>
+                      <label className="block text-sm text-white/80 mb-1">Bio </label>
                       <input
                         name="title"
                         value={aboutForm.title}
@@ -1297,7 +1291,7 @@ export function Dashboard() {
                         className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder:text-white/40"
                       />
                     </div>
-                    <div className="md:col-span-2">
+                    <div>
                       <label className="block text-sm text-white/80 mb-1">Profile Image URL</label>
                       <input
                         name="profileImage"
@@ -1307,7 +1301,36 @@ export function Dashboard() {
                         className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder:text-white/40"
                       />
                     </div>
+                    <div>
+                      <label className="block text-sm text-white/80 mb-1">Image Border Color</label>
+                      <div className="flex items-center gap-3">
+                        <input
+                          type="color"
+                          value={aboutForm.profileImageBorderColor}
+                          onChange={(e) => setAboutForm(prev => ({ ...prev, profileImageBorderColor: e.target.value }))}
+                          className="h-10 w-16 bg-transparent border border-white/20 rounded cursor-pointer"
+                        />
+                        <span className="text-xs text-white/70">{aboutForm.profileImageBorderColor}</span>
+                      </div>
+                    </div>
                   </div>
+                  
+                  {/* Image Preview */}
+                  {aboutForm.profileImage && (
+                    <div className="mt-6">
+                      <label className="block text-sm text-white/80 mb-2">Image Preview</label>
+                      <div className="relative w-32 h-32 rounded-full overflow-hidden border-4" style={{ borderColor: aboutForm.profileImageBorderColor }}>
+                        <img 
+                          src={aboutForm.profileImage} 
+                          alt="Profile preview"
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).style.display = 'none'
+                          }}
+                        />
+                      </div>
+                    </div>
+                  )}
                   <div className="flex items-center gap-3 mt-4">
                     <Button
                       onClick={handleSaveAbout}
