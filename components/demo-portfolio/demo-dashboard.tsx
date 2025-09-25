@@ -317,14 +317,6 @@ export function DemoDashboard() {
                 <Home className="h-4 w-4 mr-2" />
                 Demo
               </Button>
-              <Button 
-                variant="ghost" 
-                onClick={() => router.push(ROUTES.HOME)}
-                className="text-gray-300 hover:text-white hover:bg-gray-800/50"
-              >
-                <Star className="h-4 w-4 mr-2" />
-                Home
-              </Button>
             </nav>
 
             <div className="flex items-center space-x-3">
