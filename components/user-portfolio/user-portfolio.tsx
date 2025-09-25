@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { User, Mail, Phone, MapPin, ExternalLink, Send } from "lucide-react";
+import ShinyText from "../ui/ShinyText";
 
 interface UserData {
   _id: string;
@@ -412,12 +413,15 @@ export function UserPortfolio({ username }: UserPortfolioProps) {
         id="about"
         className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-black to-gray-900"
       >
+        <h2 className="text-4xl md:text-5xl font-bold text-center mb-16 bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
+          About Me
+        </h2>
         <div className="max-w-6xl mx-auto">
-          <p className="mb-2">you better hear it from me right?</p>
+          <ShinyText text="you better hear it from me right?" className="mb-2" />
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
-              <h2 className="text-4xl md:text-5xl font-bold  mb-12 bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
-              {aboutData.title || "About Me"}
+              <h2 className="text-4xl md:text-5xl font-bold  mb-8 bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
+              {aboutData.title}
               </h2>
               <p className="text-lg md:text-xl text-gray-300 leading-relaxed mb-10">
                 {aboutData.bio}
