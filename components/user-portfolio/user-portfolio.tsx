@@ -26,6 +26,7 @@ interface UserData {
       phone: string;
       location: string;
       profileImage?: string;
+      profileImageBorderColor?: string;
       github?: string;
       linkedin?: string;
       x?: string;
@@ -203,6 +204,7 @@ export function UserPortfolio({ username }: UserPortfolioProps) {
     phone: "",
     location: "",
     profileImage: "",
+    profileImageBorderColor: "#3B82F6",
     heroTitle: "Your Title here",
     heroDescription: "your bio here",
     heroBackgroundMode: "gradient",
@@ -405,14 +407,14 @@ export function UserPortfolio({ username }: UserPortfolioProps) {
         </div>
       </section>
 
-      {/* About Section (match demo) */}
+      {/* About Section - Dynamic */}
       <section
         id="about"
         className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-black to-gray-900"
       >
         <div className="max-w-6xl mx-auto">
           <h2 className="text-4xl md:text-5xl font-bold text-center mb-12 bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
-            About Me
+            {aboutData.title || "About Me"}
           </h2>
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
@@ -420,21 +422,21 @@ export function UserPortfolio({ username }: UserPortfolioProps) {
                 {aboutData.bio}
               </p>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <Card className="bg-gray-800/50 border-gray-700">
-                  <CardContent className="p-8 text-center">
-                    <div className="text-4xl md:text-5xl font-extrabold text-blue-300 mb-2">
+                  <CardContent className="p-4 text-center">
+                    <div className="text-2xl md:text-3xl font-extrabold text-blue-300 mb-1">
                       {aboutData.projectsCompleted}
                     </div>
-                    <div className="text-gray-300">Projects Completed</div>
+                    <div className="text-gray-300 text-sm">Projects Completed</div>
                   </CardContent>
                 </Card>
                 <Card className="bg-gray-800/50 border-gray-700">
-                  <CardContent className="p-8 text-center">
-                    <div className="text-4xl md:text-5xl font-extrabold text-purple-300 mb-2">
+                  <CardContent className="p-4 text-center">
+                    <div className="text-2xl md:text-3xl font-extrabold text-purple-300 mb-1">
                       {aboutData.experience}
                     </div>
-                    <div className="text-gray-300">Years Experience</div>
+                    <div className="text-gray-300 text-sm">Years Experience</div>
                   </CardContent>
                 </Card>
               </div>
@@ -445,11 +447,28 @@ export function UserPortfolio({ username }: UserPortfolioProps) {
                 <div
                   className={`
                     relative w-72 h-72 sm:w-96 sm:h-96 rounded-full overflow-hidden flex items-center justify-center
-                    border-4 border-blue-500
-                    shadow-[0_0_40px_10px_rgba(99,102,241,0.5),0_0_80px_20px_rgba(168,85,247,0.3)]
+                    border-4
                     transition-shadow duration-300
-                    hover:shadow-[0_0_60px_20px_rgba(59,130,246,0.7),0_0_120px_40px_rgba(168,85,247,0.5)]
                   `}
+                  style={{
+                    borderColor: aboutData.profileImageBorderColor || '#3B82F6',
+                    boxShadow: `
+                      0 0 40px 10px ${aboutData.profileImageBorderColor || 'rgba(99,102,241,0.5)'},
+                      0 0 80px 20px ${aboutData.profileImageBorderColor ? aboutData.profileImageBorderColor + '55' : 'rgba(168,85,247,0.3)'}
+                    `,
+                  }}
+                  onMouseEnter={e => {
+                    (e.currentTarget as HTMLElement).style.boxShadow = `
+                      0 0 60px 20px ${aboutData.profileImageBorderColor || 'rgba(59,130,246,0.7)'},
+                      0 0 120px 40px ${aboutData.profileImageBorderColor ? aboutData.profileImageBorderColor + '88' : 'rgba(168,85,247,0.5)'}
+                    `;
+                  }}
+                  onMouseLeave={e => {
+                    (e.currentTarget as HTMLElement).style.boxShadow = `
+                      0 0 40px 10px ${aboutData.profileImageBorderColor || 'rgba(99,102,241,0.5)'},
+                      0 0 80px 20px ${aboutData.profileImageBorderColor ? aboutData.profileImageBorderColor + '55' : 'rgba(168,85,247,0.3)'}
+                    `;
+                  }}
                 >
                   {aboutData.profileImage ? (
                     <img
