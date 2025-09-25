@@ -17,33 +17,12 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ROUTES } from "@/lib/routes";
 import ShinyText from '@/components/ui/ShinyText'
-
-
-interface AboutData {
-  name: string;
-}
+import { demoUserData } from "@/lib/demo-data";
 
 export function DemoNavigation() {
   const [isOpen, setIsOpen] = useState(false);
-  const [aboutData, setAboutData] = useState<AboutData | null>(null);
   const [isScrolled, setIsScrolled] = useState(false);
   const router = useRouter();
-
-  useEffect(() => {
-    const fetchAboutData = async () => {
-      try {
-        const response = await fetch("/api/about");
-        if (response.ok) {
-          const data = await response.json();
-          setAboutData(data);
-        }
-      } catch (error) {
-        console.error("Error fetching about data for navigation:", error);
-      }
-    };
-
-    fetchAboutData();
-  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -82,50 +61,65 @@ export function DemoNavigation() {
 
           <div className="hidden md:block">
             <div className="ml-10 flex items-center space-x-6">
-              <a
-                href="#home"
+              <button
+                onClick={() => {
+                  const element = document.getElementById("home");
+                  if (element) element.scrollIntoView({ behavior: "smooth" });
+                }}
                 className="flex items-center space-x-1 text-white hover:text-blue-400 transition-colors group"
               >
                 <Home className="h-4 w-4 group-hover:scale-110 transition-transform" />
                 <span>Home</span>
-              </a>
-              <a
-                href="#about"
+              </button>
+              <button
+                onClick={() => {
+                  const element = document.getElementById("about");
+                  if (element) element.scrollIntoView({ behavior: "smooth" });
+                }}
                 className="flex items-center space-x-1 text-gray-300 hover:text-blue-400 transition-colors group"
               >
                 <User className="h-4 w-4 group-hover:scale-110 transition-transform" />
                 <span>About</span>
-              </a>
-              <a
-                href="#projects"
+              </button>
+              <button
+                onClick={() => {
+                  const element = document.getElementById("projects");
+                  if (element) element.scrollIntoView({ behavior: "smooth" });
+                }}
                 className="flex items-center space-x-1 text-gray-300 hover:text-blue-400 transition-colors group"
               >
                 <Code className="h-4 w-4 group-hover:scale-110 transition-transform" />
                 <span>Projects</span>
-              </a>
-              <a
-                href="#skills"
+              </button>
+              <button
+                onClick={() => {
+                  const element = document.getElementById("skills");
+                  if (element) element.scrollIntoView({ behavior: "smooth" });
+                }}
                 className="flex items-center space-x-1 text-gray-300 hover:text-blue-400 transition-colors group"
               >
                 <Zap className="h-4 w-4 group-hover:scale-110 transition-transform" />
                 <span>Skills</span>
-              </a>
-              <a
-                href="#contact"
+              </button>
+              <button
+                onClick={() => {
+                  const element = document.getElementById("contact");
+                  if (element) element.scrollIntoView({ behavior: "smooth" });
+                }}
                 className="flex items-center space-x-1 text-gray-300 hover:text-blue-400 transition-colors group"
               >
                 <Mail className="h-4 w-4 group-hover:scale-110 transition-transform" />
                 <span>Contact</span>
-              </a>
+              </button>
               <div className="h-6 w-px bg-gray-600"></div>
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => router.push(ROUTES.DASHBOARD)}
+                onClick={() => router.push('/demo-dashboard')}
                 className="text-gray-400 hover:text-blue-400 hover:bg-blue-400/10 transition-colors"
               >
                 <Settings className="h-4 w-4" />
-                profile
+                Dashboard
               </Button>
             </div>
           </div>
@@ -150,49 +144,69 @@ export function DemoNavigation() {
       {isOpen && (
         <div className="md:hidden bg-black/95 backdrop-blur-xl border-t border-white/10">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-            <a
-              href="#home"
-              className="flex items-center space-x-2 px-3 py-2 text-white hover:text-blue-400 hover:bg-blue-400/10 transition-colors rounded-lg"
+            <button
+              onClick={() => {
+                const element = document.getElementById("home");
+                if (element) element.scrollIntoView({ behavior: "smooth" });
+                setIsOpen(false);
+              }}
+              className="flex items-center space-x-2 px-3 py-2 text-white hover:text-blue-400 hover:bg-blue-400/10 transition-colors rounded-lg w-full"
             >
               <Home className="h-4 w-4" />
               <span>Home</span>
-            </a>
-            <a
-              href="#about"
-              className="flex items-center space-x-2 px-3 py-2 text-gray-300 hover:text-blue-400 hover:bg-blue-400/10 transition-colors rounded-lg"
+            </button>
+            <button
+              onClick={() => {
+                const element = document.getElementById("about");
+                if (element) element.scrollIntoView({ behavior: "smooth" });
+                setIsOpen(false);
+              }}
+              className="flex items-center space-x-2 px-3 py-2 text-gray-300 hover:text-blue-400 hover:bg-blue-400/10 transition-colors rounded-lg w-full"
             >
               <User className="h-4 w-4" />
               <span>About</span>
-            </a>
-            <a
-              href="#projects"
-              className="flex items-center space-x-2 px-3 py-2 text-gray-300 hover:text-blue-400 hover:bg-blue-400/10 transition-colors rounded-lg"
+            </button>
+            <button
+              onClick={() => {
+                const element = document.getElementById("projects");
+                if (element) element.scrollIntoView({ behavior: "smooth" });
+                setIsOpen(false);
+              }}
+              className="flex items-center space-x-2 px-3 py-2 text-gray-300 hover:text-blue-400 hover:bg-blue-400/10 transition-colors rounded-lg w-full"
             >
               <Code className="h-4 w-4" />
               <span>Projects</span>
-            </a>
-            <a
-              href="#skills"
-              className="flex items-center space-x-2 px-3 py-2 text-gray-300 hover:text-blue-400 hover:bg-blue-400/10 transition-colors rounded-lg"
+            </button>
+            <button
+              onClick={() => {
+                const element = document.getElementById("skills");
+                if (element) element.scrollIntoView({ behavior: "smooth" });
+                setIsOpen(false);
+              }}
+              className="flex items-center space-x-2 px-3 py-2 text-gray-300 hover:text-blue-400 hover:bg-blue-400/10 transition-colors rounded-lg w-full"
             >
               <Zap className="h-4 w-4" />
               <span>Skills</span>
-            </a>
-            <a
-              href="#contact"
-              className="flex items-center space-x-2 px-3 py-2 text-gray-300 hover:text-blue-400 hover:bg-blue-400/10 transition-colors rounded-lg"
+            </button>
+            <button
+              onClick={() => {
+                const element = document.getElementById("contact");
+                if (element) element.scrollIntoView({ behavior: "smooth" });
+                setIsOpen(false);
+              }}
+              className="flex items-center space-x-2 px-3 py-2 text-gray-300 hover:text-blue-400 hover:bg-blue-400/10 transition-colors rounded-lg w-full"
             >
               <Mail className="h-4 w-4" />
               <span>Contact</span>
-            </a>
+            </button>
 
             <div className="h-px bg-gray-600 my-2"></div>
             <button
-              onClick={() => router.push(ROUTES.DASHBOARD)}
+              onClick={() => router.push('/demo-dashboard')}
               className="flex items-center space-x-2 px-3 py-2 text-gray-400 hover:text-blue-400 hover:bg-blue-400/10 transition-colors rounded-lg w-full"
             >
               <Settings className="h-4 w-4" />
-              <span>profile</span>
+              <span>Dashboard</span>
             </button>
           </div>
         </div>
