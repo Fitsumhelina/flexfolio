@@ -1,6 +1,6 @@
 import dynamic from "next/dynamic"
 
-export type PatternId = "liquid-ether" | "light-rays" | "particles" | string
+export type PatternId = "liquid-ether" | "light-rays" | "particles" | "dot-grid" | string
 
 export type PatternEntry = {
   id: PatternId
@@ -58,6 +58,24 @@ export const PATTERNS: PatternEntry[] = [
       particleHoverFactor: 1,
       sizeRandomness: 1,
       cameraDistance: 20,
+    },
+  },
+  {
+    id: "dot-grid",
+    label: "Dot Grid",
+    component: dynamic(() => import("@/components/backgrounds/DotGrid").then(m => m.default), { ssr: false }) as any,
+    defaults: {
+      dotSize: 3,
+      gap: 8,
+      baseColor: "#5227FF",
+      activeColor: "#5227FF",
+      proximity: 80,
+      shockRadius: 150,
+      shockStrength: 3,
+      resistance: 750,
+      returnDuration: 1.5,
+      speedTrigger: 0.5,
+      maxSpeed: 2,
     },
   },
 ]
