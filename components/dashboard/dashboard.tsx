@@ -201,6 +201,7 @@ export function Dashboard() {
   const handleSaveHero = async () => {
     await saveAboutPartial(
       {
+        name: aboutForm.name,
         heroTitle: aboutForm.heroTitle,
         heroDescription: aboutForm.heroDescription,
         heroBackgroundMode: aboutForm.heroBackgroundMode,
