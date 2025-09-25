@@ -15,8 +15,8 @@ export const demoUserData = {
   linkedin: "https://linkedin.com/in/alexchen",
   x: "https://x.com/alexchen_dev",
   telegram: "https://t.me/alexchen_dev",
-  heroTitle: "Architect of the Web & Digital Alchemist",
-  heroDescription: "From a young age, I've been captivated by the logic and creativity of code. At 16, I've already dived deep into the professional development world, transforming complex problems into elegant, high-performance digital solutions. My expertise spans the full stack, from crafting beautiful, intuitive user interfaces to engineering robust and scalable backend systems.",
+  heroTitle: "Web architect",
+  heroDescription: "From a young age, I've been captivated by the logic and creativity of code. At 16, I've already dived deep into the professional development world",
 }
 
 export const demoProjects = [
