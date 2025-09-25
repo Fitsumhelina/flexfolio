@@ -1,14 +1,14 @@
 "use client"
 
-import { Hero } from "@/components/hero"
-import { About } from "@/components/about"
-import { Projects } from "@/components/projects"
-import { Skills } from "@/components/skills"
-import { Contact } from "@/components/contact"
-import { Navigation } from "@/components/navigation"
+import { Hero } from "@/components/demo-portfolio/hero"
+import { About } from "@/components/demo-portfolio/about"
+import { Projects } from "@/components/demo-portfolio/projects"
+import { Skills } from "@/components/demo-portfolio/skills"
+import { Contact } from "@/components/demo-portfolio/contact"
 import { Button } from "@/components/ui/button"
 import { ArrowLeft, ExternalLink } from "lucide-react"
 import { useRouter } from "next/navigation"
+import { DemoNavigation } from "./demo-nav"
 
 export function DemoPortfolio() {
   const router = useRouter()
@@ -42,7 +42,8 @@ export function DemoPortfolio() {
       </div>
 
       {/* Original Portfolio Content */}
-      <Navigation />
+      <DemoNavigation />
+      <br />
       <Hero />
       <About />
       <Projects />
