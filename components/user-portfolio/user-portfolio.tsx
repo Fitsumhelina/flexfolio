@@ -228,17 +228,36 @@ export function UserPortfolio({ username }: UserPortfolioProps) {
             className={`absolute inset-0 w-full h-full object-cover opacity-40 ${`hero-blur-${aboutData.heroBackgroundBlurLevel ?? 0}`}`}
           />
         ) : (
-          <div
-            className={`hero-animated-bg ${
-              (aboutData.heroGradientPreset as number) === 2
-                ? 'hero-bg-2'
-                : (aboutData.heroGradientPreset as number) === 3
-                ? 'hero-bg-3'
-                : (aboutData.heroGradientPreset as number) === 4
-                ? 'hero-bg-4'
-                : 'hero-bg-1'
-            } ${`hero-blur-${aboutData.heroBackgroundBlurLevel ?? 0}`}`}
-          />
+          (() => {
+            const mode = (aboutData as any).heroBackgroundMode
+            if (mode === 'pattern') {
+              const id = (aboutData as any).heroPatternId || 'liquid-ether'
+              const props = (aboutData as any).heroPatternProps || {}
+              try {
+                const Liquid = require("@/components/LiquidEther").default
+                if (id === 'liquid-ether') {
+                  return (
+                    <div className={`absolute inset-0 ${`hero-blur-${aboutData.heroBackgroundBlurLevel ?? 0}`}`}>
+                      <Liquid {...props} />
+                    </div>
+                  )
+                }
+              } catch {}
+            }
+            return (
+              <div
+                className={`hero-animated-bg ${
+                  (aboutData.heroGradientPreset as number) === 2
+                    ? 'hero-bg-2'
+                    : (aboutData.heroGradientPreset as number) === 3
+                    ? 'hero-bg-3'
+                    : (aboutData.heroGradientPreset as number) === 4
+                    ? 'hero-bg-4'
+                    : 'hero-bg-1'
+                } ${`hero-blur-${aboutData.heroBackgroundBlurLevel ?? 0}`}`}
+              />
+            )
+          })()
         )}
 
         <div className="relative z-10 max-w-3xl mx-auto text-center px-4">
