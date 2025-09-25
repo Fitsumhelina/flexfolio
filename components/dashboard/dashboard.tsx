@@ -645,28 +645,7 @@ export function Dashboard() {
                     >
                       {user.portfolioData?.about?.bio ? "Complete" : "Incomplete"}
                     </Badge>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => {
-                        // Switch to content tab and scroll to about section
-                        const tabsList = document.querySelector('[role="tablist"]')
-                        const contentTab = document.querySelector('[data-state="inactive"][value="content"]') as HTMLElement
-                        if (contentTab) {
-                          contentTab.click()
-                          setTimeout(() => {
-                            const aboutSection = document.querySelector('[data-card="about-section"]')
-                            if (aboutSection) {
-                              aboutSection.scrollIntoView({ behavior: 'smooth', block: 'start' })
-                            }
-                          }, 100)
-                        }
-                      }}
-                      className="text-black border-white/40 hover:bg-white/10 hover:border-white/60 hover:text-white"
-                    >
-                      <Edit className="h-4 w-4 mr-2" />
-                      Edit
-                    </Button>
+      
                   </div>
                 </CardContent>
               </Card>
