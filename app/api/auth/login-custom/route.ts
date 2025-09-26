@@ -53,7 +53,7 @@ export async function POST(request: NextRequest) {
     // Return user without password
     const { password: _, ...userWithoutPassword } = user;
 
-    // Set HTTP-only cookie
+    // Set HTTP-only cookie with user data
     const response = NextResponse.json({
       message: "Login successful",
       user: {
@@ -63,14 +63,29 @@ export async function POST(request: NextRequest) {
     })
 
     console.log('Setting auth-token cookie for user:', user.email)
+    
+    // Set both JWT token and user data cookies
     response.cookies.set('auth-token', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
+      path: '/',
+      maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+    })
+    
+    // Also set user data cookie for easier access
+    response.cookies.set('user-data', JSON.stringify({
+      ...userWithoutPassword,
+      _id: user._id.toString(),
+    }), {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      path: '/',
       maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
     })
 
-    console.log('Cookie set successfully')
+    console.log('Cookies set successfully')
     return response
   } catch (error) {
     console.error("Login error:", error);
