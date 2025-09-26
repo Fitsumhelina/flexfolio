@@ -15,7 +15,7 @@ import {
   BarChart3,
   Settings
 } from "lucide-react"
-import { ROUTES } from "@/lib/routes"
+import { ROUTES, userDashboardProjects, userDashboardSkills } from "@/lib/routes"
 
 interface User {
   portfolioData?: {
@@ -27,9 +27,10 @@ interface User {
 
 interface DashboardOverviewProps {
   user: User
+  username?: string
 }
 
-export function DashboardOverview({ user }: DashboardOverviewProps) {
+export function DashboardOverview({ user, username }: DashboardOverviewProps) {
   const router = useRouter()
 
   return (
@@ -82,7 +83,7 @@ export function DashboardOverview({ user }: DashboardOverviewProps) {
               <Button 
                 variant="outline" 
                 size="sm"
-                onClick={() => router.push(ROUTES.DASHBOARD_PROJECTS)}
+                onClick={() => router.push(username ? userDashboardProjects(username) : ROUTES.DASHBOARD_PROJECTS)}
                 className="border-white/40 text-black hover:bg-white/10 hover:border-white/60 hover:text-white"
               >
                 <Plus className="h-4 w-4 mr-2" />
@@ -112,7 +113,7 @@ export function DashboardOverview({ user }: DashboardOverviewProps) {
               <Button 
                 variant="outline" 
                 size="sm"
-                onClick={() => router.push(ROUTES.DASHBOARD_SKILLS)}
+                onClick={() => router.push(username ? userDashboardSkills(username) : ROUTES.DASHBOARD_SKILLS)}
                 className="border-white/40 text-black hover:bg-white/10 hover:border-white/60 hover:text-white"
               >
                 <Plus className="h-4 w-4 mr-2" />
@@ -131,7 +132,7 @@ export function DashboardOverview({ user }: DashboardOverviewProps) {
             <div className="flex items-center justify-between">
               <CardTitle className="text-white">Recent Projects</CardTitle>
               <Button 
-                onClick={() => router.push(ROUTES.DASHBOARD_PROJECTS)}
+                onClick={() => router.push(username ? userDashboardProjects(username) : ROUTES.DASHBOARD_PROJECTS)}
                 className="bg-blue-500 hover:bg-blue-600 text-white"
               >
                 <Plus className="h-4 w-4 mr-2" />
@@ -156,7 +157,7 @@ export function DashboardOverview({ user }: DashboardOverviewProps) {
                     <Button 
                       variant="ghost" 
                       size="sm" 
-                      onClick={() => router.push(ROUTES.DASHBOARD_PROJECTS)}
+                      onClick={() => router.push(username ? userDashboardProjects(username) : ROUTES.DASHBOARD_PROJECTS)}
                       className="text-gray-400 hover:text-white"
                     >
                       <Edit className="h-4 w-4" />
@@ -174,7 +175,7 @@ export function DashboardOverview({ user }: DashboardOverviewProps) {
                   <h4 className="text-white font-medium mb-2">No Projects Yet</h4>
                   <p className="text-gray-400 text-sm mb-4">Start building your portfolio by adding your first project.</p>
                   <Button 
-                    onClick={() => router.push(ROUTES.DASHBOARD_PROJECTS)}
+                    onClick={() => router.push(username ? userDashboardProjects(username) : ROUTES.DASHBOARD_PROJECTS)}
                     className="bg-blue-500 hover:bg-blue-600 text-white"
                   >
                     <Plus className="h-4 w-4 mr-2" />
@@ -197,7 +198,7 @@ export function DashboardOverview({ user }: DashboardOverviewProps) {
           <CardContent>
             <div className="grid grid-cols-2 gap-4">
               <Button 
-                onClick={() => router.push(ROUTES.DASHBOARD_PROJECTS)}
+                onClick={() => router.push(username ? userDashboardProjects(username) : ROUTES.DASHBOARD_PROJECTS)}
                 className="bg-blue-500 hover:bg-blue-600 text-white h-auto p-6 flex flex-col items-center space-y-3 group"
               >
                 <Plus className="h-6 w-6" />

@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation"
 import { Card, CardContent } from "@/components/ui/card"
 import { BarChart3, TrendingUp, Mail, Zap } from "lucide-react"
-import { ROUTES } from "@/lib/routes"
+import { ROUTES, userDashboard, userDashboardMail, userDashboardProjects, userDashboardSkills } from "@/lib/routes"
 
 interface User {
   portfolioData?: {
@@ -16,9 +16,10 @@ interface DashboardStatsProps {
   user: User
   messageCount: number
   unreadCount: number
+  username?: string
 }
 
-export function DashboardStats({ user, messageCount, unreadCount }: DashboardStatsProps) {
+export function DashboardStats({ user, messageCount, unreadCount, username }: DashboardStatsProps) {
   const router = useRouter()
 
   return (
@@ -26,7 +27,7 @@ export function DashboardStats({ user, messageCount, unreadCount }: DashboardSta
       <Card className="bg-gray-900/50 border-gray-700 hover:border-blue-500/50 transition-all duration-300">
         <CardContent className="p-6">
           <div className="flex items-center justify-between cursor-pointer"
-          onClick={() => router.push(ROUTES.DASHBOARD_PROJECTS)}
+          onClick={() => router.push(username ? userDashboardProjects(username) : ROUTES.DASHBOARD_PROJECTS)}
           >
             <div>
               <p className="text-gray-400 text-sm font-medium">Total Projects</p>
@@ -59,7 +60,7 @@ export function DashboardStats({ user, messageCount, unreadCount }: DashboardSta
         <CardContent className="p-6">
           <div
             className="flex items-center justify-between cursor-pointer"
-            onClick={() => router.push(ROUTES.DASHBOARD_MAIL)}
+            onClick={() => router.push(username ? userDashboardMail(username) : ROUTES.DASHBOARD_MAIL)}
           >
             <div>
               <p className="text-gray-400 text-sm font-medium">Contact Messages</p>
@@ -76,7 +77,7 @@ export function DashboardStats({ user, messageCount, unreadCount }: DashboardSta
       <Card className="bg-gray-900/50 border-gray-700 hover:border-orange-500/50 transition-all duration-300">
         <CardContent className="p-6">
           <div className="flex items-center justify-between cursor-pointer"
-          onClick={() => router.push(ROUTES.DASHBOARD_SKILLS)}
+          onClick={() => router.push(username ? userDashboardSkills(username) : ROUTES.DASHBOARD_SKILLS)}
           >
             <div>
               <p className="text-gray-400 text-sm font-medium">Skills Listed</p>
