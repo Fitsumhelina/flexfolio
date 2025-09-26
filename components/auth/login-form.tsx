@@ -1,16 +1,16 @@
 "use client"
 
 import type React from "react"
-
 import { useState } from "react"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { ROUTES } from "@/lib/routes"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Eye, EyeOff, Lock, Mail } from "lucide-react"
+import { Eye, EyeOff, Lock, Mail, CheckCircle } from "lucide-react"
+import { authClient } from "@/lib/auth-client"
 
 export function LoginForm() {
   const [email, setEmail] = useState("")
@@ -19,6 +19,8 @@ export function LoginForm() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState("")
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const registered = searchParams.get('registered')
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -26,27 +28,50 @@ export function LoginForm() {
     setError("")
 
     try {
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      })
+      console.log('Attempting login with:', { email })
+      
+      // Try Better Auth first, fallback to custom API
+      try {
+        const { data, error } = await authClient.signIn.email({
+          email,
+          password,
+        })
 
-      const data = await response.json()
+        console.log('Better Auth login response:', { data, error })
 
-      if (response.ok) {
-        // Store user data in localStorage for demo purposes
-        localStorage.setItem('user', JSON.stringify(data.user))
-        localStorage.setItem('isAuthenticated', 'true')
+        if (error) {
+          throw new Error(error.message || 'Better Auth login failed')
+        } else if (data?.user) {
+          // Redirect to dashboard using username
+          const username = (data.user as any).username || data.user.email.split('@')[0]
+          router.push(`/${username}/dashboard`)
+          return
+        }
+      } catch (betterAuthError) {
+        console.log('Better Auth failed, trying custom API:', betterAuthError)
         
-        // Redirect to dashboard
-      router.push(`/${data.user.username}/dashboard`)
-      } else {
-        setError(data.error || 'Login failed')
+        // Fallback to custom login API
+        const response = await fetch('/api/auth/login-custom', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ email, password }),
+        })
+
+        const data = await response.json()
+        console.log('Custom API login response:', data)
+
+        if (response.ok) {
+          // Redirect to dashboard using username
+          const username = data.user.username || data.user.email.split('@')[0]
+          router.push(`/${username}/dashboard`)
+        } else {
+          setError(data.error || 'Login failed')
+        }
       }
     } catch (error) {
+      console.error('Login catch error:', error)
       setError('Network error. Please try again.')
     }
 
@@ -68,6 +93,14 @@ export function LoginForm() {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
+            {registered && (
+              <Alert className="bg-green-900/20 border-green-500/30 text-green-400">
+                <CheckCircle className="h-4 w-4" />
+                <AlertDescription>
+                  Account created successfully! Please sign in with your credentials.
+                </AlertDescription>
+              </Alert>
+            )}
             {error && (
               <Alert className="bg-red-900/20 border-red-500/30 text-red-400">
                 <AlertDescription>{error}</AlertDescription>

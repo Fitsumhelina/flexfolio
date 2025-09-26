@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Alert, AlertDescription } from "@/components/ui/alert"
+import { useSession } from "@/components/auth/session-provider"
 import { 
   ArrowLeft, 
   Plus, 
@@ -41,6 +42,7 @@ interface SkillsManagerProps {
 }
 
 export function SkillsManager({ username }: SkillsManagerProps) {
+  const { user: sessionUser, isLoading: sessionLoading } = useSession()
   const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [isSaving, setIsSaving] = useState(false)
@@ -62,25 +64,17 @@ export function SkillsManager({ username }: SkillsManagerProps) {
   ]
 
   useEffect(() => {
-    // Check if user is authenticated
-    const isAuthenticated = localStorage.getItem('isAuthenticated')
-    const userData = localStorage.getItem('user')
+    if (sessionLoading) return
 
-    if (!isAuthenticated || !userData) {
-    router.push(ROUTES.LOGIN)
+    if (!sessionUser) {
+      router.push(ROUTES.LOGIN)
       return
     }
 
-    try {
-      const parsedUser = JSON.parse(userData)
-      setUser(parsedUser)
-    } catch (error) {
-      console.error('Error parsing user data:', error)
-    router.push(ROUTES.LOGIN)
-    }
+    setUser(sessionUser)
 
     setIsLoading(false)
-  }, [router])
+  }, [sessionUser, sessionLoading, router])
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target
@@ -130,7 +124,6 @@ export function SkillsManager({ username }: SkillsManagerProps) {
             skills: updatedSkills
           }
         }
-        localStorage.setItem('user', JSON.stringify(updatedUser))
         setUser(updatedUser)
         
         setMessage({ type: 'success', text: editingSkill ? 'Skill updated successfully!' : 'Skill added successfully!' })
@@ -179,7 +172,6 @@ export function SkillsManager({ username }: SkillsManagerProps) {
             skills: updatedSkills
           }
         }
-        localStorage.setItem('user', JSON.stringify(updatedUser))
         setUser(updatedUser)
         setMessage({ type: 'success', text: 'Skill deleted successfully!' })
       }
