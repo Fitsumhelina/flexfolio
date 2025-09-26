@@ -64,22 +64,22 @@ export function UserAbout({ aboutData }: AboutProps) {
                   transition-shadow duration-300
                 `}
                 style={{
-                  borderColor: aboutData.profileImageBorderColor || '#3B82F6',
+                  borderColor: aboutData.profileImageBorderColor,
                   boxShadow: `
-                    0 0 40px 10px ${aboutData.profileImageBorderColor || 'rgba(99,102,241,0.5)'},
-                    0 0 80px 20px ${aboutData.profileImageBorderColor ? aboutData.profileImageBorderColor + '55' : 'rgba(168,85,247,0.3)'}
+                    0 0 40px 10px ${aboutData.profileImageBorderColor},
+                    0 0 80px 20px ${aboutData.profileImageBorderColor}55
                   `,
                 }}
                 onMouseEnter={e => {
                   (e.currentTarget as HTMLElement).style.boxShadow = `
-                    0 0 60px 20px ${aboutData.profileImageBorderColor || 'rgba(59,130,246,0.7)'},
-                    0 0 120px 40px ${aboutData.profileImageBorderColor ? aboutData.profileImageBorderColor + '88' : 'rgba(168,85,247,0.5)'}
+                    0 0 60px 20px ${aboutData.profileImageBorderColor},
+                    0 0 120px 40px ${aboutData.profileImageBorderColor}88
                   `;
                 }}
                 onMouseLeave={e => {
                   (e.currentTarget as HTMLElement).style.boxShadow = `
-                    0 0 40px 10px ${aboutData.profileImageBorderColor || 'rgba(99,102,241,0.5)'},
-                    0 0 80px 20px ${aboutData.profileImageBorderColor ? aboutData.profileImageBorderColor + '55' : 'rgba(168,85,247,0.3)'}
+                    0 0 40px 10px ${aboutData.profileImageBorderColor},
+                    0 0 80px 20px ${aboutData.profileImageBorderColor}55
                   `;
                 }}
               >
