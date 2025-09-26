@@ -78,9 +78,7 @@ export function LandingPage() {
             <div className="flex items-center space-x-4">
               <Button
                 variant="ghost"
-                onClick={() =>
-                  window.open("https://dev-fitsum.vercel.app", "_blank")
-                }
+                onClick={() => window.open("/demo", "_blank")}
                 className="text-gray-300 hover:text-white"
               >
                 <ExternalLink className="h-4 w-4 mr-2" />

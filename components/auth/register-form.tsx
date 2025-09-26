@@ -96,7 +96,7 @@ export function RegisterForm() {
         localStorage.setItem('isAuthenticated', 'true')
         
         // Redirect to dashboard
-        router.push(ROUTES.DASHBOARD)
+        router.push(`/${data.user.username}/dashboard`)
       } else {
         setError(data.error || 'Registration failed')
       }

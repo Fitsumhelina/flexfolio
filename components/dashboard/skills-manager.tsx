@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { ROUTES } from "@/lib/routes"
+import { ROUTES, userDashboard } from "@/lib/routes"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -36,7 +36,11 @@ interface User {
   }
 }
 
-export function SkillsManager() {
+interface SkillsManagerProps {
+  username?: string
+}
+
+export function SkillsManager({ username }: SkillsManagerProps) {
   const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [isSaving, setIsSaving] = useState(false)
@@ -224,7 +228,7 @@ export function SkillsManager() {
             <div className="flex items-center space-x-4">
               <Button 
                 variant="ghost" 
-                onClick={() => router.push(ROUTES.DASHBOARD)}
+                onClick={() => router.push(username ? userDashboard(username) : ROUTES.DASHBOARD)}
                 className="text-gray-300 hover:text-white"
               >
                 <ArrowLeft className="h-4 w-4 mr-2" />

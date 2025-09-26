@@ -138,7 +138,7 @@
     background-image: linear-gradient(90deg, rgba(237,0,194,1) 0%, rgba(199,87,188,1) 50%, rgba(168,83,237,1) 100%);
   }
 
-  .bg-card-gradient-content-about {
+  .bg-card-gradient-content-hero {
     background-image: linear-gradient(90deg, rgba(34,9,145,1) 0%, rgba(199,87,188,1) 50%, rgba(96,83,237,1) 100%);
   }
 
@@ -146,4 +146,32 @@
   .bg-button-gradient-multicolor {
     background-image: linear-gradient(90deg, #2A7B9B 0%, #50BB88 33%, #57C785 66%, #EDDD53 100%);
   }
+
+  /* Animated hero background variants */
+  @keyframes heroGradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  .hero-animated-bg {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-size: 200% 200%;
+    animation: heroGradientShift 15s ease infinite;
+    opacity: 0.9;
+  }
+
+  .hero-bg-1 { background-image: radial-gradient(circle at 20% 30%, rgba(59,130,246,0.3), transparent 40%), radial-gradient(circle at 80% 20%, rgba(168,85,247,0.3), transparent 40%), radial-gradient(circle at 40% 80%, rgba(34,197,94,0.25), transparent 40%), linear-gradient(to bottom right, rgba(0,0,0,0.9), rgba(2,6,23,0.95)); }
+  .hero-bg-2 { background-image: radial-gradient(circle at 30% 20%, rgba(14,165,233,0.3), transparent 40%), radial-gradient(circle at 70% 70%, rgba(244,63,94,0.25), transparent 40%), radial-gradient(circle at 90% 30%, rgba(99,102,241,0.25), transparent 40%), linear-gradient(to bottom right, rgba(0,0,0,0.9), rgba(2,6,23,0.95)); }
+  .hero-bg-3 { background-image: radial-gradient(circle at 15% 70%, rgba(16,185,129,0.3), transparent 40%), radial-gradient(circle at 60% 30%, rgba(147,51,234,0.3), transparent 40%), radial-gradient(circle at 85% 80%, rgba(234,179,8,0.25), transparent 40%), linear-gradient(to bottom right, rgba(0,0,0,0.9), rgba(2,6,23,0.95)); }
+  .hero-bg-4 { background-image: radial-gradient(circle at 50% 10%, rgba(236,72,153,0.3), transparent 40%), radial-gradient(circle at 10% 90%, rgba(6,182,212,0.3), transparent 40%), radial-gradient(circle at 90% 60%, rgba(59,130,246,0.25), transparent 40%), linear-gradient(to bottom right, rgba(0,0,0,0.9), rgba(2,6,23,0.95)); }
+
+  /* Blur levels for hero overlay/image */
+  .hero-blur-0 { filter: blur(0px); }
+  .hero-blur-1 { filter: blur(2px); }
+  .hero-blur-2 { filter: blur(4px); }
+  .hero-blur-3 { filter: blur(8px); }
+  .hero-blur-4 { filter: blur(12px); }
 }

@@ -1,14 +1,14 @@
 "use client"
 
-import { Hero } from "@/components/hero"
-import { About } from "@/components/about"
-import { Projects } from "@/components/projects"
-import { Skills } from "@/components/skills"
-import { Contact } from "@/components/contact"
-import { Navigation } from "@/components/navigation"
+import { DemoHero } from "@/components/demo-portfolio/hero"
+import { DemoAbout } from "@/components/demo-portfolio/about"
+import { DemoProjects } from "@/components/demo-portfolio/projects"
+import { DemoSkills } from "@/components/demo-portfolio/skills"
+import { DemoContact } from "@/components/demo-portfolio/contact"
 import { Button } from "@/components/ui/button"
 import { ArrowLeft, ExternalLink } from "lucide-react"
 import { useRouter } from "next/navigation"
+import { DemoNavigation } from "./demo-nav"
 
 export function DemoPortfolio() {
   const router = useRouter()
@@ -42,12 +42,14 @@ export function DemoPortfolio() {
       </div>
 
       {/* Original Portfolio Content */}
-      <Navigation />
-      <Hero />
-      <About />
-      <Projects />
-      <Skills />
-      <Contact />
+      <DemoNavigation />
+      <br />
+      <br />
+      <DemoHero />
+      <DemoAbout />
+      <DemoProjects />
+      <DemoSkills />
+      <DemoContact />
 
       {/* Demo Footer */}
       <div className="bg-gray-900 border-t border-gray-800 py-8">
@@ -57,19 +59,14 @@ export function DemoPortfolio() {
             Join thousands of developers who have already created their perfect portfolio with FlexFolio
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button 
-              onClick={() => router.push('/register')}
-              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
-            >
-              Get Started Free
-            </Button>
+    
             <Button 
               variant="outline"
-              onClick={() => window.open('https://dev-fitsum.vercel.app', '_blank')}
-              className="border-gray-600 text-gray-300 hover:bg-gray-800"
+              onClick={() => window.open('/register', '_blank')}
+              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
             >
               <ExternalLink className="h-4 w-4 mr-2" />
-              View Live Demo
+              Start Here
             </Button>
           </div>
         </div>
