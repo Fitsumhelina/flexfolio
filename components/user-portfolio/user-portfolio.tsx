@@ -125,7 +125,7 @@ export function UserPortfolio({ username }: UserPortfolioProps) {
 
   return (
     <div className="min-h-screen bg-black text-white">
-      <Navigation />
+      <Navigation username={username} />
       <UserHero aboutData={aboutData} />
       <UserAbout aboutData={aboutData} />
       <UserProjects projects={portfolioData.projects || []} />

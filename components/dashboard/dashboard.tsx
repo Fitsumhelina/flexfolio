@@ -32,7 +32,11 @@ interface User {
   updatedAt?: string
 }
 
-export function Dashboard() {
+interface DashboardProps {
+  username?: string
+}
+
+export function Dashboard({ username }: DashboardProps) {
   const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [messageCount, setMessageCount] = useState(0)
@@ -83,6 +87,11 @@ export function Dashboard() {
 
     try {
       const parsedUser = JSON.parse(userData)
+      // If username is provided, verify the user is accessing their own dashboard
+      if (username && parsedUser.username !== username) {
+        router.push(`/${parsedUser.username}/dashboard`)
+        return
+      }
       setUser(parsedUser)
       // Load message counts
       fetch(`/api/messages?username=${parsedUser.username}`)
@@ -126,7 +135,7 @@ export function Dashboard() {
     }
 
     setIsLoading(false)
-  }, [router])
+  }, [router, username])
 
   const handleAboutInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
@@ -271,7 +280,7 @@ export function Dashboard() {
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <DashboardWelcome user={user} />
-        <DashboardStats user={user} messageCount={messageCount} unreadCount={unreadCount} />
+        <DashboardStats user={user} messageCount={messageCount} unreadCount={unreadCount} username={user.username} />
         <PortfolioUrl user={user} onViewPortfolio={handleViewPortfolio} />
 
         {/* Dashboard Tabs */}
@@ -300,7 +309,7 @@ export function Dashboard() {
           </TabsList>
 
           <TabsContent value="overview" className="space-y-6">
-            <DashboardOverview user={user} />
+            <DashboardOverview user={user} username={user.username} />
           </TabsContent>
 
           <TabsContent value="inbox" className="space-y-6">
