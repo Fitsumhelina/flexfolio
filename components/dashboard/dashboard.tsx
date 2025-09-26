@@ -161,6 +161,7 @@ export function Dashboard({ username }: DashboardProps) {
         experience: currentAbout.experience || "",
         projectsCompleted: currentAbout.projectsCompleted || "",
         profileImage: currentAbout.profileImage || "",
+        profileImageBorderColor: currentAbout.profileImageBorderColor || "#3B82F6",
         // contact
         email: currentAbout.email ?? aboutForm.email,
         phone: currentAbout.phone ?? aboutForm.phone,
