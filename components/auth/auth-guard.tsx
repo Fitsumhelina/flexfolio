@@ -29,7 +29,9 @@ export function AuthGuard({ children }: AuthGuardProps) {
         }
         
         // Fallback to custom session API
-        const response = await fetch('/api/auth/session')
+        const response = await fetch('/api/auth/session', {
+          credentials: 'include' // Important: include cookies
+        })
         const data = await response.json()
         
         if (response.ok && data.user) {

@@ -17,43 +17,56 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
   const [session, setSession] = useState<any | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
+  console.log('SessionProvider: Component mounted')
+
   useEffect(() => {
+    console.log('SessionProvider: useEffect triggered')
+    
     const getSession = async () => {
+      console.log('SessionProvider: Starting session check')
       try {
         // Try Better Auth first, fallback to custom API
         try {
+          console.log('SessionProvider: Trying Better Auth session')
           const sessionData = await authClient.getSession()
+          console.log('SessionProvider: Better Auth session result:', sessionData)
           setSession(sessionData)
           setUser(sessionData?.data?.user || null)
         } catch (betterAuthError) {
-          console.log('Better Auth session failed, trying custom API:', betterAuthError)
+          console.log('SessionProvider: Better Auth session failed, trying custom API:', betterAuthError)
           
           // Fallback to custom session API
-          console.log('Fetching session from /api/auth/session')
-          const response = await fetch('/api/auth/session')
+          console.log('SessionProvider: Fetching session from /api/auth/session')
+          const response = await fetch('/api/auth/session', {
+            credentials: 'include' // Important: include cookies
+          })
           const data = await response.json()
-          console.log('Session API response:', { ok: response.ok, user: data.user ? 'exists' : 'null' })
+          console.log('SessionProvider: Session API response:', { ok: response.ok, user: data.user ? 'exists' : 'null' })
           
           if (response.ok && data.user) {
-            console.log('Setting user session')
+            console.log('SessionProvider: Setting user session')
             setSession({ data: { user: data.user } })
             setUser(data.user)
           } else {
-            console.log('No user session found')
+            console.log('SessionProvider: No user session found')
             setSession(null)
             setUser(null)
           }
         }
       } catch (error) {
-        console.error("Session error:", error)
+        console.error("SessionProvider: Session error:", error)
         setSession(null)
         setUser(null)
       } finally {
+        console.log('SessionProvider: Session check complete')
         setIsLoading(false)
       }
     }
 
-    getSession()
+    // Add a small delay to ensure the component is fully mounted
+    setTimeout(() => {
+      getSession()
+    }, 100)
 
     // Note: Better Auth doesn't have onSessionChange, we'll handle session updates manually
     // return () => unsubscribe()
@@ -68,7 +81,10 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
         console.log('Better Auth logout failed, trying custom API:', betterAuthError)
         
         // Fallback to custom logout API
-        await fetch('/api/auth/logout', { method: 'POST' })
+        await fetch('/api/auth/logout', { 
+          method: 'POST',
+          credentials: 'include'
+        })
       }
       
       setSession(null)

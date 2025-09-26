@@ -56,16 +56,20 @@ export function LoginForm() {
           headers: {
             'Content-Type': 'application/json',
           },
+          credentials: 'include', // Important: include cookies
           body: JSON.stringify({ email, password }),
         })
 
         const data = await response.json()
         console.log('Custom API login response:', data)
 
-        if (response.ok) {
-          // Redirect to dashboard using username
-          const username = data.user.username || data.user.email.split('@')[0]
-          router.push(`/${username}/dashboard`)
+        if (response.ok && data.user) {
+          // Wait a moment for cookie to be set, then redirect
+          setTimeout(() => {
+            const username = data.user.username || data.user.email.split('@')[0]
+            console.log('Redirecting to dashboard for username:', username)
+            router.push(`/${username}/dashboard`)
+          }, 100)
         } else {
           setError(data.error || 'Login failed')
         }

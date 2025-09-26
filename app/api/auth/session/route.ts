@@ -7,8 +7,26 @@ const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-producti
 
 export async function GET(request: NextRequest) {
   try {
+    console.log('Session API called')
+    console.log('All cookies:', request.cookies.getAll())
+
+    // Try to get user data from cookie first (simpler approach)
+    const userDataCookie = request.cookies.get('user-data')?.value
+    if (userDataCookie) {
+      try {
+        const userData = JSON.parse(userDataCookie)
+        console.log('User data found in cookie:', userData.email)
+        return NextResponse.json({
+          user: userData,
+        });
+      } catch (parseError) {
+        console.log('Failed to parse user data cookie:', parseError)
+      }
+    }
+
+    // Fallback to JWT token approach
     const token = request.cookies.get('auth-token')?.value
-    console.log('Session API called, token:', token ? 'exists' : 'missing')
+    console.log('Token:', token ? 'exists' : 'missing')
 
     if (!token) {
       console.log('No token found, returning null user')

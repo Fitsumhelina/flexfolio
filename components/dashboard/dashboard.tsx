@@ -78,19 +78,29 @@ export function Dashboard({ username }: DashboardProps) {
   const [aboutMessage, setAboutMessage] = useState<string | null>(null)
 
   useEffect(() => {
-    if (sessionLoading) return
+    console.log('Dashboard: Session check', { sessionLoading, sessionUser: sessionUser ? 'exists' : 'null' })
+    
+    if (sessionLoading) {
+      console.log('Dashboard: Still loading session')
+      return
+    }
 
     if (!sessionUser) {
+      console.log('Dashboard: No session user, redirecting to login')
       router.push('/login')
       return
     }
 
+    console.log('Dashboard: Session user found:', sessionUser.email)
+
     // If username is provided, verify the user is accessing their own dashboard
     if (username && sessionUser.username !== username) {
+      console.log('Dashboard: Username mismatch, redirecting to correct dashboard')
       router.push(`/${sessionUser.username}/dashboard`)
       return
     }
 
+    console.log('Dashboard: Setting user and loading data')
     setUser(sessionUser)
     // Load message counts
     fetch(`/api/messages?username=${sessionUser.username}`)
