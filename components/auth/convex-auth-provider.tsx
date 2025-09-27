@@ -52,11 +52,28 @@ export function ConvexAuthProvider({ children }: { children: ReactNode }) {
 
   const login = async (email: string, password: string) => {
     try {
+      console.log("Auth provider: Attempting login for", email);
       const userData = await loginMutation({ email, password });
+      console.log("Auth provider: Login successful", userData);
       setUser(userData);
       localStorage.setItem("flexfolio-user", JSON.stringify(userData));
-    } catch (error) {
-      throw error;
+    } catch (error: any) {
+      console.error("Auth provider: Login error", error);
+      
+      // Extract meaningful error message
+      let errorMessage = "Login failed";
+      
+      if (error?.message) {
+        errorMessage = error.message;
+      } else if (error?.error) {
+        errorMessage = error.error;
+      } else if (typeof error === 'string') {
+        errorMessage = error;
+      }
+      
+      // Create a new error with the extracted message
+      const loginError = new Error(errorMessage);
+      throw loginError;
     }
   };
 

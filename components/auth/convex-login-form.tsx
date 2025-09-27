@@ -23,18 +23,57 @@ export function ConvexLoginForm() {
     setIsLoading(true);
     setError("");
 
+    // Basic validation
+    if (!email.trim()) {
+      setError("Email is required");
+      setIsLoading(false);
+      return;
+    }
+
+    if (!password.trim()) {
+      setError("Password is required");
+      setIsLoading(false);
+      return;
+    }
+
     try {
-      await login(email, password);
+      console.log("Attempting login for:", email);
+      await login(email.trim(), password);
+      
       // Get the username from the logged-in user
       const savedUser = localStorage.getItem("flexfolio-user");
       if (savedUser) {
         const user = JSON.parse(savedUser);
+        console.log("Login successful, redirecting to:", `/${user.username}/dashboard`);
         router.push(`/${user.username}/dashboard`);
       } else {
+        console.log("Login successful but no saved user, redirecting to dashboard");
         router.push("/dashboard");
       }
     } catch (err: any) {
-      setError(err.message || "Login failed");
+      console.error("Login error details:", err);
+      
+      // Handle different types of errors
+      let errorMessage = "Login failed";
+      
+      if (err?.message) {
+        errorMessage = err.message;
+      } else if (typeof err === 'string') {
+        errorMessage = err;
+      } else if (err?.error) {
+        errorMessage = err.error;
+      }
+      
+      // Provide more helpful error messages
+      if (errorMessage.includes("Invalid email or password")) {
+        errorMessage = "Invalid email or password. Please check your credentials or register a new account.";
+      } else if (errorMessage.includes("Email and password are required")) {
+        errorMessage = "Please enter both email and password.";
+      } else if (errorMessage.includes("unexpected error")) {
+        errorMessage = "An unexpected error occurred. Please try again.";
+      }
+      
+      setError(errorMessage);
     } finally {
       setIsLoading(false);
     }

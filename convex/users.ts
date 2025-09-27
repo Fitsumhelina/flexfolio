@@ -66,24 +66,46 @@ export const login = mutation({
     password: v.string(),
   },
   handler: async (ctx, args) => {
-    const user = await ctx.db
-      .query("users")
-      .withIndex("by_email", (q) => q.eq("email", args.email))
-      .first();
+    try {
+      // Validate input
+      if (!args.email || !args.password) {
+        throw new Error("Email and password are required");
+      }
 
-    if (!user) {
-      throw new Error("Invalid email or password");
+      const user = await ctx.db
+        .query("users")
+        .withIndex("by_email", (q) => q.eq("email", args.email))
+        .first();
+
+      if (!user) {
+        // For debugging: log that email was not found
+        console.log(`Login attempt failed: Email '${args.email}' not found in database`);
+        throw new Error("Invalid email or password");
+      }
+
+      // For now, compare plain text passwords
+      // In production, you should use Convex Auth or handle password verification in an action
+      if (user.password !== args.password) {
+        // For debugging: log that password was incorrect
+        console.log(`Login attempt failed: Incorrect password for email '${args.email}'`);
+        throw new Error("Invalid email or password");
+      }
+
+      // Return user without password
+      const { password, ...userWithoutPassword } = user;
+      console.log(`Login successful for user: ${user.email}`);
+      return userWithoutPassword;
+    } catch (error) {
+      // Log the error for debugging
+      console.error("Login error:", error);
+      
+      // Re-throw with a more user-friendly message
+      if (error instanceof Error) {
+        throw new Error(error.message);
+      } else {
+        throw new Error("An unexpected error occurred during login");
+      }
     }
-
-    // For now, compare plain text passwords
-    // In production, you should use Convex Auth or handle password verification in an action
-    if (user.password !== args.password) {
-      throw new Error("Invalid email or password");
-    }
-
-    // Return user without password
-    const { password, ...userWithoutPassword } = user;
-    return userWithoutPassword;
   },
 });
 
@@ -221,6 +243,36 @@ export const getAllUsers = query({
   args: {},
   handler: async (ctx) => {
     return await ctx.db.query("users").collect();
+  },
+});
+
+// Debug function to check user by email (for debugging login issues)
+export const debugUserByEmail = query({
+  args: { email: v.string() },
+  handler: async (ctx, args) => {
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_email", (q) => q.eq("email", args.email))
+      .first();
+    
+    if (!user) {
+      return { 
+        found: false, 
+        message: "User not found - this email is not registered",
+        suggestion: "Try registering a new account with this email"
+      };
+    }
+    
+    // Return user info without password for debugging
+    const { password, ...userInfo } = user;
+    return { 
+      found: true, 
+      message: "User found - email is registered",
+      user: userInfo,
+      hasPassword: !!password,
+      passwordLength: password?.length || 0,
+      suggestion: password ? "User has password set - check if password is correct" : "User has no password - this is an error"
+    };
   },
 });
 
