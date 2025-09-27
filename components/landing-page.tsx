@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useSession } from "@/components/auth/session-provider";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -20,9 +21,27 @@ import {
 
 export function LandingPage() {
   const router = useRouter();
+  const { user, isLoading } = useSession();
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
 
+  // Redirect to dashboard if user is already signed in
+  useEffect(() => {
+    if (!isLoading && user) {
+      router.push(`/${user.username}/dashboard`);
+    }
+  }, [user, isLoading, router]);
 
+  // Show loading state while checking authentication
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 flex items-center justify-center">
+        <div className="text-white text-center">
+          <div className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p>Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
   const features = [
     {
@@ -86,7 +105,7 @@ export function LandingPage() {
               </Button>
               <Button
                 onClick={() => router.push("/register")}
-                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+                variant="gradient"
               >
                 Get Started Free
               </Button>
@@ -122,7 +141,8 @@ export function LandingPage() {
               <Button
                 size="lg"
                 onClick={() => router.push("/register")}
-                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-lg px-8 py-4"
+                variant="gradient"
+                className="text-lg px-8 py-4"
               >
                 Start Building Free
                 <ArrowRight className="ml-2 h-5 w-5" />
@@ -273,7 +293,8 @@ export function LandingPage() {
           <Button
             size="lg"
             onClick={() => router.push("/register")}
-            className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-lg px-12 py-4"
+            variant="gradient"
+            className="text-lg px-12 py-4"
           >
             Get Started Free
             <ArrowRight className="ml-2 h-5 w-5" />

@@ -1,16 +1,16 @@
 "use client"
 
 import type React from "react"
-
 import { useState } from "react"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { ROUTES } from "@/lib/routes"
+import { useSession } from "@/components/auth/session-provider"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Eye, EyeOff, Lock, Mail } from "lucide-react"
+import { Eye, EyeOff, Lock, Mail, CheckCircle, Home } from "lucide-react"
 
 export function LoginForm() {
   const [email, setEmail] = useState("")
@@ -19,6 +19,9 @@ export function LoginForm() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState("")
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const registered = searchParams.get('registered')
+  const { refreshSession } = useSession()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -26,27 +29,34 @@ export function LoginForm() {
     setError("")
 
     try {
-      const response = await fetch('/api/auth/login', {
+      console.log('Attempting login with:', { email })
+      
+      // Use custom login API with HTTP-only cookies
+      const response = await fetch('/api/auth/login-custom', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include', // Important: include cookies
         body: JSON.stringify({ email, password }),
       })
 
       const data = await response.json()
+      console.log('Login API response:', data)
 
-      if (response.ok) {
-        // Store user data in localStorage for demo purposes
-        localStorage.setItem('user', JSON.stringify(data.user))
-        localStorage.setItem('isAuthenticated', 'true')
+      if (response.ok && data.user) {
+        // Refresh session to update the context
+        await refreshSession()
         
-        // Redirect to dashboard
-      router.push(`/${data.user.username}/dashboard`)
+        // Use hard redirect to ensure page reloads and session is detected
+        const username = data.user.username || data.user.email.split('@')[0]
+        console.log('Redirecting to dashboard for username:', username)
+        window.location.href = `/${username}/dashboard`
       } else {
         setError(data.error || 'Login failed')
       }
     } catch (error) {
+      console.error('Login catch error:', error)
       setError('Network error. Please try again.')
     }
 
@@ -68,6 +78,14 @@ export function LoginForm() {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
+            {registered && (
+              <Alert className="bg-green-900/20 border-green-500/30 text-green-400">
+                <CheckCircle className="h-4 w-4" />
+                <AlertDescription>
+                  Account created successfully! Please sign in with your credentials.
+                </AlertDescription>
+              </Alert>
+            )}
             {error && (
               <Alert className="bg-red-900/20 border-red-500/30 text-red-400">
                 <AlertDescription>{error}</AlertDescription>
@@ -128,7 +146,7 @@ export function LoginForm() {
             </Button>
           </form>
 
-          <div className="mt-6 text-center">
+          <div className="mt-6 text-center space-y-2">
             <p className="text-gray-400 text-sm">
               Don't have an account?{" "}
               <button
@@ -138,6 +156,13 @@ export function LoginForm() {
                 Sign up
               </button>
             </p>
+            <button
+              onClick={() => router.push('/')}
+              className="text-gray-400 hover:text-gray-300 text-sm underline flex items-center justify-center mx-auto"
+            >
+              <Home className="h-4 w-4 mr-1" />
+              Back to Home
+            </button>
           </div>
         </CardContent>
       </Card>

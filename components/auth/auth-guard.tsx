@@ -1,7 +1,5 @@
 "use client"
 
-import type React from "react"
-
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 
@@ -11,17 +9,33 @@ interface AuthGuardProps {
 
 export function AuthGuard({ children }: AuthGuardProps) {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null)
+  const [user, setUser] = useState<any>(null)
   const router = useRouter()
 
   useEffect(() => {
-    // Check authentication status
-    const authStatus = localStorage.getItem("isAuthenticated")
-    if (authStatus === "true") {
-      setIsAuthenticated(true)
-    } else {
-      setIsAuthenticated(false)
-      router.push("/login")
+    const checkAuth = async () => {
+      try {
+        // Use custom session API with HTTP-only cookies
+        const response = await fetch('/api/auth/session', {
+          credentials: 'include' // Important: include cookies
+        })
+        const data = await response.json()
+        
+        if (response.ok && data.user) {
+          setIsAuthenticated(true)
+          setUser(data.user)
+        } else {
+          setIsAuthenticated(false)
+          router.push("/")
+        }
+      } catch (error) {
+        console.error("Auth check error:", error)
+        setIsAuthenticated(false)
+        router.push("/")
+      }
     }
+
+    checkAuth()
   }, [router])
 
   if (isAuthenticated === null) {

@@ -15,6 +15,7 @@ import { DashboardDesign } from "./tabs/design"
 import { DashboardSettings } from "./tabs/settings"
 import { DashboardFooter } from "./footer"
 import { DashboardLoading } from "./loading"
+import { useSession } from "@/components/auth/session-provider"
 
 
 interface User {
@@ -37,6 +38,7 @@ interface DashboardProps {
 }
 
 export function Dashboard({ username }: DashboardProps) {
+  const { user: sessionUser, isLoading: sessionLoading, signOut } = useSession()
   const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [messageCount, setMessageCount] = useState(0)
@@ -76,66 +78,70 @@ export function Dashboard({ username }: DashboardProps) {
   const [aboutMessage, setAboutMessage] = useState<string | null>(null)
 
   useEffect(() => {
-    // Check if user is authenticated
-    const isAuthenticated = localStorage.getItem('isAuthenticated')
-    const userData = localStorage.getItem('user')
-
-    if (!isAuthenticated || !userData) {
-      router.push('/login')
+    console.log('Dashboard: Session check', { sessionLoading, sessionUser: sessionUser ? 'exists' : 'null' })
+    
+    if (sessionLoading) {
+      console.log('Dashboard: Still loading session')
       return
     }
 
-    try {
-      const parsedUser = JSON.parse(userData)
-      // If username is provided, verify the user is accessing their own dashboard
-      if (username && parsedUser.username !== username) {
-        router.push(`/${parsedUser.username}/dashboard`)
-        return
-      }
-      setUser(parsedUser)
-      // Load message counts
-      fetch(`/api/messages?username=${parsedUser.username}`)
-        .then(res => res.json())
-        .then(data => {
-          if (Array.isArray(data)) {
+    if (!sessionUser) {
+      console.log('Dashboard: No session user, redirecting to home')
+      router.push('/')
+      return
+    }
+
+    console.log('Dashboard: Session user found:', sessionUser.email)
+
+    // If username is provided, verify the user is accessing their own dashboard
+    if (username && sessionUser.username !== username) {
+      console.log('Dashboard: Username mismatch, redirecting to correct dashboard')
+      router.push(`/${sessionUser.username}/dashboard`)
+      return
+    }
+
+    console.log('Dashboard: Setting user and loading data')
+    setUser(sessionUser)
+    // Load message counts
+    fetch(`/api/messages?username=${sessionUser.username}`)
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data)) {
             setMessageCount(data.length)
             setUnreadCount(data.filter((m: any) => !m.isRead).length)
           }
         })
         .catch(() => {})
-      const about = parsedUser?.portfolioData?.about || {}
-      setAboutForm({
-        email: about.email || "",
-        phone: about.phone || "",
-        location: about.location || "",
-        github: about.github || "",
-        x: about.x || about.twitter || "",
-        telegram: about.telegram || "",
-        linkedin: about.linkedin || "",
-        heroTitle: about.heroTitle || about.title || "Full Stack Developer",
-        heroDescription: about.heroDescription || about.bio || "",
-        heroBackgroundMode: (about as any).heroBackgroundMode || "gradient",
-        heroGradientPreset: (about.heroGradientPreset as 1|2|3|4) || 1,
-        heroBackgroundImageUrl: about.heroBackgroundImageUrl || "",
-        heroBackgroundBlurLevel: (about.heroBackgroundBlurLevel as 0|1|2|3|4) || 0,
-        heroPatternId: (about as any).heroPatternId || "liquid-ether",
-        heroPatternProps: (about as any).heroPatternProps || {},
-        // About section fields
-        name: about.name || parsedUser.name || "",
-        title: about.title || "Full Stack Developer",
-        bio: about.bio || "I'm a passionate developer who loves creating amazing digital experiences.",
-        experience: about.experience || "1+",
-        projectsCompleted: about.projectsCompleted || "5+",
-        profileImage: about.profileImage || "",
-        profileImageBorderColor: about.profileImageBorderColor || "#3B82F6"
-      })
-    } catch (error) {
-      console.error('Error parsing user data:', error)
-      router.push('/login')
-    }
+    
+    const about = sessionUser?.portfolioData?.about || {}
+    setAboutForm({
+      email: about.email || "",
+      phone: about.phone || "",
+      location: about.location || "",
+      github: about.github || "",
+      x: about.x || about.twitter || "",
+      telegram: about.telegram || "",
+      linkedin: about.linkedin || "",
+      heroTitle: about.heroTitle || about.title || "Full Stack Developer",
+      heroDescription: about.heroDescription || about.bio || "",
+      heroBackgroundMode: (about as any).heroBackgroundMode || "gradient",
+      heroGradientPreset: (about.heroGradientPreset as 1|2|3|4) || 1,
+      heroBackgroundImageUrl: about.heroBackgroundImageUrl || "",
+      heroBackgroundBlurLevel: (about.heroBackgroundBlurLevel as 0|1|2|3|4) || 0,
+      heroPatternId: (about as any).heroPatternId || "liquid-ether",
+      heroPatternProps: (about as any).heroPatternProps || {},
+      // About section fields
+      name: about.name || sessionUser.name || "",
+      title: about.title || "Full Stack Developer",
+      bio: about.bio || "I'm a passionate developer who loves creating amazing digital experiences.",
+      experience: about.experience || "1+",
+      projectsCompleted: about.projectsCompleted || "5+",
+      profileImage: about.profileImage || "",
+      profileImageBorderColor: about.profileImageBorderColor || "#3B82F6"
+    })
 
     setIsLoading(false)
-  }, [router, username])
+  }, [sessionUser, sessionLoading, router, username])
 
   const handleAboutInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
@@ -161,6 +167,7 @@ export function Dashboard({ username }: DashboardProps) {
         experience: currentAbout.experience || "",
         projectsCompleted: currentAbout.projectsCompleted || "",
         profileImage: currentAbout.profileImage || "",
+        profileImageBorderColor: currentAbout.profileImageBorderColor || "#3B82F6",
         // contact
         email: currentAbout.email ?? aboutForm.email,
         phone: currentAbout.phone ?? aboutForm.phone,
@@ -197,7 +204,6 @@ export function Dashboard({ username }: DashboardProps) {
         ...user,
         portfolioData: { ...(user.portfolioData || {}), about: mergedAbout },
       }
-      localStorage.setItem('user', JSON.stringify(updatedUser))
       setUser(updatedUser)
       setMessage('Saved')
     } catch (err: any) {
@@ -254,9 +260,8 @@ export function Dashboard({ username }: DashboardProps) {
     )
   }
 
-  const handleLogout = () => {
-    localStorage.removeItem('isAuthenticated')
-    localStorage.removeItem('user')
+  const handleLogout = async () => {
+    await signOut()
     router.push('/')
   }
 

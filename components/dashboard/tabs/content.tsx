@@ -513,6 +513,13 @@ export function DashboardContent({
                     className="h-10 w-16 bg-transparent border border-white/20 rounded cursor-pointer"
                   />
                   <span className="text-xs text-white/70">{aboutForm.profileImageBorderColor}</span>
+                  <button
+                    type="button"
+                    onClick={() => setAboutForm(prev => ({ ...prev, profileImageBorderColor: "#3B82F6" }))}
+                    className="text-xs text-blue-300 hover:text-blue-200 px-2 py-1 border border-blue-300/30 rounded hover:bg-blue-300/10 transition-colors"
+                  >
+                    Reset
+                  </button>
                 </div>
               </div>
             </div>

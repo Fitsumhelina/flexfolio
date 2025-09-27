@@ -89,7 +89,6 @@ export function DashboardSettings({ user, setUser, onLogout }: DashboardSettings
                   })
                   const data = await res.json()
                   if (res.ok && data?.user) {
-                    localStorage.setItem('user', JSON.stringify(data.user))
                     setUser(data.user)
                     alert('Account updated')
                   } else {
