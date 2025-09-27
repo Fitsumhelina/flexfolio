@@ -18,6 +18,8 @@ export function DemoPortfolio() {
       
 
       {/* Original Portfolio Content */}
+      <br />
+      <br />
       <DemoNavigation />
       <br />
       <br />
