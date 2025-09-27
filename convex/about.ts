@@ -23,6 +23,19 @@ export const getAbout = query({
         phone: "+1 (555) 123-4567",
         location: "San Francisco, CA",
         profileImage: "",
+        profileImageBorderColor: "#3B82F6",
+        github: "",
+        x: "",
+        telegram: "",
+        linkedin: "",
+        heroTitle: "Full Stack Developer",
+        heroDescription: "I'm a passionate full-stack developer with over 5 years of experience building scalable web applications and digital solutions.",
+        heroBackgroundMode: "gradient",
+        heroGradientPreset: 1,
+        heroBackgroundImageUrl: "",
+        heroBackgroundBlurLevel: 0,
+        heroPatternId: "liquid-ether",
+        heroPatternProps: {},
       };
     }
 
@@ -51,6 +64,19 @@ export const createDefaultAbout = mutation({
         phone: "+1 (555) 123-4567",
         location: "San Francisco, CA",
         profileImage: "",
+        profileImageBorderColor: "#3B82F6",
+        github: "",
+        x: "",
+        telegram: "",
+        linkedin: "",
+        heroTitle: "Full Stack Developer",
+        heroDescription: "I'm a passionate full-stack developer with over 5 years of experience building scalable web applications and digital solutions.",
+        heroBackgroundMode: "gradient",
+        heroGradientPreset: 1,
+        heroBackgroundImageUrl: "",
+        heroBackgroundBlurLevel: 0,
+        heroPatternId: "liquid-ether",
+        heroPatternProps: {},
       };
 
       const aboutId = await ctx.db.insert("about", defaultData);
@@ -74,6 +100,19 @@ export const updateAbout = mutation({
     phone: v.optional(v.string()),
     location: v.optional(v.string()),
     profileImage: v.optional(v.string()),
+    profileImageBorderColor: v.optional(v.string()),
+    github: v.optional(v.string()),
+    x: v.optional(v.string()),
+    telegram: v.optional(v.string()),
+    linkedin: v.optional(v.string()),
+    heroTitle: v.optional(v.string()),
+    heroDescription: v.optional(v.string()),
+    heroBackgroundMode: v.optional(v.union(v.literal("gradient"), v.literal("image"), v.literal("pattern"))),
+    heroGradientPreset: v.optional(v.union(v.literal(1), v.literal(2), v.literal(3), v.literal(4))),
+    heroBackgroundImageUrl: v.optional(v.string()),
+    heroBackgroundBlurLevel: v.optional(v.union(v.literal(0), v.literal(1), v.literal(2), v.literal(3), v.literal(4))),
+    heroPatternId: v.optional(v.string()),
+    heroPatternProps: v.optional(v.any()),
   },
   handler: async (ctx, args) => {
     const { userId, ...updates } = args;
@@ -93,11 +132,37 @@ export const updateAbout = mutation({
       await ctx.db.patch(existingAbout._id, cleanUpdates);
       return existingAbout._id;
     } else {
-      // Create new about data
-      const aboutId = await ctx.db.insert("about", {
+      // Create default about data first, then update it
+      const defaultData = {
         userId,
-        ...cleanUpdates,
-      });
+        name: "John Developer",
+        title: "Full Stack Developer",
+        bio: "I'm a passionate full-stack developer with over 5 years of experience building scalable web applications and digital solutions. I specialize in modern JavaScript frameworks and cloud technologies.",
+        experience: "5+",
+        projectsCompleted: "50+",
+        email: "hello@developer.com",
+        phone: "+1 (555) 123-4567",
+        location: "San Francisco, CA",
+        profileImage: "",
+        profileImageBorderColor: "#3B82F6",
+        github: "",
+        x: "",
+        telegram: "",
+        linkedin: "",
+        heroTitle: "Full Stack Developer",
+        heroDescription: "I'm a passionate full-stack developer with over 5 years of experience building scalable web applications and digital solutions.",
+        heroBackgroundMode: "gradient",
+        heroGradientPreset: 1,
+        heroBackgroundImageUrl: "",
+        heroBackgroundBlurLevel: 0,
+        heroPatternId: "liquid-ether",
+        heroPatternProps: {},
+      };
+
+      // Merge default data with updates
+      const mergedData = { ...defaultData, ...cleanUpdates };
+      
+      const aboutId = await ctx.db.insert("about", mergedData);
       return aboutId;
     }
   },
