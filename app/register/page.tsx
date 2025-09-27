@@ -1,4 +1,4 @@
-import { RegisterForm } from "@/components/auth/register-form"
+import { ConvexRegisterForm } from "@/components/auth/convex-register-form"
 
 export default function RegisterPage() {
   return (
@@ -17,7 +17,7 @@ export default function RegisterPage() {
           <h1 className="text-3xl font-bold text-white mb-2">Join FlexFolio</h1>
           <p className="text-gray-400">Create your portfolio in minutes</p>
         </div>
-        <RegisterForm />
+        <ConvexRegisterForm />
       </div>
     </div>
   )
