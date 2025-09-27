@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { User, LogOut, Download, Link, Lock, CheckCircle } from "lucide-react"
+import { User, LogOut, Download, Link, Lock, CheckCircle, Eye, EyeOff } from "lucide-react"
 
 interface User {
   _id: string
@@ -35,6 +35,9 @@ export function DashboardSettings({ user, setUser, onLogout }: DashboardSettings
   const [isUpdatingPassword, setIsUpdatingPassword] = useState(false)
   const [accountMessage, setAccountMessage] = useState<string | null>(null)
   const [passwordMessage, setPasswordMessage] = useState<string | null>(null)
+  const [showOldPassword, setShowOldPassword] = useState(false)
+  const [showNewPassword, setShowNewPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
   const updateUserMutation = useMutation(api.users.updateUser)
   const changePasswordMutation = useMutation(api.users.changePassword)
@@ -215,36 +218,63 @@ export function DashboardSettings({ user, setUser, onLogout }: DashboardSettings
             <div className="grid md:grid-cols-3 gap-4">
               <div>
                 <Label htmlFor="oldPassword" className="text-gray-300">Current Password</Label>
-                <Input
-                  id="oldPassword"
-                  type="password"
-                  value={passwordData.oldPassword}
-                  onChange={(e) => setPasswordData(prev => ({ ...prev, oldPassword: e.target.value }))}
-                  placeholder="Enter current password"
-                  className="bg-gray-800/50 border-gray-600 text-white placeholder-gray-400 focus:border-blue-500"
-                />
+                <div className="relative">
+                  <Input
+                    id="oldPassword"
+                    type={showOldPassword ? "text" : "password"}
+                    value={passwordData.oldPassword}
+                    onChange={(e) => setPasswordData(prev => ({ ...prev, oldPassword: e.target.value }))}
+                    placeholder="Enter current password"
+                    className="bg-gray-800/50 border-gray-600 text-white placeholder-gray-400 focus:border-blue-500 pr-10"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowOldPassword(!showOldPassword)}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-300"
+                  >
+                    {showOldPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </button>
+                </div>
               </div>
               <div>
                 <Label htmlFor="newPassword" className="text-gray-300">New Password</Label>
-                <Input
-                  id="newPassword"
-                  type="password"
-                  value={passwordData.newPassword}
-                  onChange={(e) => setPasswordData(prev => ({ ...prev, newPassword: e.target.value }))}
-                  placeholder="Enter new password"
-                  className="bg-gray-800/50 border-gray-600 text-white placeholder-gray-400 focus:border-blue-500"
-                />
+                <div className="relative">
+                  <Input
+                    id="newPassword"
+                    type={showNewPassword ? "text" : "password"}
+                    value={passwordData.newPassword}
+                    onChange={(e) => setPasswordData(prev => ({ ...prev, newPassword: e.target.value }))}
+                    placeholder="Enter new password"
+                    className="bg-gray-800/50 border-gray-600 text-white placeholder-gray-400 focus:border-blue-500 pr-10"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowNewPassword(!showNewPassword)}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-300"
+                  >
+                    {showNewPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </button>
+                </div>
               </div>
               <div>
                 <Label htmlFor="confirmPassword" className="text-gray-300">Confirm New Password</Label>
-                <Input
-                  id="confirmPassword"
-                  type="password"
-                  value={passwordData.confirmPassword}
-                  onChange={(e) => setPasswordData(prev => ({ ...prev, confirmPassword: e.target.value }))}
-                  placeholder="Confirm new password"
-                  className="bg-gray-800/50 border-gray-600 text-white placeholder-gray-400 focus:border-blue-500"
-                />
+                <div className="relative">
+                  <Input
+                    id="confirmPassword"
+                    type={showConfirmPassword ? "text" : "password"}
+                    value={passwordData.confirmPassword}
+                    onChange={(e) => setPasswordData(prev => ({ ...prev, confirmPassword: e.target.value }))}
+                    placeholder="Confirm new password"
+                    className="bg-gray-800/50 border-gray-600 text-white placeholder-gray-400 focus:border-blue-500 pr-10"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-300"
+                  >
+                    {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </button>
+                </div>
               </div>
             </div>
             <div className="flex items-center gap-2">
