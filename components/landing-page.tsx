@@ -170,8 +170,8 @@ export function LandingPage() {
 
             <p className="text-base sm:text-lg lg:text-xl text-gray-300 mb-6 sm:mb-8 lg:mb-12 max-w-2xl lg:max-w-3xl mx-auto leading-relaxed">
               Create stunning portfolio websites in minutes with our
-              0% coding. <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent font-semibold">Free forever.</span> Your
-              <ShinyText text="dream portfolio is just a click away." />
+              0% coding. <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent font-semibold">Free forever.</span> 
+              <ShinyText text="Your dream portfolio is just a click away." />
             </p>
 
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 lg:gap-6 justify-center items-center mb-8 sm:mb-12 lg:mb-16">
