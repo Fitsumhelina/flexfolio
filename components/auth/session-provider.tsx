@@ -7,6 +7,7 @@ interface SessionContextType {
   session: any | null
   isLoading: boolean
   signOut: () => Promise<void>
+  refreshSession: () => Promise<void>
 }
 
 const SessionContext = createContext<SessionContextType | undefined>(undefined)
@@ -60,6 +61,30 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
     // return () => unsubscribe()
   }, [])
 
+  const refreshSession = async () => {
+    console.log('SessionProvider: Refreshing session')
+    try {
+      const response = await fetch('/api/auth/session', {
+        credentials: 'include'
+      })
+      const data = await response.json()
+      
+      if (response.ok && data.user) {
+        console.log('SessionProvider: Session refreshed, user found')
+        setSession({ data: { user: data.user } })
+        setUser(data.user)
+      } else {
+        console.log('SessionProvider: Session refreshed, no user')
+        setSession(null)
+        setUser(null)
+      }
+    } catch (error) {
+      console.error("Session refresh error:", error)
+      setSession(null)
+      setUser(null)
+    }
+  }
+
   const signOut = async () => {
     try {
       // Use custom logout API
@@ -76,7 +101,7 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <SessionContext.Provider value={{ user, session, isLoading, signOut }}>
+    <SessionContext.Provider value={{ user, session, isLoading, signOut, refreshSession }}>
       {children}
     </SessionContext.Provider>
   )
