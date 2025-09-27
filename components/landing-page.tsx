@@ -53,24 +53,24 @@ export function LandingPage() {
     },
     {
       icon: <Palette className="h-6 w-6" />,
-      title: "Beautiful Templates",
-      description: "Choose from professionally designed templates",
+      title: "Beautiful Components",
+      description: "Choose from professionally designed components",
     },
     {
       icon: <Code className="h-6 w-6" />,
       title: "No Code Required",
-      description: "Drag, drop, and customize without writing a single line",
+      description: "customize your page without writing a single line of code",
     },
     {
       icon: <Globe className="h-6 w-6" />,
       title: "CMS dashboard",
-      description: "Control your portfolio content from the dashboard",
+      description: "Control your portfolio content at anytime",
     },
   ];
 
   const stats = [
-    { number: "10K+", label: "Portfolios Created" },
-    { number: "50+", label: "Templates" },
+    { number: "Unique", label: "Customization" },
+    { number: "Private", label: "Dashboard" },
     { number: "99.9%", label: "Uptime" },
     { number: "Free", label: "Forever" },
   ];
@@ -247,7 +247,7 @@ export function LandingPage() {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12 sm:mb-16 lg:mb-20">
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 sm:mb-6 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
-              Why Choose FlexFolio?
+              Why FlexFolio?
             </h2>
             <p className="text-lg sm:text-xl lg:text-2xl text-gray-300 max-w-2xl lg:max-w-3xl mx-auto leading-relaxed">
               Everything you need to create a professional portfolio that stands
