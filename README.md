@@ -100,7 +100,7 @@ Visit [http://localhost:3000](http://localhost:3000) 🎉
 
 | Landing Page | Dashboard | Portfolio |
 |--------------|-----------|-----------|
-| ![Landing](https://via.placeholder.com/400x250/1a1a1a/ffffff?text=Landing+Page) | ![Dashboard](https://via.placeholder.com/400x250/1a1a1a/ffffff?text=Dashboard) | ![Portfolio](https://via.placeholder.com/400x250/1a1a1a/ffffff?text=Portfolio) |
+| ![Landing](./public/landingpage.png?text=landing) | ![Dashboard](./public/demodashboard.png?text=Dashboard) | ![Portfolio](./public/demoportfolio.png?text=Portfolio) |
 
 </div>
 
@@ -131,7 +131,7 @@ Visit [http://localhost:3000](http://localhost:3000) 🎉
 
 ## 🌐 Live Demo
 
-**Try it now:** [https://dev-fitsum.vercel.app](https://dev-fitsum.vercel.app)
+**Try it now:** [https://flexfolio1.vercel.app/demo](https://flexfolio1.vercel.app/demo)
 
 See a live example of what you can build with FlexFolio!
 
