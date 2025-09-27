@@ -42,13 +42,12 @@ interface DashboardProps {
 
 export function Dashboard({ username }: DashboardProps) {
   const { user: sessionUser, isLoading: sessionLoading, logout } = useAuth()
-  const [user, setUser] = useState<User | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
   const [messageCount, setMessageCount] = useState(0)
   const [unreadCount, setUnreadCount] = useState(0)
   const router = useRouter()
 
-  // Convex queries
+  // Convex queries - use real-time data from Convex
+  const user = useQuery(api.users.getUser, sessionUser ? { userId: sessionUser._id as Id<"users"> } : "skip")
   const projects = useQuery(api.projects.getProjects, sessionUser ? { userId: sessionUser._id as Id<"users"> } : "skip")
   const skills = useQuery(api.skills.getSkills, sessionUser ? { userId: sessionUser._id as Id<"users"> } : "skip")
   const about = useQuery(api.about.getAbout, sessionUser ? { userId: sessionUser._id as Id<"users"> } : "skip")
@@ -95,6 +94,9 @@ export function Dashboard({ username }: DashboardProps) {
   const [socialMessage, setSocialMessage] = useState<string | null>(null)
   const [aboutMessage, setAboutMessage] = useState<string | null>(null)
 
+  // Check if we're still loading
+  const isLoading = sessionLoading || !user
+
   useEffect(() => {
     console.log('Dashboard: Session check', { sessionLoading, sessionUser: sessionUser ? 'exists' : 'null' })
     
@@ -117,17 +119,18 @@ export function Dashboard({ username }: DashboardProps) {
       router.push(`/${sessionUser.username}/dashboard`)
       return
     }
+  }, [sessionUser, sessionLoading, router, username])
 
-    console.log('Dashboard: Setting user and loading data')
-    setUser(sessionUser)
-    
-    // Update message counts from Convex data
+  // Update message counts from Convex data
+  useEffect(() => {
     if (messages) {
       setMessageCount(messages.length)
       setUnreadCount(messages.filter((m: any) => !m.isRead).length)
     }
-    
-    // Update about form with Convex data
+  }, [messages])
+  
+  // Update about form with Convex data
+  useEffect(() => {
     if (about) {
       setAboutForm({
         email: about.email || "",
@@ -146,7 +149,7 @@ export function Dashboard({ username }: DashboardProps) {
         heroPatternId: (about as any).heroPatternId || "liquid-ether",
         heroPatternProps: (about as any).heroPatternProps || {},
         // About section fields
-        name: about.name || sessionUser.name || "",
+        name: about.name || "",
         title: about.title || "Full Stack Developer",
         bio: about.bio || "I'm a passionate developer who loves creating amazing digital experiences.",
         experience: about.experience || "1+",
@@ -155,9 +158,7 @@ export function Dashboard({ username }: DashboardProps) {
         profileImageBorderColor: about.profileImageBorderColor || "#3B82F6"
       })
     }
-
-    setIsLoading(false)
-  }, [sessionUser, sessionLoading, router, username, about, messages])
+  }, [about])
 
   const handleAboutInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
@@ -318,7 +319,7 @@ export function Dashboard({ username }: DashboardProps) {
           </TabsContent>
 
           <TabsContent value="settings" className="space-y-6">
-            <DashboardSettings user={user} setUser={setUser} onLogout={handleLogout} />
+            <DashboardSettings userId={user?._id as Id<"users">} onLogout={handleLogout} />
           </TabsContent>
         </Tabs>
       </main>

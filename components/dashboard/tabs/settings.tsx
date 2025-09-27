@@ -1,31 +1,21 @@
 "use client"
 
-import { useState } from "react"
-import { useMutation } from "convex/react"
+import React, { useState } from "react"
+import { useMutation, useQuery } from "convex/react"
 import { api } from "../../../convex/_generated/api"
+import { Id } from "../../../convex/_generated/dataModel"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { User, LogOut, Download, Link, Lock, CheckCircle, Eye, EyeOff } from "lucide-react"
 
-interface User {
-  _id: string
-  name: string
-  email: string
-  username: string
-  isActive?: boolean
-  createdAt?: string
-  updatedAt?: string
-}
-
 interface DashboardSettingsProps {
-  user: User
-  setUser: React.Dispatch<React.SetStateAction<User | null>>
+  userId: Id<"users">
   onLogout: () => void
 }
 
-export function DashboardSettings({ user, setUser, onLogout }: DashboardSettingsProps) {
+export function DashboardSettings({ userId, onLogout }: DashboardSettingsProps) {
   const [passwordData, setPasswordData] = useState({
     oldPassword: "",
     newPassword: "",
@@ -38,6 +28,27 @@ export function DashboardSettings({ user, setUser, onLogout }: DashboardSettings
   const [showOldPassword, setShowOldPassword] = useState(false)
   const [showNewPassword, setShowNewPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+
+  // Get user data from Convex
+  const user = useQuery(api.users.getUser, { userId })
+  const [localUserData, setLocalUserData] = useState({
+    name: "",
+    email: "",
+    username: "",
+    isActive: true
+  })
+
+  // Update local data when Convex data changes
+  React.useEffect(() => {
+    if (user) {
+      setLocalUserData({
+        name: user.name,
+        email: user.email,
+        username: user.username,
+        isActive: user.isActive !== false
+      })
+    }
+  }, [user])
 
   const updateUserMutation = useMutation(api.users.updateUser)
   const changePasswordMutation = useMutation(api.users.changePassword)
@@ -59,8 +70,8 @@ export function DashboardSettings({ user, setUser, onLogout }: DashboardSettings
                 <Input 
                   id="name"
                   type="text" 
-                  value={user.name}
-                  onChange={(e) => setUser(prev => prev ? ({ ...prev, name: e.target.value }) : prev)}
+                  value={localUserData.name}
+                  onChange={(e) => setLocalUserData(prev => ({ ...prev, name: e.target.value }))}
                   className="w-full bg-gray-800/50 border border-gray-600 text-white placeholder-gray-400 focus:border-orange-500"
                 />
               </div>
@@ -69,8 +80,8 @@ export function DashboardSettings({ user, setUser, onLogout }: DashboardSettings
                 <Input 
                   id="email"
                   type="email" 
-                  value={user.email}
-                  onChange={(e) => setUser(prev => prev ? ({ ...prev, email: e.target.value }) : prev)}
+                  value={localUserData.email}
+                  onChange={(e) => setLocalUserData(prev => ({ ...prev, email: e.target.value }))}
                   className="w-full bg-gray-800/50 border border-gray-600 text-white placeholder-gray-400 focus:border-orange-500"
                 />
               </div>
@@ -79,15 +90,15 @@ export function DashboardSettings({ user, setUser, onLogout }: DashboardSettings
                 <Input 
                   id="username"
                   type="text" 
-                  value={user.username}
-                  onChange={(e) => setUser(prev => prev ? ({ ...prev, username: e.target.value }) : prev)}
+                  value={localUserData.username}
+                  onChange={(e) => setLocalUserData(prev => ({ ...prev, username: e.target.value }))}
                   className="w-full bg-gray-800/50 border border-gray-600 text-white placeholder-gray-400 focus:border-orange-500"
                 />
                 <div className="mt-3 flex items-center gap-3">
                   <label className="text-sm text-gray-300">Portfolio Status</label>
                   <select
-                    value={user.isActive !== false ? 'active' : 'inactive'}
-                    onChange={(e) => setUser(prev => prev ? ({ ...prev, isActive: e.target.value === 'active' }) : prev)}
+                    value={localUserData.isActive ? 'active' : 'inactive'}
+                    onChange={(e) => setLocalUserData(prev => ({ ...prev, isActive: e.target.value === 'active' }))}
                     className="bg-gray-800/50 border border-gray-600 rounded-lg px-2 py-1 text-white"
                   >
                     <option value="active">Active</option>
@@ -106,15 +117,14 @@ export function DashboardSettings({ user, setUser, onLogout }: DashboardSettings
                     setAccountMessage(null)
                     
                     try {
-                      console.log("Attempting account update for user:", user.email);
-                      const updatedUser = await updateUserMutation({
-                        userId: user._id as any,
-                        name: user.name,
-                        email: user.email,
-                        username: user.username,
-                        isActive: user.isActive !== false
+                      console.log("Attempting account update for user:", localUserData.email);
+                      await updateUserMutation({
+                        userId: userId,
+                        name: localUserData.name,
+                        email: localUserData.email,
+                        username: localUserData.username,
+                        isActive: localUserData.isActive
                       })
-                      setUser(updatedUser as any)
                       setAccountMessage('Account updated successfully')
                       console.log("Account updated successfully");
                     } catch (error: any) {
@@ -177,15 +187,15 @@ export function DashboardSettings({ user, setUser, onLogout }: DashboardSettings
                 <div className="space-y-2">
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-400">Member since</span>
-                    <span className="text-white">{user.createdAt ? new Date(user.createdAt).toLocaleDateString() : '-'}</span>
+                    <span className="text-white">{user?.createdAt ? new Date(user.createdAt).toLocaleDateString() : '-'}</span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-400">Last updated</span>
-                    <span className="text-white">{user.updatedAt ? new Date(user.updatedAt).toLocaleDateString() : '-'}</span>
+                    <span className="text-white">{user?.updatedAt ? new Date(user.updatedAt).toLocaleDateString() : '-'}</span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-400">Portfolio URL</span>
-                    <span className="text-blue-400">/{user.username}</span>
+                    <span className="text-blue-400">/{localUserData.username}</span>
                   </div>
                 </div>
               </div>
@@ -199,7 +209,7 @@ export function DashboardSettings({ user, setUser, onLogout }: DashboardSettings
                     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(user, null, 2))
                     const a = document.createElement('a')
                     a.href = dataStr
-                    a.download = `flexfolio-${user.username}.json`
+                    a.download = `flexfolio-${localUserData.username}.json`
                     a.click()
                   }}
                 >
@@ -211,7 +221,7 @@ export function DashboardSettings({ user, setUser, onLogout }: DashboardSettings
                   className="w-full border-gray-600 text-black-300 hover:bg-white/50"
                   onClick={() => {
                     if (!user) return
-                    const url = `${typeof window !== 'undefined' ? window.location.origin : ''}/${user.username}`
+                    const url = `${typeof window !== 'undefined' ? window.location.origin : ''}/${localUserData.username}`
                     navigator.clipboard.writeText(url)
                     alert('Portfolio URL copied to clipboard')
                   }}
@@ -326,9 +336,9 @@ export function DashboardSettings({ user, setUser, onLogout }: DashboardSettings
                   setPasswordMessage(null)
                   
                   try {
-                    console.log("Attempting password change for user:", user.email);
+                    console.log("Attempting password change for user:", localUserData.email);
                     await changePasswordMutation({
-                      userId: user._id as any,
+                      userId: userId,
                       oldPassword: passwordData.oldPassword,
                       newPassword: passwordData.newPassword
                     })
