@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useQuery } from "convex/react";
+import { api } from "../../convex/_generated/api";
 import { Navigation } from "@/components/user-portfolio/navigation";
 import { UserHero } from "@/components/user-portfolio/hero";
 import { UserAbout } from "@/components/user-portfolio/about";
@@ -65,37 +67,36 @@ interface UserPortfolioProps {
 }
 
 export function UserPortfolio({ username }: UserPortfolioProps) {
-  const [user, setUser] = useState<UserData | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const response = await fetch(`/api/users/${username}`);
-        const data = await response.json();
+  // Use Convex queries to get user data by username
+  const user = useQuery(api.users.getUserByUsername, { username });
+  
+  // Get additional data if user exists
+  const about = useQuery(
+    api.about.getAbout, 
+    user ? { userId: user._id } : "skip"
+  );
+  const projects = useQuery(
+    api.projects.getProjects, 
+    user ? { userId: user._id } : "skip"
+  );
+  const skills = useQuery(
+    api.skills.getSkills, 
+    user ? { userId: user._id } : "skip"
+  );
 
-        if (response.ok) {
-          setUser(data.user);
-        } else {
-          setError(data.error || "User not found");
-        }
-      } catch (error) {
-        setError("Failed to load portfolio");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchUserData();
-  }, [username]);
-
-  if (isLoading) {
+  // Handle loading and error states
+  if (user === undefined) {
     return <UserPortfolioLoading />;
   }
 
-  if (error || !user) {
+  if (user === null) {
+    return <UserPortfolioError error="User not found" />;
+  }
+
+  if (error) {
     return <UserPortfolioError error={error} />;
   }
 
@@ -104,10 +105,12 @@ export function UserPortfolio({ username }: UserPortfolioProps) {
   if ((user as any).isActive === false) {
     return <UserPortfolioOffline />;
   }
-  const aboutData = portfolioData.about || {
+  
+  // Use about data from Convex, fallback to user data
+  const aboutData = about || {
     name: user.name,
     title: "Full Stack Developer",
-    bio: "your bio here.",
+    bio: "I'm a passionate developer who loves creating amazing digital experiences.",
     experience: "1+",
     projectsCompleted: "5+",
     email: user.email,
@@ -128,8 +131,8 @@ export function UserPortfolio({ username }: UserPortfolioProps) {
       <Navigation username={username} />
       <UserHero aboutData={aboutData} />
       <UserAbout aboutData={aboutData} />
-      <UserProjects projects={portfolioData.projects || []} />
-      <UserSkills skills={portfolioData.skills || []} />
+      <UserProjects projects={projects || []} />
+      <UserSkills skills={skills || []} />
       <UserContact aboutData={aboutData} username={user.username} />
       <UserFooter />
     </div>
