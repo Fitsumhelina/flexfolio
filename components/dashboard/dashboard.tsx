@@ -86,8 +86,8 @@ export function Dashboard({ username }: DashboardProps) {
     }
 
     if (!sessionUser) {
-      console.log('Dashboard: No session user, redirecting to login')
-      router.push('/login')
+      console.log('Dashboard: No session user, redirecting to home')
+      router.push('/')
       return
     }
 
