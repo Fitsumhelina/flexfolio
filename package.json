@@ -49,6 +49,7 @@
     "gsap": "^3.13.0",
     "input-otp": "1.4.1",
     "lucide-react": "^0.454.0",
+    "motion": "^12.23.22",
     "next": "14.2.16",
     "next-themes": "latest",
     "ogl": "^1.0.11",
