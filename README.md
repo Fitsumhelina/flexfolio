@@ -28,7 +28,7 @@ FlexFolio is a modern, no-code portfolio builder that lets developers and creato
 | 🎨 **No Code Required** | Beautiful interface, zero coding needed |
 | ⚡ **Lightning Fast** | Built with Next.js for optimal performance |
 | 📱 **Responsive** | Works perfectly on all devices |
-| 🔗 **Custom URLs** | Get your own URL like `flexfolio.com/username` |
+| 🔗 **Custom URLs** | Get your own URL like `flexfolio1.vercel.app/username` |
 | 🎛️ **CMS Dashboard** | Control your content anytime |
 | 🚀 **Instant Deploy** | Go live in seconds |
 
