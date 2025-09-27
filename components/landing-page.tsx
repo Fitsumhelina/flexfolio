@@ -148,7 +148,7 @@ export function LandingPage() {
           <div className="text-center">
             <Badge className="mb-4 sm:mb-6 bg-blue-500/20 text-blue-300 border-blue-500/30 text-sm lg:text-base px-4 py-2">
               <Star className="h-3 w-3 lg:h-4 lg:w-4 mr-1 lg:mr-2" />
-              Trusted by 10,000+ developers
+              Trusted by 500+ developers
             </Badge>
 
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-4 sm:mb-6 lg:mb-8 bg-gradient-to-r from-white via-blue-100 to-purple-100 bg-clip-text text-transparent leading-tight">
