@@ -7,8 +7,41 @@ export const getMessages = query({
   handler: async (ctx, args) => {
     return await ctx.db
       .query("messages")
-      .withIndex("by_user", (q) => q.eq("userId", args.userId))
+      .withIndex("by_userId", (q) => q.eq("userId", args.userId))
       .collect();
+  },
+});
+
+// Create a new message by username
+export const createMessageByUsername = mutation({
+  args: {
+    username: v.string(),
+    name: v.string(),
+    email: v.string(),
+    subject: v.string(),
+    message: v.string(),
+  },
+  handler: async (ctx, args) => {
+    // First, find the user by username
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_username", (q) => q.eq("username", args.username))
+      .first();
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    const messageId = await ctx.db.insert("messages", {
+      userId: user._id,
+      senderEmail: args.email,
+      subject: args.subject,
+      message: args.message,
+      isRead: false,
+      createdAt: Date.now(),
+    });
+
+    return messageId;
   },
 });
 
@@ -16,16 +49,17 @@ export const getMessages = query({
 export const createMessage = mutation({
   args: {
     userId: v.id("users"),
-    name: v.string(),
-    email: v.string(),
+    senderEmail: v.string(),
+    subject: v.string(),
     message: v.string(),
   },
   handler: async (ctx, args) => {
     const messageId = await ctx.db.insert("messages", {
       userId: args.userId,
-      name: args.name,
-      email: args.email,
+      senderEmail: args.senderEmail,
+      subject: args.subject,
       message: args.message,
+      isRead: false,
       createdAt: Date.now(),
     });
 

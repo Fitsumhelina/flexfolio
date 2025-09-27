@@ -97,10 +97,11 @@ export default defineSchema({
 
   messages: defineTable({
     userId: v.id("users"),
-    name: v.string(),
-    email: v.string(),
+    senderEmail: v.string(),
+    subject: v.string(),
     message: v.string(),
+    isRead: v.boolean(),
     createdAt: v.number(),
   })
-    .index("by_user", ["userId"]),
+    .index("by_userId", ["userId"]),
 });
