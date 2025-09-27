@@ -1,8 +1,9 @@
-# 🚀 FlexFolio
+![cover](./public/flexfolio_cover_2.jpg)
+
 
 > **Build your perfect portfolio in 5 minutes** - No coding required, free forever.
 
-[![Live Demo](https://img.shields.io/badge/Live%20Demo-View%20Now-blue?style=for-the-badge&logo=vercel)](https://dev-fitsum.vercel.app)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-View%20Now-blue?style=for-the-badge&logo=vercel)](https://)
 [![GitHub Stars](https://img.shields.io/github/stars/fitsumhelina/flexfolio?style=for-the-badge&logo=github)](https://github.com/fitsumhelina/flexfolio)
 [![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
 
@@ -15,7 +16,6 @@ FlexFolio is a modern, no-code portfolio builder that lets developers and creato
 ### 🎯 Perfect for:
 - **Developers** showcasing their projects
 - **Designers** displaying their work
-- **Writers** sharing their portfolio
 - **Anyone** who wants a professional online presence
 
 ---
