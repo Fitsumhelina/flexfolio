@@ -45,21 +45,14 @@ export function DashboardHeader({ user, onLogout, onViewPortfolio }: DashboardHe
           
           {/* Navigation Menu */}
           <nav className="hidden md:flex items-center space-x-1">
-            <Button 
-              variant="ghost" 
-              onClick={() => router.push(ROUTES.HOME)}
-              className="text-gray-300 hover:text-white hover:bg-gray-800/50"
-            >
-              <Home className="h-4 w-4 mr-2" />
-              Home
-            </Button>
+         
             <Button 
               variant="ghost" 
               onClick={() => router.push(ROUTES.DEMO)}
               className="text-gray-300 hover:text-white hover:bg-gray-800/50"
             >
-              <Star className="h-4 w-4 mr-2" />
-              Demo
+              <ExternalLink className="h-4 w-4 mr-2" />
+              View Demo page 
             </Button>
           </nav>
 
