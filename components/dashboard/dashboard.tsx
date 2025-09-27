@@ -15,7 +15,10 @@ import { DashboardDesign } from "./tabs/design"
 import { DashboardSettings } from "./tabs/settings"
 import { DashboardFooter } from "./footer"
 import { DashboardLoading } from "./loading"
-import { useSession } from "@/components/auth/session-provider"
+import { useAuth } from "@/components/auth/convex-auth-provider"
+import { useQuery, useMutation } from "convex/react"
+import { api } from "../../convex/_generated/api"
+import { Id } from "../../convex/_generated/dataModel"
 
 
 interface User {
@@ -38,12 +41,27 @@ interface DashboardProps {
 }
 
 export function Dashboard({ username }: DashboardProps) {
-  const { user: sessionUser, isLoading: sessionLoading, signOut } = useSession()
+  const { user: sessionUser, isLoading: sessionLoading, logout } = useAuth()
   const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [messageCount, setMessageCount] = useState(0)
   const [unreadCount, setUnreadCount] = useState(0)
   const router = useRouter()
+
+  // Convex queries
+  const projects = useQuery(api.projects.getProjects, sessionUser ? { userId: sessionUser._id as Id<"users"> } : "skip")
+  const skills = useQuery(api.skills.getSkills, sessionUser ? { userId: sessionUser._id as Id<"users"> } : "skip")
+  const about = useQuery(api.about.getAbout, sessionUser ? { userId: sessionUser._id as Id<"users"> } : "skip")
+  const messages = useQuery(api.messages.getMessages, sessionUser ? { userId: sessionUser._id as Id<"users"> } : "skip")
+
+  // Convex mutations
+  const updateAboutMutation = useMutation(api.about.updateAbout)
+  const createProjectMutation = useMutation(api.projects.createProject)
+  const updateProjectMutation = useMutation(api.projects.updateProject)
+  const deleteProjectMutation = useMutation(api.projects.deleteProject)
+  const createSkillMutation = useMutation(api.skills.createSkill)
+  const updateSkillMutation = useMutation(api.skills.updateSkill)
+  const deleteSkillMutation = useMutation(api.skills.deleteSkill)
   const [aboutForm, setAboutForm] = useState({
     email: "",
     phone: "",
@@ -102,46 +120,44 @@ export function Dashboard({ username }: DashboardProps) {
 
     console.log('Dashboard: Setting user and loading data')
     setUser(sessionUser)
-    // Load message counts
-    fetch(`/api/messages?username=${sessionUser.username}`)
-      .then(res => res.json())
-      .then(data => {
-        if (Array.isArray(data)) {
-            setMessageCount(data.length)
-            setUnreadCount(data.filter((m: any) => !m.isRead).length)
-          }
-        })
-        .catch(() => {})
     
-    const about = sessionUser?.portfolioData?.about || {}
-    setAboutForm({
-      email: about.email || "",
-      phone: about.phone || "",
-      location: about.location || "",
-      github: about.github || "",
-      x: about.x || about.twitter || "",
-      telegram: about.telegram || "",
-      linkedin: about.linkedin || "",
-      heroTitle: about.heroTitle || about.title || "Full Stack Developer",
-      heroDescription: about.heroDescription || about.bio || "",
-      heroBackgroundMode: (about as any).heroBackgroundMode || "gradient",
-      heroGradientPreset: (about.heroGradientPreset as 1|2|3|4) || 1,
-      heroBackgroundImageUrl: about.heroBackgroundImageUrl || "",
-      heroBackgroundBlurLevel: (about.heroBackgroundBlurLevel as 0|1|2|3|4) || 0,
-      heroPatternId: (about as any).heroPatternId || "liquid-ether",
-      heroPatternProps: (about as any).heroPatternProps || {},
-      // About section fields
-      name: about.name || sessionUser.name || "",
-      title: about.title || "Full Stack Developer",
-      bio: about.bio || "I'm a passionate developer who loves creating amazing digital experiences.",
-      experience: about.experience || "1+",
-      projectsCompleted: about.projectsCompleted || "5+",
-      profileImage: about.profileImage || "",
-      profileImageBorderColor: about.profileImageBorderColor || "#3B82F6"
-    })
+    // Update message counts from Convex data
+    if (messages) {
+      setMessageCount(messages.length)
+      setUnreadCount(messages.filter((m: any) => !m.isRead).length)
+    }
+    
+    // Update about form with Convex data
+    if (about) {
+      setAboutForm({
+        email: about.email || "",
+        phone: about.phone || "",
+        location: about.location || "",
+        github: about.github || "",
+        x: about.x || about.twitter || "",
+        telegram: about.telegram || "",
+        linkedin: about.linkedin || "",
+        heroTitle: about.heroTitle || about.title || "Full Stack Developer",
+        heroDescription: about.heroDescription || about.bio || "",
+        heroBackgroundMode: (about as any).heroBackgroundMode || "gradient",
+        heroGradientPreset: (about.heroGradientPreset as 1|2|3|4) || 1,
+        heroBackgroundImageUrl: about.heroBackgroundImageUrl || "",
+        heroBackgroundBlurLevel: (about.heroBackgroundBlurLevel as 0|1|2|3|4) || 0,
+        heroPatternId: (about as any).heroPatternId || "liquid-ether",
+        heroPatternProps: (about as any).heroPatternProps || {},
+        // About section fields
+        name: about.name || sessionUser.name || "",
+        title: about.title || "Full Stack Developer",
+        bio: about.bio || "I'm a passionate developer who loves creating amazing digital experiences.",
+        experience: about.experience || "1+",
+        projectsCompleted: about.projectsCompleted || "5+",
+        profileImage: about.profileImage || "",
+        profileImageBorderColor: about.profileImageBorderColor || "#3B82F6"
+      })
+    }
 
     setIsLoading(false)
-  }, [sessionUser, sessionLoading, router, username])
+  }, [sessionUser, sessionLoading, router, username, about, messages])
 
   const handleAboutInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
@@ -158,53 +174,12 @@ export function Dashboard({ username }: DashboardProps) {
     setSaving(true)
     setMessage(null)
     try {
-      const currentAbout = user.portfolioData?.about || {}
-      const mergedAbout = {
-        // preserve existing about fields
-        name: currentAbout.name || user.name,
-        title: currentAbout.title || "Full Stack Developer",
-        bio: currentAbout.bio || "",
-        experience: currentAbout.experience || "",
-        projectsCompleted: currentAbout.projectsCompleted || "",
-        profileImage: currentAbout.profileImage || "",
-        profileImageBorderColor: currentAbout.profileImageBorderColor || "#3B82F6",
-        // contact
-        email: currentAbout.email ?? aboutForm.email,
-        phone: currentAbout.phone ?? aboutForm.phone,
-        location: currentAbout.location ?? aboutForm.location,
-        // socials
-        github: currentAbout.github ?? aboutForm.github,
-        x: currentAbout.x ?? aboutForm.x,
-        telegram: currentAbout.telegram ?? aboutForm.telegram,
-        linkedin: currentAbout.linkedin ?? aboutForm.linkedin,
-        // hero settings (defaults preserved; will be overridden by updates)
-        heroTitle: currentAbout.heroTitle ?? aboutForm.heroTitle,
-        heroDescription: currentAbout.heroDescription ?? aboutForm.heroDescription,
-        heroBackgroundMode: currentAbout.heroBackgroundMode ?? aboutForm.heroBackgroundMode,
-        heroGradientPreset: currentAbout.heroGradientPreset ?? aboutForm.heroGradientPreset,
-        heroBackgroundImageUrl: currentAbout.heroBackgroundImageUrl ?? aboutForm.heroBackgroundImageUrl,
-        heroBackgroundBlurLevel: currentAbout.heroBackgroundBlurLevel ?? aboutForm.heroBackgroundBlurLevel,
-        heroPatternId: (currentAbout as any).heroPatternId ?? aboutForm.heroPatternId,
-        heroPatternProps: (currentAbout as any).heroPatternProps ?? aboutForm.heroPatternProps,
-        // apply incoming updates last
+      // Use Convex mutation to update about data
+      await updateAboutMutation({
+        userId: user._id as Id<"users">,
         ...updates,
-      }
-
-      const res = await fetch('/api/users/update-about', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId: user._id, aboutData: mergedAbout }),
       })
-      const data = await res.json()
-      if (!res.ok) {
-        throw new Error(data?.error || 'Failed to save')
-      }
-
-      const updatedUser = {
-        ...user,
-        portfolioData: { ...(user.portfolioData || {}), about: mergedAbout },
-      }
-      setUser(updatedUser)
+      
       setMessage('Saved')
     } catch (err: any) {
       setMessage(err?.message || 'Failed to save')
@@ -261,7 +236,7 @@ export function Dashboard({ username }: DashboardProps) {
   }
 
   const handleLogout = async () => {
-    await signOut()
+    await logout()
     router.push('/')
   }
 
