@@ -8,8 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { User, Check, X, ArrowLeft } from "lucide-react"
-import { authClient } from "@/lib/auth-client"
+import { User, Check, X, ArrowLeft, Home } from "lucide-react"
 
 interface RegisterStep2Props {
   userData: { name: string; email: string; password: string }
@@ -83,50 +82,28 @@ export function RegisterStep2({ userData, onBack }: RegisterStep2Props) {
     try {
       console.log('Attempting registration with:', { email: userData.email, name: userData.name, username })
       
-      // Try Better Auth first, fallback to custom API
-      try {
-        const { data, error } = await authClient.signUp.email({
+      // Use custom registration API
+      const response = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
           email: userData.email,
           password: userData.password,
           name: userData.name,
           username: username,
-        })
+        }),
+      })
 
-        console.log('Better Auth registration response:', { data, error })
+      const data = await response.json()
+      console.log('Registration API response:', data)
 
-        if (error) {
-          throw new Error(error.message || 'Better Auth registration failed')
-        } else if (data) {
-          // Redirect to login page with success message
-          router.push('/login?registered=true')
-          return
-        }
-      } catch (betterAuthError) {
-        console.log('Better Auth failed, trying custom API:', betterAuthError)
-        
-        // Fallback to custom registration API
-        const response = await fetch('/api/auth/register-better-auth', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            email: userData.email,
-            password: userData.password,
-            name: userData.name,
-            username: username,
-          }),
-        })
-
-        const data = await response.json()
-        console.log('Custom API registration response:', data)
-
-        if (response.ok) {
-          // Redirect to login page with success message
-          router.push('/login?registered=true')
-        } else {
-          setError(data.error || 'Registration failed')
-        }
+      if (response.ok) {
+        // Redirect to login page with success message
+        router.push('/login?registered=true')
+      } else {
+        setError(data.error || 'Registration failed')
       }
     } catch (error) {
       console.error('Registration catch error:', error)
@@ -170,53 +147,60 @@ export function RegisterStep2({ userData, onBack }: RegisterStep2Props) {
   const isFormValid = usernameStatus === 'available' && !isLoading
 
   return (
-    <Card className="w-full max-w-md mx-auto">
-      <CardHeader className="space-y-1">
-        <CardTitle className="text-2xl font-bold text-center">Choose Username</CardTitle>
-        <p className="text-sm text-muted-foreground text-center">
-          Step 2 of 2: Select your unique username
-        </p>
-      </CardHeader>
-      <CardContent>
+    <div className="relative">
+      {/* Background effects */}
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-purple-500/10 rounded-lg blur-xl" />
+
+      <Card className="relative bg-gray-900/80 backdrop-blur-md border-gray-700">
+        <CardHeader className="text-center">
+          <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-500 rounded-lg mx-auto mb-4 flex items-center justify-center">
+            <User className="h-8 w-8 text-white" />
+          </div>
+          <CardTitle className="text-2xl text-white">Choose Username</CardTitle>
+          <p className="text-gray-400">Step 2 of 2: Select your unique username</p>
+        </CardHeader>
+        <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           {error && (
-            <Alert variant="destructive">
+            <Alert className="bg-red-900/20 border-red-500/30 text-red-400">
               <AlertDescription>{error}</AlertDescription>
             </Alert>
           )}
 
           <div className="space-y-2">
-            <Label htmlFor="username">Username</Label>
+            <Label htmlFor="username" className="text-gray-300">
+              Username
+            </Label>
             <div className="relative">
-              <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+              <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
               <Input
                 id="username"
                 type="text"
                 placeholder="Enter your username"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                className="pl-10 pr-10"
+                className="pl-10 pr-10 bg-gray-800/50 border-gray-600 text-white placeholder:text-gray-400"
                 required
                 minLength={3}
                 maxLength={30}
               />
-              <div className="absolute right-3 top-3">
+              <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
                 {getUsernameIcon()}
               </div>
             </div>
             <p className={`text-xs ${
-              usernameStatus === 'available' ? 'text-green-600' : 
-              usernameStatus === 'unavailable' || usernameStatus === 'invalid' ? 'text-red-600' : 
-              'text-muted-foreground'
+              usernameStatus === 'available' ? 'text-green-400' : 
+              usernameStatus === 'unavailable' || usernameStatus === 'invalid' ? 'text-red-400' : 
+              'text-gray-400'
             }`}>
               {getUsernameMessage()}
             </p>
           </div>
 
           <div className="space-y-2">
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-gray-400">
               Your username will be used in your portfolio URL: <br />
-              <span className="font-mono text-blue-600">
+              <span className="font-mono text-blue-400">
                 flexfolio.com/{username || 'your-username'}
               </span>
             </p>
@@ -227,21 +211,41 @@ export function RegisterStep2({ userData, onBack }: RegisterStep2Props) {
               type="button"
               variant="outline"
               onClick={onBack}
-              className="flex-1"
+              className="flex-1 border-gray-600 text-gray-300 hover:bg-gray-800"
             >
               <ArrowLeft className="h-4 w-4 mr-2" />
               Back
             </Button>
             <Button 
               type="submit" 
-              className="flex-1" 
+              className="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
               disabled={!isFormValid}
             >
               {isLoading ? "Creating Account..." : "Create Account"}
             </Button>
           </div>
         </form>
+
+        <div className="mt-6 text-center space-y-2">
+          <p className="text-gray-400 text-sm">
+            Already have an account?{" "}
+            <button
+              onClick={() => router.push('/login')}
+              className="text-blue-400 hover:text-blue-300 underline"
+            >
+              Sign in
+            </button>
+          </p>
+          <button
+            onClick={() => router.push('/')}
+            className="text-gray-400 hover:text-gray-300 text-sm underline flex items-center justify-center mx-auto"
+          >
+            <Home className="h-4 w-4 mr-1" />
+            Back to Home
+          </button>
+        </div>
       </CardContent>
     </Card>
+  </div>
   )
 }

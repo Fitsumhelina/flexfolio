@@ -9,8 +9,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Eye, EyeOff, Lock, Mail, CheckCircle } from "lucide-react"
-import { authClient } from "@/lib/auth-client"
+import { Eye, EyeOff, Lock, Mail, CheckCircle, Home } from "lucide-react"
 
 export function LoginForm() {
   const [email, setEmail] = useState("")
@@ -30,49 +29,28 @@ export function LoginForm() {
     try {
       console.log('Attempting login with:', { email })
       
-      // Try Better Auth first, fallback to custom API
-      try {
-        const { data, error } = await authClient.signIn.email({
-          email,
-          password,
-        })
+      // Use custom login API with HTTP-only cookies
+      const response = await fetch('/api/auth/login-custom', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include', // Important: include cookies
+        body: JSON.stringify({ email, password }),
+      })
 
-        console.log('Better Auth login response:', { data, error })
+      const data = await response.json()
+      console.log('Login API response:', data)
 
-        if (error) {
-          throw new Error(error.message || 'Better Auth login failed')
-        } else if (data?.user) {
-          // Redirect to dashboard using username
-          const username = (data.user as any).username || data.user.email.split('@')[0]
+      if (response.ok && data.user) {
+        // Wait a moment for cookie to be set, then redirect
+        setTimeout(() => {
+          const username = data.user.username || data.user.email.split('@')[0]
+          console.log('Redirecting to dashboard for username:', username)
           router.push(`/${username}/dashboard`)
-          return
-        }
-      } catch (betterAuthError) {
-        console.log('Better Auth failed, trying custom API:', betterAuthError)
-        
-        // Fallback to custom login API
-        const response = await fetch('/api/auth/login-custom', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          credentials: 'include', // Important: include cookies
-          body: JSON.stringify({ email, password }),
-        })
-
-        const data = await response.json()
-        console.log('Custom API login response:', data)
-
-        if (response.ok && data.user) {
-          // Wait a moment for cookie to be set, then redirect
-          setTimeout(() => {
-            const username = data.user.username || data.user.email.split('@')[0]
-            console.log('Redirecting to dashboard for username:', username)
-            router.push(`/${username}/dashboard`)
-          }, 100)
-        } else {
-          setError(data.error || 'Login failed')
-        }
+        }, 100)
+      } else {
+        setError(data.error || 'Login failed')
       }
     } catch (error) {
       console.error('Login catch error:', error)
@@ -165,7 +143,7 @@ export function LoginForm() {
             </Button>
           </form>
 
-          <div className="mt-6 text-center">
+          <div className="mt-6 text-center space-y-2">
             <p className="text-gray-400 text-sm">
               Don't have an account?{" "}
               <button
@@ -175,6 +153,13 @@ export function LoginForm() {
                 Sign up
               </button>
             </p>
+            <button
+              onClick={() => router.push('/')}
+              className="text-gray-400 hover:text-gray-300 text-sm underline flex items-center justify-center mx-auto"
+            >
+              <Home className="h-4 w-4 mr-1" />
+              Back to Home
+            </button>
           </div>
         </CardContent>
       </Card>

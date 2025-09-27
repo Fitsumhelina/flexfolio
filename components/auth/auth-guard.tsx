@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
-import { authClient } from "@/lib/auth-client"
 
 interface AuthGuardProps {
   children: React.ReactNode
@@ -16,19 +15,7 @@ export function AuthGuard({ children }: AuthGuardProps) {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        // Try Better Auth first, fallback to custom API
-        try {
-          const session = await authClient.getSession()
-          if (session?.data?.user) {
-            setIsAuthenticated(true)
-            setUser(session.data.user)
-            return
-          }
-        } catch (betterAuthError) {
-          console.log('Better Auth session failed, trying custom API:', betterAuthError)
-        }
-        
-        // Fallback to custom session API
+        // Use custom session API with HTTP-only cookies
         const response = await fetch('/api/auth/session', {
           credentials: 'include' // Important: include cookies
         })
