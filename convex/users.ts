@@ -133,6 +133,89 @@ export const checkEmailExists = query({
   },
 });
 
+// Update user information
+export const updateUser = mutation({
+  args: {
+    userId: v.id("users"),
+    name: v.optional(v.string()),
+    email: v.optional(v.string()),
+    username: v.optional(v.string()),
+    isActive: v.optional(v.boolean()),
+  },
+  handler: async (ctx, args) => {
+    const { userId, ...updates } = args;
+    
+    // Remove undefined values
+    const cleanUpdates = Object.fromEntries(
+      Object.entries(updates).filter(([_, value]) => value !== undefined)
+    );
+
+    // Check if username is being changed and if it's available
+    if (updates.username) {
+      const existingUser = await ctx.db
+        .query("users")
+        .withIndex("by_username", (q) => q.eq("username", updates.username))
+        .first();
+
+      if (existingUser && existingUser._id !== userId) {
+        throw new Error("Username already taken");
+      }
+    }
+
+    // Check if email is being changed and if it's available
+    if (updates.email) {
+      const existingUser = await ctx.db
+        .query("users")
+        .withIndex("by_email", (q) => q.eq("email", updates.email))
+        .first();
+
+      if (existingUser && existingUser._id !== userId) {
+        throw new Error("Email already taken");
+      }
+    }
+
+    await ctx.db.patch(userId, {
+      ...cleanUpdates,
+      updatedAt: Date.now(),
+    });
+
+    // Return updated user
+    const updatedUser = await ctx.db.get(userId);
+    if (!updatedUser) throw new Error("User not found");
+    
+    const { password, ...userWithoutPassword } = updatedUser;
+    return userWithoutPassword;
+  },
+});
+
+// Change password
+export const changePassword = mutation({
+  args: {
+    userId: v.id("users"),
+    oldPassword: v.string(),
+    newPassword: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const user = await ctx.db.get(args.userId);
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    // Verify old password
+    if (user.password !== args.oldPassword) {
+      throw new Error("Current password is incorrect");
+    }
+
+    // Update password
+    await ctx.db.patch(args.userId, {
+      password: args.newPassword,
+      updatedAt: Date.now(),
+    });
+
+    return { success: true };
+  },
+});
+
 // Get all users (for debugging)
 export const getAllUsers = query({
   args: {},

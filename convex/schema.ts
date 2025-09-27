@@ -7,6 +7,7 @@ export default defineSchema({
     email: v.string(),
     username: v.string(),
     password: v.string(), // hashed password
+    isActive: v.optional(v.boolean()),
     createdAt: v.number(),
     updatedAt: v.number(),
     portfolioData: v.optional(v.object({
