@@ -162,7 +162,7 @@ export function ConvexRegisterForm() {
 
     try {
       await register(formData.name, formData.email, formData.username, formData.password);
-      router.push("/dashboard");
+      router.push(`/${formData.username}/dashboard`);
     } catch (err: any) {
       setError(err.message || "Registration failed");
     } finally {
