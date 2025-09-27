@@ -44,6 +44,16 @@ export function DashboardInbox({ user, messages }: DashboardInboxProps) {
   }
 
   const handleMessageClick = (messageId: string) => {
+    // Set selected message for preview
+    setSelectedId(messageId)
+    // Mark as read if not already read
+    const message = messages?.find(m => m._id === messageId)
+    if (message && !message.isRead) {
+      markRead(messageId)
+    }
+  }
+
+  const handleViewFullMessage = () => {
     // Redirect to the dedicated message page
     router.push(`/${user.username}/dashboard/mail`)
   }
@@ -90,11 +100,39 @@ export function DashboardInbox({ user, messages }: DashboardInboxProps) {
                   <div>
                     <div className="text-white text-lg">{selected.subject || '(no subject)'}</div>
                     <div className="text-sm text-gray-400">From {selected.senderEmail}</div>
+                    <div className="text-xs text-gray-500">
+                      {new Date(selected.createdAt).toLocaleString()}
+                    </div>
                   </div>
-                  <button onClick={() => handleDelete(selected._id)} className="text-red-400 hover:text-red-300">Delete</button>
+                  <div className="flex gap-2">
+                    <button 
+                      onClick={handleViewFullMessage}
+                      className="px-3 py-1 text-sm bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors"
+                    >
+                      View Full
+                    </button>
+                    <button 
+                      onClick={() => handleDelete(selected._id)} 
+                      className="px-3 py-1 text-sm bg-red-600 hover:bg-red-700 text-white rounded-md transition-colors"
+                    >
+                      Delete
+                    </button>
+                  </div>
                 </div>
                 <div className="h-px bg-gray-700 my-2" />
-                <div className="whitespace-pre-wrap text-gray-200">{selected.message}</div>
+                <div className="whitespace-pre-wrap text-gray-200 max-h-32 overflow-y-auto">
+                  {selected.message}
+                </div>
+                {selected.message.length > 200 && (
+                  <div className="text-center pt-2">
+                    <button 
+                      onClick={handleViewFullMessage}
+                      className="text-blue-400 hover:text-blue-300 text-sm"
+                    >
+                      Read more...
+                    </button>
+                  </div>
+                )}
               </div>
             ) : (
               <div className="text-gray-400">Select a message to preview</div>
