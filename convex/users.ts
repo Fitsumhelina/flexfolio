@@ -218,23 +218,42 @@ export const changePassword = mutation({
     newPassword: v.string(),
   },
   handler: async (ctx, args) => {
-    const user = await ctx.db.get(args.userId);
-    if (!user) {
-      throw new Error("User not found");
+    try {
+      // Validate input
+      if (!args.oldPassword || !args.newPassword) {
+        throw new Error("Old password and new password are required");
+      }
+
+      const user = await ctx.db.get(args.userId);
+      if (!user) {
+        console.log(`Password change failed: User ${args.userId} not found`);
+        throw new Error("User not found");
+      }
+
+      // Verify old password
+      if (user.password !== args.oldPassword) {
+        console.log(`Password change failed: Incorrect password for user ${user.email}`);
+        throw new Error("Current password is incorrect");
+      }
+
+      // Update password
+      await ctx.db.patch(args.userId, {
+        password: args.newPassword,
+        updatedAt: Date.now(),
+      });
+
+      console.log(`Password changed successfully for user: ${user.email}`);
+      return { success: true };
+    } catch (error) {
+      console.error("Change password error:", error);
+      
+      // Re-throw with a more user-friendly message
+      if (error instanceof Error) {
+        throw new Error(error.message);
+      } else {
+        throw new Error("An unexpected error occurred while changing password");
+      }
     }
-
-    // Verify old password
-    if (user.password !== args.oldPassword) {
-      throw new Error("Current password is incorrect");
-    }
-
-    // Update password
-    await ctx.db.patch(args.userId, {
-      password: args.newPassword,
-      updatedAt: Date.now(),
-    });
-
-    return { success: true };
   },
 });
 

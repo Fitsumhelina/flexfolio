@@ -104,7 +104,9 @@ export function DashboardSettings({ user, setUser, onLogout }: DashboardSettings
                     if (!user) return
                     setIsUpdatingAccount(true)
                     setAccountMessage(null)
+                    
                     try {
+                      console.log("Attempting account update for user:", user.email);
                       const updatedUser = await updateUserMutation({
                         userId: user._id as any,
                         name: user.name,
@@ -114,8 +116,33 @@ export function DashboardSettings({ user, setUser, onLogout }: DashboardSettings
                       })
                       setUser(updatedUser as any)
                       setAccountMessage('Account updated successfully')
+                      console.log("Account updated successfully");
                     } catch (error: any) {
-                      setAccountMessage(error.message || 'Failed to update account')
+                      console.error("Account update error:", error);
+                      
+                      // Extract meaningful error message
+                      let errorMessage = "Failed to update account";
+                      
+                      if (error?.message) {
+                        // Handle specific error cases
+                        if (error.message.includes("Username already taken")) {
+                          errorMessage = "Username is already taken. Please choose a different username.";
+                        } else if (error.message.includes("Email already taken")) {
+                          errorMessage = "Email is already taken. Please use a different email address.";
+                        } else if (error.message.includes("User not found")) {
+                          errorMessage = "User session expired. Please log in again.";
+                        } else if (error.message.includes("required")) {
+                          errorMessage = "Please fill in all required fields.";
+                        } else {
+                          errorMessage = error.message;
+                        }
+                      } else if (error?.error) {
+                        errorMessage = error.error;
+                      } else if (typeof error === 'string') {
+                        errorMessage = error;
+                      }
+                      
+                      setAccountMessage(errorMessage);
                     } finally {
                       setIsUpdatingAccount(false)
                     }
@@ -299,6 +326,7 @@ export function DashboardSettings({ user, setUser, onLogout }: DashboardSettings
                   setPasswordMessage(null)
                   
                   try {
+                    console.log("Attempting password change for user:", user.email);
                     await changePasswordMutation({
                       userId: user._id as any,
                       oldPassword: passwordData.oldPassword,
@@ -307,8 +335,31 @@ export function DashboardSettings({ user, setUser, onLogout }: DashboardSettings
                     
                     setPasswordData({ oldPassword: "", newPassword: "", confirmPassword: "" })
                     setPasswordMessage('Password changed successfully')
+                    console.log("Password changed successfully");
                   } catch (error: any) {
-                    setPasswordMessage(error.message || 'Failed to change password')
+                    console.error("Password change error:", error);
+                    
+                    // Extract meaningful error message
+                    let errorMessage = "Failed to change password";
+                    
+                    if (error?.message) {
+                      // Handle specific error cases
+                      if (error.message.includes("Current password is incorrect")) {
+                        errorMessage = "Current password is incorrect. Please check and try again.";
+                      } else if (error.message.includes("User not found")) {
+                        errorMessage = "User session expired. Please log in again.";
+                      } else if (error.message.includes("required")) {
+                        errorMessage = "Please fill in all password fields.";
+                      } else {
+                        errorMessage = error.message;
+                      }
+                    } else if (error?.error) {
+                      errorMessage = error.error;
+                    } else if (typeof error === 'string') {
+                      errorMessage = error;
+                    }
+                    
+                    setPasswordMessage(errorMessage);
                   } finally {
                     setIsUpdatingPassword(false)
                   }
