@@ -180,7 +180,7 @@ export function Dashboard({ username }: DashboardProps) {
         ...updates,
       })
       
-      setMessage('Saved')
+      setMessage('Content updated successfully')
     } catch (err: any) {
       setMessage(err?.message || 'Failed to save')
     } finally {
