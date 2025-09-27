@@ -26,12 +26,12 @@ export function AuthGuard({ children }: AuthGuardProps) {
           setUser(data.user)
         } else {
           setIsAuthenticated(false)
-          router.push("/login")
+          router.push("/")
         }
       } catch (error) {
         console.error("Auth check error:", error)
         setIsAuthenticated(false)
-        router.push("/login")
+        router.push("/")
       }
     }
 
