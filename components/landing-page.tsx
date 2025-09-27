@@ -95,15 +95,7 @@ export function LandingPage() {
               </h1>
             </div>
             <div className="flex items-center space-x-4">
-              {/* View Demo Button */}
-              <Button
-                variant="ghost"
-                onClick={() => window.open("/demo", "_blank")}
-                className="text-gray-300 hover:text-white bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
-              >
-                <ExternalLink className="h-4 w-4 mr-2" />
-                View Demo
-              </Button>
+            
               {/* GitHub Button */}
               <Button
                 variant="ghost"
@@ -172,11 +164,11 @@ export function LandingPage() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
               <Button
                 size="lg"
-                onClick={() => router.push("/register")}
+                onClick={() => router.push("/demo")}
                 variant="gradient"
                 className="text-lg px-8 py-4"
               >
-                Start Building Free
+                View live Demo
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
 
