@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useSession } from "@/components/auth/session-provider";
+import { useAuth } from "@/components/auth/convex-auth-provider";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -21,7 +21,7 @@ import {
 
 export function LandingPage() {
   const router = useRouter();
-  const { user, isLoading } = useSession();
+  const { user, isLoading } = useAuth();
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
 
   // Redirect to dashboard if user is already signed in
