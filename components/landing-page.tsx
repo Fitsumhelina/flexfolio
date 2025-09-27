@@ -97,18 +97,18 @@ export function LandingPage() {
             <div className="flex items-center space-x-4">
               {/* View Demo Button */}
               <Button
-                variant="outline"
+                variant="ghost"
                 onClick={() => window.open("/demo", "_blank")}
-                className="text-blue-400 border-blue-500 hover:bg-blue-600 hover:text-white transition-colors duration-150 flex items-center"
+                className="text-gray-300 hover:text-white bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
               >
-                <Play className="h-5 w-5 mr-2" />
+                <ExternalLink className="h-4 w-4 mr-2" />
                 View Demo
               </Button>
               {/* GitHub Button */}
               <Button
-                variant="outline"
+                variant="ghost"
                 asChild
-                className="text-gray-300 border-gray-700 hover:bg-gray-800 hover:text-white transition-colors duration-150 flex items-center"
+                className="text-gray-300 hover:text-white flex items-center"
               >
                 <a
                   href="https://github.com/fitsumhelina/flexfolio"
@@ -118,7 +118,7 @@ export function LandingPage() {
                   className="flex items-center"
                 >
                   <svg
-                    className="h-5 w-5 mr-2 text-gray-400 group-hover:text-white transition-colors"
+                    className="h-5 w-5 mr-2"
                     fill="currentColor"
                     viewBox="0 0 24 24"
                   >
