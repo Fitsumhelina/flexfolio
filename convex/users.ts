@@ -1,0 +1,314 @@
+import { mutation, query } from "./_generated/server";
+import { v } from "convex/values";
+
+// Register a new user
+export const register = mutation({
+  args: {
+    name: v.string(),
+    email: v.string(),
+    username: v.string(),
+    password: v.string(),
+  },
+  handler: async (ctx, args) => {
+    // Check if user already exists
+    const existingUser = await ctx.db
+      .query("users")
+      .withIndex("by_email", (q) => q.eq("email", args.email))
+      .first();
+
+    if (existingUser) {
+      throw new Error("User with this email already exists");
+    }
+
+    const existingUsername = await ctx.db
+      .query("users")
+      .withIndex("by_username", (q) => q.eq("username", args.username))
+      .first();
+
+    if (existingUsername) {
+      throw new Error("Username already taken");
+    }
+
+    // For now, store password as plain text (we'll implement proper auth later)
+    // In production, you should use Convex Auth or handle password hashing in an action
+    const userId = await ctx.db.insert("users", {
+      name: args.name,
+      email: args.email,
+      username: args.username,
+      password: args.password, // Store as plain text for now
+      createdAt: Date.now(),
+      updatedAt: Date.now(),
+      portfolioData: {
+        about: {
+          name: args.name,
+          title: "Full Stack Developer",
+          bio: "I'm a passionate developer who loves creating amazing digital experiences.",
+          experience: "1+",
+          projectsCompleted: "5+",
+          email: args.email,
+          phone: "",
+          location: "",
+          profileImage: "",
+        },
+        projects: [],
+        skills: [],
+      },
+    });
+
+    return userId;
+  },
+});
+
+// Login user
+export const login = mutation({
+  args: {
+    email: v.string(),
+    password: v.string(),
+  },
+  handler: async (ctx, args) => {
+    try {
+      // Validate input
+      if (!args.email || !args.password) {
+        throw new Error("Email and password are required");
+      }
+
+      const user = await ctx.db
+        .query("users")
+        .withIndex("by_email", (q) => q.eq("email", args.email))
+        .first();
+
+      if (!user) {
+        // For debugging: log that email was not found
+        console.log(`Login attempt failed: Email '${args.email}' not found in database`);
+        throw new Error("Invalid email or password");
+      }
+
+      // For now, compare plain text passwords
+      // In production, you should use Convex Auth or handle password verification in an action
+      if (user.password !== args.password) {
+        // For debugging: log that password was incorrect
+        console.log(`Login attempt failed: Incorrect password for email '${args.email}'`);
+        throw new Error("Invalid email or password");
+      }
+
+      // Return user without password
+      const { password, ...userWithoutPassword } = user;
+      console.log(`Login successful for user: ${user.email}`);
+      return userWithoutPassword;
+    } catch (error) {
+      // Log the error for debugging
+      console.error("Login error:", error);
+      
+      // Re-throw with a more user-friendly message
+      if (error instanceof Error) {
+        throw new Error(error.message);
+      } else {
+        throw new Error("An unexpected error occurred during login");
+      }
+    }
+  },
+});
+
+// Get user by ID
+export const getUser = query({
+  args: { userId: v.id("users") },
+  handler: async (ctx, args) => {
+    const user = await ctx.db.get(args.userId);
+    if (!user) return null;
+    
+    const { password, ...userWithoutPassword } = user;
+    return userWithoutPassword;
+  },
+});
+
+// Get user by username
+export const getUserByUsername = query({
+  args: { username: v.string() },
+  handler: async (ctx, args) => {
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_username", (q) => q.eq("username", args.username))
+      .first();
+
+    if (!user) return null;
+    
+    const { password, ...userWithoutPassword } = user;
+    return userWithoutPassword;
+  },
+});
+
+// Check if email exists - as query for real-time checking
+export const checkEmailExists = query({
+  args: { email: v.string() },
+  handler: async (ctx, args) => {
+    try {
+      const user = await ctx.db
+        .query("users")
+        .withIndex("by_email", (q) => q.eq("email", args.email))
+        .first();
+      
+      return !!user;
+    } catch (error) {
+      console.error("Error checking email:", error);
+      return false;
+    }
+  },
+});
+
+// Update user information
+export const updateUser = mutation({
+  args: {
+    userId: v.id("users"),
+    name: v.optional(v.string()),
+    email: v.optional(v.string()),
+    username: v.optional(v.string()),
+    isActive: v.optional(v.boolean()),
+  },
+  handler: async (ctx, args) => {
+    const { userId, ...updates } = args;
+    
+    // Remove undefined values
+    const cleanUpdates = Object.fromEntries(
+      Object.entries(updates).filter(([_, value]) => value !== undefined)
+    );
+
+    // Check if username is being changed and if it's available
+    if (updates.username) {
+      const existingUser = await ctx.db
+        .query("users")
+        .withIndex("by_username", (q) => q.eq("username", updates.username))
+        .first();
+
+      if (existingUser && existingUser._id !== userId) {
+        throw new Error("Username already taken");
+      }
+    }
+
+    // Check if email is being changed and if it's available
+    if (updates.email) {
+      const existingUser = await ctx.db
+        .query("users")
+        .withIndex("by_email", (q) => q.eq("email", updates.email))
+        .first();
+
+      if (existingUser && existingUser._id !== userId) {
+        throw new Error("Email already taken");
+      }
+    }
+
+    await ctx.db.patch(userId, {
+      ...cleanUpdates,
+      updatedAt: Date.now(),
+    });
+
+    // Return updated user
+    const updatedUser = await ctx.db.get(userId);
+    if (!updatedUser) throw new Error("User not found");
+    
+    const { password, ...userWithoutPassword } = updatedUser;
+    return userWithoutPassword;
+  },
+});
+
+// Change password
+export const changePassword = mutation({
+  args: {
+    userId: v.id("users"),
+    oldPassword: v.string(),
+    newPassword: v.string(),
+  },
+  handler: async (ctx, args) => {
+    try {
+      // Validate input
+      if (!args.oldPassword || !args.newPassword) {
+        throw new Error("Old password and new password are required");
+      }
+
+      const user = await ctx.db.get(args.userId);
+      if (!user) {
+        console.log(`Password change failed: User ${args.userId} not found`);
+        throw new Error("User not found");
+      }
+
+      // Verify old password
+      if (user.password !== args.oldPassword) {
+        console.log(`Password change failed: Incorrect password for user ${user.email}`);
+        throw new Error("Current password is incorrect");
+      }
+
+      // Update password
+      await ctx.db.patch(args.userId, {
+        password: args.newPassword,
+        updatedAt: Date.now(),
+      });
+
+      console.log(`Password changed successfully for user: ${user.email}`);
+      return { success: true };
+    } catch (error) {
+      console.error("Change password error:", error);
+      
+      // Re-throw with a more user-friendly message
+      if (error instanceof Error) {
+        throw new Error(error.message);
+      } else {
+        throw new Error("An unexpected error occurred while changing password");
+      }
+    }
+  },
+});
+
+// Get all users (for debugging)
+export const getAllUsers = query({
+  args: {},
+  handler: async (ctx) => {
+    return await ctx.db.query("users").collect();
+  },
+});
+
+// Debug function to check user by email (for debugging login issues)
+export const debugUserByEmail = query({
+  args: { email: v.string() },
+  handler: async (ctx, args) => {
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_email", (q) => q.eq("email", args.email))
+      .first();
+    
+    if (!user) {
+      return { 
+        found: false, 
+        message: "User not found - this email is not registered",
+        suggestion: "Try registering a new account with this email"
+      };
+    }
+    
+    // Return user info without password for debugging
+    const { password, ...userInfo } = user;
+    return { 
+      found: true, 
+      message: "User found - email is registered",
+      user: userInfo,
+      hasPassword: !!password,
+      passwordLength: password?.length || 0,
+      suggestion: password ? "User has password set - check if password is correct" : "User has no password - this is an error"
+    };
+  },
+});
+
+// Check if username exists - as query for real-time checking
+export const checkUsernameExists = query({
+  args: { username: v.string() },
+  handler: async (ctx, args) => {
+    try {
+      const user = await ctx.db
+        .query("users")
+        .withIndex("by_username", (q) => q.eq("username", args.username))
+        .first();
+      
+      return !!user;
+    } catch (error) {
+      console.error("Error checking username:", error);
+      return false;
+    }
+  },
+});

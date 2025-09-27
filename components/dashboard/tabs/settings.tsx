@@ -1,30 +1,62 @@
 "use client"
 
+import React, { useState } from "react"
+import { useMutation, useQuery } from "convex/react"
+import { api } from "../../../convex/_generated/api"
+import { Id } from "../../../convex/_generated/dataModel"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { User, LogOut, Download, Link } from "lucide-react"
-
-interface User {
-  _id: string
-  name: string
-  email: string
-  username: string
-  isActive?: boolean
-  createdAt?: string
-  updatedAt?: string
-}
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { User, LogOut, Download, Link, Lock, CheckCircle, Eye, EyeOff } from "lucide-react"
 
 interface DashboardSettingsProps {
-  user: User
-  setUser: React.Dispatch<React.SetStateAction<User | null>>
+  userId: Id<"users">
   onLogout: () => void
 }
 
-export function DashboardSettings({ user, setUser, onLogout }: DashboardSettingsProps) {
+export function DashboardSettings({ userId, onLogout }: DashboardSettingsProps) {
+  const [passwordData, setPasswordData] = useState({
+    oldPassword: "",
+    newPassword: "",
+    confirmPassword: ""
+  })
+  const [isUpdatingAccount, setIsUpdatingAccount] = useState(false)
+  const [isUpdatingPassword, setIsUpdatingPassword] = useState(false)
+  const [accountMessage, setAccountMessage] = useState<string | null>(null)
+  const [passwordMessage, setPasswordMessage] = useState<string | null>(null)
+  const [showOldPassword, setShowOldPassword] = useState(false)
+  const [showNewPassword, setShowNewPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+
+  // Get user data from Convex
+  const user = useQuery(api.users.getUser, { userId })
+  const [localUserData, setLocalUserData] = useState({
+    name: "",
+    email: "",
+    username: "",
+    isActive: true
+  })
+
+  // Update local data when Convex data changes
+  React.useEffect(() => {
+    if (user) {
+      setLocalUserData({
+        name: user.name,
+        email: user.email,
+        username: user.username,
+        isActive: user.isActive !== false
+      })
+    }
+  }, [user])
+
+  const updateUserMutation = useMutation(api.users.updateUser)
+  const changePasswordMutation = useMutation(api.users.changePassword)
+  
   return (
     <div className="space-y-6">
       <div className="grid lg:grid-cols-2 gap-6">
-        <Card className="bg-black  border-green-500/20">
+        <Card className="bg-black border-green-500/20">
           <CardHeader>
             <CardTitle className="text-white flex items-center">
               <User className="h-5 w-5 mr-2 text-orange-400" />
@@ -34,70 +66,109 @@ export function DashboardSettings({ user, setUser, onLogout }: DashboardSettings
           <CardContent>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
-                  Full Name
-                </label>
-              <input 
-                type="text" 
-                value={user.name}
-                onChange={(e) => setUser(prev => prev ? ({ ...prev, name: e.target.value }) : prev)}
-                className="w-full bg-gray-800/50 border border-gray-600 rounded-lg px-3 py-2 text-white focus:border-orange-500 focus:outline-none"
-              />
+                <Label htmlFor="name" className="text-gray-300">Full Name</Label>
+                <Input 
+                  id="name"
+                  type="text" 
+                  value={localUserData.name}
+                  onChange={(e) => setLocalUserData(prev => ({ ...prev, name: e.target.value }))}
+                  className="w-full bg-gray-800/50 border border-gray-600 text-white placeholder-gray-400 focus:border-orange-500"
+                />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
-                  Email Address
-                </label>
-              <input 
-                type="email" 
-                value={user.email}
-                onChange={(e) => setUser(prev => prev ? ({ ...prev, email: e.target.value }) : prev)}
-                className="w-full bg-gray-800/50 border border-gray-600 rounded-lg px-3 py-2 text-white focus:border-orange-500 focus:outline-none"
-              />
+                <Label htmlFor="email" className="text-gray-300">Email Address</Label>
+                <Input 
+                  id="email"
+                  type="email" 
+                  value={localUserData.email}
+                  onChange={(e) => setLocalUserData(prev => ({ ...prev, email: e.target.value }))}
+                  className="w-full bg-gray-800/50 border border-gray-600 text-white placeholder-gray-400 focus:border-orange-500"
+                />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
-                  Username
-                </label>
-              <input 
-                type="text" 
-                value={user.username}
-                onChange={(e) => setUser(prev => prev ? ({ ...prev, username: e.target.value }) : prev)}
-                className="w-full bg-gray-800/50 border border-gray-600 rounded-lg px-3 py-2 text-white focus:border-orange-500 focus:outline-none"
-              />
-              <div className="mt-3 flex items-center gap-3">
-                <label className="text-sm text-gray-300">Portfolio Status</label>
-                <select
-                  value={user.isActive !== false ? 'active' : 'inactive'}
-                  onChange={(e) => setUser(prev => prev ? ({ ...prev, isActive: e.target.value === 'active' }) : prev)}
-                  className="bg-gray-800/50 border border-gray-600 rounded-lg px-2 py-1 text-white"
+                <Label htmlFor="username" className="text-gray-300">Username</Label>
+                <Input 
+                  id="username"
+                  type="text" 
+                  value={localUserData.username}
+                  onChange={(e) => setLocalUserData(prev => ({ ...prev, username: e.target.value }))}
+                  className="w-full bg-gray-800/50 border border-gray-600 text-white placeholder-gray-400 focus:border-orange-500"
+                />
+                <div className="mt-3 flex items-center gap-3">
+                  <label className="text-sm text-gray-300">Portfolio Status</label>
+                  <select
+                    value={localUserData.isActive ? 'active' : 'inactive'}
+                    onChange={(e) => setLocalUserData(prev => ({ ...prev, isActive: e.target.value === 'active' }))}
+                    className="bg-gray-800/50 border border-gray-600 rounded-lg px-2 py-1 text-white"
+                  >
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
+                  </select>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <Button 
+                  variant="outline" 
+                  className="text-white bg-green-500 hover:bg-green-600"
+                  disabled={isUpdatingAccount}
+                  onClick={async () => {
+                    if (!user) return
+                    setIsUpdatingAccount(true)
+                    setAccountMessage(null)
+                    
+                    try {
+                      console.log("Attempting account update for user:", localUserData.email);
+                      await updateUserMutation({
+                        userId: userId,
+                        name: localUserData.name,
+                        email: localUserData.email,
+                        username: localUserData.username,
+                        isActive: localUserData.isActive
+                      })
+                      setAccountMessage('Account updated successfully')
+                      console.log("Account updated successfully");
+                    } catch (error: any) {
+                      console.error("Account update error:", error);
+                      
+                      // Extract meaningful error message
+                      let errorMessage = "Failed to update account";
+                      
+                      if (error?.message) {
+                        // Handle specific error cases
+                        if (error.message.includes("Username already taken")) {
+                          errorMessage = "Username is already taken. Please choose a different username.";
+                        } else if (error.message.includes("Email already taken")) {
+                          errorMessage = "Email is already taken. Please use a different email address.";
+                        } else if (error.message.includes("User not found")) {
+                          errorMessage = "User session expired. Please log in again.";
+                        } else if (error.message.includes("required")) {
+                          errorMessage = "Please fill in all required fields.";
+                        } else {
+                          errorMessage = error.message;
+                        }
+                      } else if (error?.error) {
+                        errorMessage = error.error;
+                      } else if (typeof error === 'string') {
+                        errorMessage = error;
+                      }
+                      
+                      setAccountMessage(errorMessage);
+                    } finally {
+                      setIsUpdatingAccount(false)
+                    }
+                  }}
                 >
-                  <option value="active">Active</option>
-                  <option value="inactive">Inactive</option>
-                </select>
+                  {isUpdatingAccount ? 'Updating...' : 'Update'}
+                </Button>
+                {accountMessage && (
+                  <span className={`text-sm flex items-center gap-1 ${
+                    accountMessage.includes('successfully') ? 'text-green-400' : 'text-red-400'
+                  }`}>
+                    <CheckCircle className="h-4 w-4" />
+                    {accountMessage}
+                  </span>
+                )}
               </div>
-              </div>
-              <Button 
-                variant="outline" 
-                className="text-white bg-green-500 hover:bg-green-600"
-                onClick={async () => {
-                  if (!user) return
-                  const res = await fetch('/api/users/update-account', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ userId: user._id, account: { name: user.name, email: user.email, username: user.username, isActive: user.isActive !== false } })
-                  })
-                  const data = await res.json()
-                  if (res.ok && data?.user) {
-                    setUser(data.user)
-                    alert('Account updated')
-                  } else {
-                    alert(data?.error || 'Failed to update')
-                  }
-                }}
-              >
-                Update
-              </Button>
             </div>
           </CardContent>
         </Card>
@@ -116,15 +187,15 @@ export function DashboardSettings({ user, setUser, onLogout }: DashboardSettings
                 <div className="space-y-2">
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-400">Member since</span>
-                    <span className="text-white">{user.createdAt ? new Date(user.createdAt).toLocaleDateString() : '-'}</span>
+                    <span className="text-white">{user?.createdAt ? new Date(user.createdAt).toLocaleDateString() : '-'}</span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-400">Last updated</span>
-                    <span className="text-white">{user.updatedAt ? new Date(user.updatedAt).toLocaleDateString() : '-'}</span>
+                    <span className="text-white">{user?.updatedAt ? new Date(user.updatedAt).toLocaleDateString() : '-'}</span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-400">Portfolio URL</span>
-                    <span className="text-blue-400">/{user.username}</span>
+                    <span className="text-blue-400">/{localUserData.username}</span>
                   </div>
                 </div>
               </div>
@@ -138,7 +209,7 @@ export function DashboardSettings({ user, setUser, onLogout }: DashboardSettings
                     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(user, null, 2))
                     const a = document.createElement('a')
                     a.href = dataStr
-                    a.download = `flexfolio-${user.username}.json`
+                    a.download = `flexfolio-${localUserData.username}.json`
                     a.click()
                   }}
                 >
@@ -150,7 +221,7 @@ export function DashboardSettings({ user, setUser, onLogout }: DashboardSettings
                   className="w-full border-gray-600 text-black-300 hover:bg-white/50"
                   onClick={() => {
                     if (!user) return
-                    const url = `${typeof window !== 'undefined' ? window.location.origin : ''}/${user.username}`
+                    const url = `${typeof window !== 'undefined' ? window.location.origin : ''}/${localUserData.username}`
                     navigator.clipboard.writeText(url)
                     alert('Portfolio URL copied to clipboard')
                   }}
@@ -171,6 +242,153 @@ export function DashboardSettings({ user, setUser, onLogout }: DashboardSettings
           </CardContent>
         </Card>
       </div>
+
+      <Card className="bg-black border-blue-500/20">
+        <CardHeader>
+          <CardTitle className="text-white flex items-center">
+            <Lock className="h-5 w-5 mr-2 text-blue-400" />
+            Change Password
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            <div className="grid md:grid-cols-3 gap-4">
+              <div>
+                <Label htmlFor="oldPassword" className="text-gray-300">Current Password</Label>
+                <div className="relative">
+                  <Input
+                    id="oldPassword"
+                    type={showOldPassword ? "text" : "password"}
+                    value={passwordData.oldPassword}
+                    onChange={(e) => setPasswordData(prev => ({ ...prev, oldPassword: e.target.value }))}
+                    placeholder="Enter current password"
+                    className="bg-gray-800/50 border-gray-600 text-white placeholder-gray-400 focus:border-blue-500 pr-10"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowOldPassword(!showOldPassword)}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-300"
+                  >
+                    {showOldPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </button>
+                </div>
+              </div>
+              <div>
+                <Label htmlFor="newPassword" className="text-gray-300">New Password</Label>
+                <div className="relative">
+                  <Input
+                    id="newPassword"
+                    type={showNewPassword ? "text" : "password"}
+                    value={passwordData.newPassword}
+                    onChange={(e) => setPasswordData(prev => ({ ...prev, newPassword: e.target.value }))}
+                    placeholder="Enter new password"
+                    className="bg-gray-800/50 border-gray-600 text-white placeholder-gray-400 focus:border-blue-500 pr-10"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowNewPassword(!showNewPassword)}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-300"
+                  >
+                    {showNewPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </button>
+                </div>
+              </div>
+              <div>
+                <Label htmlFor="confirmPassword" className="text-gray-300">Confirm New Password</Label>
+                <div className="relative">
+                  <Input
+                    id="confirmPassword"
+                    type={showConfirmPassword ? "text" : "password"}
+                    value={passwordData.confirmPassword}
+                    onChange={(e) => setPasswordData(prev => ({ ...prev, confirmPassword: e.target.value }))}
+                    placeholder="Confirm new password"
+                    className="bg-gray-800/50 border-gray-600 text-white placeholder-gray-400 focus:border-blue-500 pr-10"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-300"
+                  >
+                    {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                className="text-white bg-blue-500 hover:bg-blue-600"
+                disabled={isUpdatingPassword || !passwordData.oldPassword || !passwordData.newPassword || !passwordData.confirmPassword}
+                onClick={async () => {
+                  if (!user) return
+                  
+                  if (passwordData.newPassword !== passwordData.confirmPassword) {
+                    setPasswordMessage('New passwords do not match')
+                    return
+                  }
+                  
+                  if (passwordData.newPassword.length < 6) {
+                    setPasswordMessage('New password must be at least 6 characters')
+                    return
+                  }
+                  
+                  setIsUpdatingPassword(true)
+                  setPasswordMessage(null)
+                  
+                  try {
+                    console.log("Attempting password change for user:", localUserData.email);
+                    await changePasswordMutation({
+                      userId: userId,
+                      oldPassword: passwordData.oldPassword,
+                      newPassword: passwordData.newPassword
+                    })
+                    
+                    setPasswordData({ oldPassword: "", newPassword: "", confirmPassword: "" })
+                    setPasswordMessage('Password changed successfully')
+                    console.log("Password changed successfully");
+                  } catch (error: any) {
+                    console.error("Password change error:", error);
+                    
+                    // Extract meaningful error message
+                    let errorMessage = "Failed to change password";
+                    
+                    if (error?.message) {
+                      // Handle specific error cases
+                      if (error.message.includes("Current password is incorrect")) {
+                        errorMessage = "Current password is incorrect. Please check and try again.";
+                      } else if (error.message.includes("User not found")) {
+                        errorMessage = "User session expired. Please log in again.";
+                      } else if (error.message.includes("required")) {
+                        errorMessage = "Please fill in all password fields.";
+                      } else {
+                        errorMessage = error.message;
+                      }
+                    } else if (error?.error) {
+                      errorMessage = error.error;
+                    } else if (typeof error === 'string') {
+                      errorMessage = error;
+                    }
+                    
+                    setPasswordMessage(errorMessage);
+                  } finally {
+                    setIsUpdatingPassword(false)
+                  }
+                }}
+              >
+                {isUpdatingPassword ? 'Changing...' : 'Change Password'}
+              </Button>
+              {passwordMessage && (
+                <span className={`text-sm flex items-center gap-1 ${
+                  passwordMessage.includes('successfully') ? 'text-green-400' : 'text-red-400'
+                }`}>
+                  <CheckCircle className="h-4 w-4" />
+                  {passwordMessage}
+                </span>
+              )}
+            </div>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   )
 }

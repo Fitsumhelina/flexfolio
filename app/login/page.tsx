@@ -1,4 +1,4 @@
-import { LoginForm } from "@/components/auth/login-form"
+import { ConvexLoginForm } from "@/components/auth/convex-login-form"
 
 export default function LoginPage() {
   return (
@@ -20,7 +20,7 @@ export default function LoginPage() {
           <h1 className="text-3xl font-bold text-white mb-2">Welcome Back</h1>
           <p className="text-gray-400">Sign in to your FlexFolio account</p>
         </div>
-        <LoginForm />
+        <ConvexLoginForm />
       </div>
     </div>
   )

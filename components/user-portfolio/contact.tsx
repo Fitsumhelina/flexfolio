@@ -1,10 +1,13 @@
 "use client"
 
+import { useState } from "react"
+import { useMutation } from "convex/react"
+import { api } from "../../convex/_generated/api"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { Mail, Phone, MapPin, Send } from "lucide-react"
+import { Mail, Phone, MapPin, Send, Loader2 } from "lucide-react"
 
 interface ContactProps {
   aboutData: {
@@ -19,6 +22,41 @@ interface ContactProps {
 }
 
 export function UserContact({ aboutData, username }: ContactProps) {
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null)
+  
+  const createMessage = useMutation(api.messages.createMessageByUsername)
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    setIsSubmitting(true)
+    setMessage(null)
+
+    const form = e.currentTarget
+    const formData = new FormData(form)
+    
+    const name = String(formData.get('name') || '')
+    const email = String(formData.get('email') || '')
+    const subject = String(formData.get('subject') || '')
+    const messageText = String(formData.get('message') || '')
+
+    try {
+      await createMessage({
+        username,
+        name,
+        email,
+        subject,
+        message: messageText,
+      })
+      
+      form.reset()
+      setMessage({ type: 'success', text: 'Message sent successfully!' })
+    } catch (error: any) {
+      setMessage({ type: 'error', text: error.message || 'Failed to send message' })
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
   return (
     <section
       id="contact"
@@ -128,44 +166,36 @@ export function UserContact({ aboutData, username }: ContactProps) {
               <CardTitle className="text-white">Send Message</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <form
-                onSubmit={async (e) => {
-                  e.preventDefault()
-                  const form = e.currentTarget as any
-                  const formData = new FormData(form)
-                  const payload = {
-                    toUsername: username,
-                    fromName: String(formData.get('name') || ''),
-                    fromEmail: String(formData.get('email') || ''),
-                    subject: String(formData.get('subject') || ''),
-                    body: String(formData.get('message') || ''),
-                  }
-                  try {
-                    const res = await fetch('/api/messages', {
-                      method: 'POST',
-                      headers: { 'Content-Type': 'application/json' },
-                      body: JSON.stringify(payload),
-                    })
-                    if (res.ok) {
-                      form.reset()
-                      alert('Message sent!')
-                    } else {
-                      const data = await res.json()
-                      alert(data?.error || 'Failed to send')
-                    }
-                  } catch (err) {
-                    alert('Network error')
-                  }
-                }}
-                className="space-y-4"
-              >
+              {message && (
+                <div className={`p-3 rounded-lg text-sm ${
+                  message.type === 'success' 
+                    ? 'bg-green-900/20 border border-green-500/30 text-green-400' 
+                    : 'bg-red-900/20 border border-red-500/30 text-red-400'
+                }`}>
+                  {message.text}
+                </div>
+              )}
+              <form onSubmit={handleSubmit} className="space-y-4">
                 <Input name="name" placeholder="Your Name" className="bg-gray-700/50 border-gray-600 text-white placeholder:text-gray-400" />
                 <Input name="email" placeholder="Email Address" type="email" className="bg-gray-700/50 border-gray-600 text-white placeholder:text-gray-400" />
                 <Input name="subject" placeholder="Subject" className="bg-gray-700/50 border-gray-600 text-white placeholder:text-gray-400" />
                 <Textarea name="message" placeholder="Your Message" rows={5} className="bg-gray-700/50 border-gray-600 text-white placeholder:text-gray-400" />
-                <Button type="submit" className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
-                  <Send className="h-4 w-4 mr-2" />
-                  Send Message
+                <Button 
+                  type="submit" 
+                  disabled={isSubmitting}
+                  className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 disabled:opacity-50"
+                >
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      Sending...
+                    </>
+                  ) : (
+                    <>
+                      <Send className="h-4 w-4 mr-2" />
+                      Send Message
+                    </>
+                  )}
                 </Button>
               </form>
             </CardContent>
