@@ -130,63 +130,65 @@ export function UserSkills({ skills }: SkillsProps) {
         <h2 className="text-4xl md:text-5xl font-bold text-center mb-12 bg-gradient-to-r from-cyan-300 to-blue-400 bg-clip-text text-transparent">
           My Technical Skills
         </h2>
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {displayCategories.map(({ key, label }) => (
-            <div
-              key={key}
-              className={`bg-gray-900/60 border-2 transition-colors duration-200  ${
-                key === "Frontend"
-                  ? "border-cyan-400 hover:border-cyan-300"
-                  : key === "Backend"
-                  ? "border-blue-400 hover:border-blue-300"
-                  : "border-teal-400 hover:border-teal-300"
-              } rounded-xl p-8 shadow-lg flex flex-col`}
-            >
-              <div className="flex items-center mb-4">
-                <div className="mr-3">{categoryIcons[key]}</div>
-                <h3 className="text-xl font-semibold text-white">
-                  {label}
-                </h3>
+        {Object.keys(groupedSkills).length === 0 ? (
+          <div className="text-center py-12">
+            <p className="text-gray-400 text-lg">No skills added yet</p>
+          </div>
+        ) : (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {displayCategories
+            .filter(({ key }) => groupedSkills[key] && groupedSkills[key].length > 0)
+            .map(({ key, label }) => (
+              <div
+                key={key}
+                className={`bg-gray-900/60 border-2 transition-colors duration-200  ${
+                  key === "Frontend"
+                    ? "border-cyan-400 hover:border-cyan-300"
+                    : key === "Backend"
+                    ? "border-blue-400 hover:border-blue-300"
+                    : "border-teal-400 hover:border-teal-300"
+                } rounded-xl p-8 shadow-lg flex flex-col`}
+              >
+                <div className="flex items-center mb-4">
+                  <div className="mr-3">{categoryIcons[key]}</div>
+                  <h3 className="text-xl font-semibold text-white">
+                    {label}
+                  </h3>
+                </div>
+                <ul className="space-y-4 mt-2">
+                  {groupedSkills[key].map((skill) => (
+                    <li key={skill.id} className="flex flex-col gap-1">
+                      <div className="flex items-center text-gray-200 text-base pl-2">
+                        <span className="inline-block w-2 h-2 rounded-full bg-cyan-400 mr-3"></span>
+                        {skill.name}
+                      </div>
+                      <div className="w-full h-3 bg-gray-800 rounded-full relative overflow-hidden">
+                        <div
+                          className={`${getBarColor(
+                            key
+                          )} h-3 rounded-full transition-all`}
+                          style={{
+                            width: `${Math.max(
+                              0,
+                              Math.min(skill.proficiency ?? 0, 100)
+                            )}%`,
+                            minWidth:
+                              skill.proficiency > 0 ? "0.5rem" : "0",
+                          }}
+                        ></div>
+                        <span className="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-gray-300 font-medium select-none">
+                          {typeof skill.proficiency === "number"
+                            ? `${skill.proficiency}%`
+                            : ""}
+                        </span>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
               </div>
-              <ul className="space-y-4 mt-2">
-                {(groupedSkills[key] || []).map((skill) => (
-                  <li key={skill.id} className="flex flex-col gap-1">
-                    <div className="flex items-center text-gray-200 text-base pl-2">
-                      <span className="inline-block w-2 h-2 rounded-full bg-cyan-400 mr-3"></span>
-                      {skill.name}
-                    </div>
-                    <div className="w-full h-3 bg-gray-800 rounded-full relative overflow-hidden">
-                      <div
-                        className={`${getBarColor(
-                          key
-                        )} h-3 rounded-full transition-all`}
-                        style={{
-                          width: `${Math.max(
-                            0,
-                            Math.min(skill.proficiency ?? 0, 100)
-                          )}%`,
-                          minWidth:
-                            skill.proficiency > 0 ? "0.5rem" : "0",
-                        }}
-                      ></div>
-                      <span className="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-gray-300 font-medium select-none">
-                        {typeof skill.proficiency === "number"
-                          ? `${skill.proficiency}%`
-                          : ""}
-                      </span>
-                    </div>
-                  </li>
-                ))}
-                {/* If no skills in this category, show a subtle placeholder */}
-                {(groupedSkills[key] || []).length === 0 && (
-                  <li className="text-gray-500 italic">
-                    No skills listed
-                  </li>
-                )}
-              </ul>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
     </section>
   )
