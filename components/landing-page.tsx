@@ -19,6 +19,7 @@ import {
   Play,
 } from "lucide-react";
 import TrueFocus from "./TrueFocus";
+import ShinyText from "./ui/ShinyText";
 
 export function LandingPage() {
   const router = useRouter();
@@ -142,7 +143,7 @@ export function LandingPage() {
       </nav>
 
       {/* Hero Section */}
-      <section className="relative py-12 sm:py-16 lg:py-24 px-4 sm:px-6 lg:px-8">
+      <section className="relative py-12 sm:py-16 lg:py-24 px-4 sm:px-6 lg:px-8 mt-10 mb-10" >
         <div className="max-w-7xl mx-auto">
           <div className="text-center">
             <Badge className="mb-4 sm:mb-6 bg-blue-500/20 text-blue-300 border-blue-500/30 text-sm lg:text-base px-4 py-2">
@@ -163,14 +164,14 @@ export function LandingPage() {
                   animationDuration={0.5}
                   pauseBetweenAnimations={0.5}
                   className="inline-flex items-center"
-                />
-              </span>
+                  />
+                </span>
             </h1>
 
             <p className="text-base sm:text-lg lg:text-xl text-gray-300 mb-6 sm:mb-8 lg:mb-12 max-w-2xl lg:max-w-3xl mx-auto leading-relaxed">
               Create stunning portfolio websites in minutes with our
-              drag-and-drop builder. No coding required. Free forever. Your
-              dream portfolio is just a click away.
+              0% coding. <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent font-semibold">Free forever.</span> Your
+              <ShinyText text="dream portfolio is just a click away." />
             </p>
 
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 lg:gap-6 justify-center items-center mb-8 sm:mb-12 lg:mb-16">
