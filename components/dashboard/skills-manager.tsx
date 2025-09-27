@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { useSession } from "@/components/auth/session-provider"
+import { useAuth } from "@/components/auth/convex-auth-provider"
 import { 
   ArrowLeft, 
   Plus, 
@@ -42,7 +42,7 @@ interface SkillsManagerProps {
 }
 
 export function SkillsManager({ username }: SkillsManagerProps) {
-  const { user: sessionUser, isLoading: sessionLoading } = useSession()
+  const { user: sessionUser, isLoading: sessionLoading } = useAuth()
   const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [isSaving, setIsSaving] = useState(false)
