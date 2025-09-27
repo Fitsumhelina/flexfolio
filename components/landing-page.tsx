@@ -108,7 +108,7 @@ export function LandingPage() {
               <Button
                 variant="ghost"
                 asChild
-                className="text-gray-300 hover:text-white flex items-center"
+                className="text-gray-300 hover:text-white flex items-center hover:bg-gray-800"
               >
                 <a
                   href="https://github.com/fitsumhelina/flexfolio"
@@ -128,7 +128,7 @@ export function LandingPage() {
                   </svg>
                   <span className="mr-1">GitHub</span>
                   <span className="inline-flex items-center text-xs bg-gray-800 text-yellow-400 rounded px-2 py-0.5 ml-1 font-mono font-semibold" title="GitHub Stars">
-                    <span className="mr-1">★</span>1.2k
+                    ★ 1.2k
                   </span>
                 </a>
               </Button>
