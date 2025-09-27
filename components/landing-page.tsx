@@ -18,8 +18,150 @@ import {
   ExternalLink,
   Play,
 } from "lucide-react";
-import TrueFocus from "./TrueFocus";
+import TrueFocus from "./ui/TrueFocus";
 import ShinyText from "./ui/ShinyText";
+
+// Skeleton Loader Components
+function Skeleton({ className = "" }: { className?: string }) {
+  return (
+    <div
+      className={`animate-pulse bg-gray-700/60 rounded ${className}`}
+      style={{}}
+    />
+  );
+}
+
+function LandingPageSkeleton() {
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 text-white overflow-x-hidden">
+      {/* Navigation Skeleton */}
+      <nav className="fixed top-0 left-0 w-full z-[100] border-b border-gray-800/50 bg-black/30 backdrop-blur-xl shadow-lg">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16 lg:h-20">
+            <div className="flex-shrink-0 flex items-center space-x-3">
+              <Skeleton className="w-8 h-10 lg:w-10 lg:h-12" />
+              <Skeleton className="h-6 w-24" />
+            </div>
+            <div className="flex items-center space-x-2 lg:space-x-4">
+              <Skeleton className="h-8 w-20 rounded-md" />
+              <Skeleton className="h-8 w-32 rounded-md" />
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      {/* Hero Section Skeleton */}
+      <section className="relative py-12 sm:py-16 lg:py-24 px-4 sm:px-6 lg:px-8 mt-10 mb-10">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center">
+            <Skeleton className="mx-auto mb-6 h-8 w-56" />
+            <Skeleton className="mx-auto mb-6 h-12 w-3/4 sm:w-2/3 lg:w-1/2" />
+            <Skeleton className="mx-auto mb-8 h-6 w-2/3 sm:w-1/2" />
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 lg:gap-6 justify-center items-center mb-8 sm:mb-12 lg:mb-16">
+              <Skeleton className="h-12 w-48 rounded-md" />
+              <Skeleton className="h-12 w-48 rounded-md" />
+            </div>
+            {/* Demo Portfolio Preview Skeleton */}
+            <div className="relative max-w-5xl lg:max-w-6xl mx-auto">
+              <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl lg:rounded-2xl p-3 sm:p-4 lg:p-6 border border-gray-700/50 shadow-2xl">
+                <div className="flex items-center justify-between mb-3 sm:mb-4">
+                  <div className="flex items-center space-x-2">
+                    <Skeleton className="w-3 h-3 rounded-full" />
+                    <Skeleton className="w-3 h-3 rounded-full" />
+                    <Skeleton className="w-3 h-3 rounded-full" />
+                  </div>
+                  <Skeleton className="h-4 w-32" />
+                </div>
+                <Skeleton className="w-full h-64 sm:h-80 lg:h-96 rounded-lg" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Stats Section Skeleton */}
+      <section className="py-12 sm:py-16 lg:py-20 border-y border-gray-800/50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
+            {[...Array(4)].map((_, i) => (
+              <div key={i} className="text-center group">
+                <Skeleton className="mx-auto mb-2 h-10 w-20" />
+                <Skeleton className="mx-auto h-4 w-16" />
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section Skeleton */}
+      <section className="py-16 sm:py-20 lg:py-24 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-12 sm:mb-16 lg:mb-20">
+            <Skeleton className="mx-auto mb-4 h-8 w-80" />
+            <Skeleton className="mx-auto h-5 w-64" />
+          </div>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
+            {[...Array(4)].map((_, i) => (
+              <Card
+                key={i}
+                className="bg-gray-800/50 border-gray-700/50 group"
+              >
+                <CardHeader className="text-center pb-4">
+                  <Skeleton className="w-16 h-16 mx-auto mb-4 rounded-xl" />
+                  <Skeleton className="mx-auto h-6 w-24" />
+                </CardHeader>
+                <CardContent className="text-center pt-0">
+                  <Skeleton className="mx-auto h-4 w-32" />
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* How It Works Skeleton */}
+      <section className="py-16 sm:py-20 lg:py-24 px-4 sm:px-6 lg:px-8 bg-gray-900/30">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-12 sm:mb-16 lg:mb-20">
+            <Skeleton className="mx-auto mb-4 h-8 w-80" />
+            <Skeleton className="mx-auto h-5 w-64" />
+          </div>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-12">
+            {[...Array(3)].map((_, i) => (
+              <div key={i} className="text-center group">
+                <Skeleton className="mx-auto mb-6 w-20 h-20 rounded-full" />
+                <Skeleton className="mx-auto mb-4 h-6 w-32" />
+                <Skeleton className="mx-auto h-4 w-40" />
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section Skeleton */}
+      <section className="py-16 sm:py-20 lg:py-24 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-4xl mx-auto text-center">
+          <Skeleton className="mx-auto mb-6 h-8 w-80" />
+          <Skeleton className="mx-auto mb-8 h-5 w-64" />
+          <Skeleton className="mx-auto h-12 w-48 rounded-md" />
+        </div>
+      </section>
+
+      {/* Footer Skeleton */}
+      <footer className="border-t border-gray-800/50 py-8 sm:py-12 lg:py-16 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0">
+            <div className="flex-shrink-0 flex items-center space-x-3">
+              <Skeleton className="w-8 h-10 lg:w-8 lg:h-10" />
+              <Skeleton className="h-6 w-24" />
+            </div>
+            <Skeleton className="h-4 w-40" />
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+}
 
 export function LandingPage() {
   const router = useRouter();
@@ -33,16 +175,9 @@ export function LandingPage() {
     }
   }, [user, isLoading, router]);
 
-  // Show loading state while checking authentication
+  // Show improved loading skeleton while checking authentication
   if (isLoading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 flex items-center justify-center">
-        <div className="text-white text-center">
-          <div className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p>Loading...</p>
-        </div>
-      </div>
-    );
+    return <LandingPageSkeleton />;
   }
 
   const features = [
