@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Loader2, Lock, Mail, Eye, EyeOff } from "lucide-react";
+import { Loader2, Lock, Mail, Eye, EyeOff, Home } from "lucide-react";
 
 export function ConvexLoginForm() {
   const [email, setEmail] = useState("");
@@ -158,15 +158,26 @@ export function ConvexLoginForm() {
             </Button>
           </form>
           
-          <div className="mt-6 text-center text-sm">
-            <span className="text-gray-400">Don't have an account? </span>
-            <Button
-              variant="link"
-              className="p-0 h-auto text-blue-400 hover:text-blue-300 font-medium"
-              onClick={() => router.push("/register")}
-            >
-              Sign up
-            </Button>
+          <div className="mt-6 text-center text-sm space-y-2">
+            <div>
+              <span className="text-gray-400">Don't have an account? </span>
+              <Button
+                variant="link"
+                className="p-0 h-auto text-blue-400 hover:text-blue-300 font-medium"
+                onClick={() => router.push("/register")}
+              >
+                Sign up
+              </Button>
+            </div>
+            <div>
+              <Button
+                variant="link"
+                className="p-0 h-auto text-blue-400 hover:text-blue-300 font-medium"
+                onClick={() => router.push("/")}
+              >
+                ← Back to Home
+              </Button>
+            </div>
           </div>
         </CardContent>
       </Card>
