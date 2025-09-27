@@ -247,11 +247,10 @@ export function LandingPage() {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12 sm:mb-16 lg:mb-20">
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 sm:mb-6 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
-              Why FlexFolio?
+              Why Choose FlexFolio?
             </h2>
-            <p className="text-lg sm:text-xl lg:text-2xl text-gray-300 max-w-2xl lg:max-w-3xl mx-auto leading-relaxed">
-              Everything you need to create a professional portfolio that stands
-              out
+            <p className="text-md sm:text-base lg:text-lg text-gray-300 max-w-2xl lg:max-w-3xl mx-auto leading-relaxed">
+              Everything you need to create a professional portfolio that stands out
             </p>
           </div>
 
@@ -303,9 +302,9 @@ export function LandingPage() {
               <div className="w-16 h-16 lg:w-20 lg:h-20 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white text-2xl lg:text-3xl font-bold mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
                 2
               </div>
-              <h3 className="text-xl lg:text-2xl font-semibold mb-4 text-white">Choose Template</h3>
+              <h3 className="text-xl lg:text-2xl font-semibold mb-4 text-white">Choose your username</h3>
               <p className="text-gray-300 text-sm lg:text-base leading-relaxed">
-                Pick from our collection of beautiful, responsive templates.
+                Pick your own unique username.
               </p>
             </div>
 
