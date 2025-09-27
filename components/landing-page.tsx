@@ -164,23 +164,24 @@ export function LandingPage() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
               <Button
                 size="lg"
-                onClick={() => router.push("/demo")}
+                onClick={() => window.open("/demo", "_blank")}
                 variant="gradient"
                 className="text-lg px-8 py-4"
               >
                 View live Demo
-                <ArrowRight className="ml-2 h-5 w-5" />
+                <ExternalLink className="h-4 w-4 mr-2" />
               </Button>
 
+              <a href="https://www.youtube.com/watch?v=YykjpeuMNEk" target="_blank" rel="noopener noreferrer">
               <Button
                 variant="outline"
                 size="lg"
-                onClick={() => router.push("/demo")}
                 className="border-gray-600 text-gray-300 hover:bg-gray-800 text-lg px-8 py-4"
               >
                 <Play className="mr-2 h-5 w-5" />
-                View Demo
+                View video
               </Button>
+              </a>
             </div>
 
             {/* Demo Portfolio Preview */}
