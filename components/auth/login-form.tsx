@@ -4,6 +4,7 @@ import type React from "react"
 import { useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { ROUTES } from "@/lib/routes"
+import { useSession } from "@/components/auth/session-provider"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -20,6 +21,7 @@ export function LoginForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const registered = searchParams.get('registered')
+  const { refreshSession } = useSession()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -43,12 +45,13 @@ export function LoginForm() {
       console.log('Login API response:', data)
 
       if (response.ok && data.user) {
-        // Wait a moment for cookie to be set, then redirect
-        setTimeout(() => {
-          const username = data.user.username || data.user.email.split('@')[0]
-          console.log('Redirecting to dashboard for username:', username)
-          router.push(`/${username}/dashboard`)
-        }, 100)
+        // Refresh session to update the context
+        await refreshSession()
+        
+        // Use hard redirect to ensure page reloads and session is detected
+        const username = data.user.username || data.user.email.split('@')[0]
+        console.log('Redirecting to dashboard for username:', username)
+        window.location.href = `/${username}/dashboard`
       } else {
         setError(data.error || 'Login failed')
       }
