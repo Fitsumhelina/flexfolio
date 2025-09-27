@@ -25,7 +25,14 @@ export function ConvexLoginForm() {
 
     try {
       await login(email, password);
-      router.push("/dashboard");
+      // Get the username from the logged-in user
+      const savedUser = localStorage.getItem("flexfolio-user");
+      if (savedUser) {
+        const user = JSON.parse(savedUser);
+        router.push(`/${user.username}/dashboard`);
+      } else {
+        router.push("/dashboard");
+      }
     } catch (err: any) {
       setError(err.message || "Login failed");
     } finally {
