@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { User } from "lucide-react"
+import { User, CheckCircle } from "lucide-react"
 import { PATTERNS } from "@/lib/patterns"
 
 interface AboutForm {
@@ -365,7 +365,14 @@ export function DashboardContent({
               <Button onClick={handleSaveHero} disabled={isSavingHero} className="bg-green-500 hover:bg-green-600 text-white">
                 {isSavingHero ? "Saving..." : "Save Hero"}
               </Button>
-              {heroMessage && (<span className="text-sm text-white/80">{heroMessage}</span>)}
+              {heroMessage && (
+                <span className={`text-sm flex items-center gap-1 ${
+                  heroMessage.includes('successfully') ? 'text-green-400' : 'text-red-400'
+                }`}>
+                  <CheckCircle className="h-4 w-4" />
+                  {heroMessage}
+                </span>
+              )}
             </div>
           </CardContent>
         </Card>
@@ -432,7 +439,12 @@ export function DashboardContent({
                 {isSavingSocial ? "Saving..." : "Save Social"}
               </Button>
               {socialMessage && (
-                <span className="text-sm text-white/80">{socialMessage}</span>
+                <span className={`text-sm flex items-center gap-1 ${
+                  socialMessage.includes('successfully') ? 'text-green-400' : 'text-red-400'
+                }`}>
+                  <CheckCircle className="h-4 w-4" />
+                  {socialMessage}
+                </span>
               )}
             </div>
           </CardContent>
@@ -549,7 +561,12 @@ export function DashboardContent({
                 {isSavingAbout ? "Saving..." : "Save About"}
               </Button>
               {aboutMessage && (
-                <span className="text-sm text-white/80">{aboutMessage}</span>
+                <span className={`text-sm flex items-center gap-1 ${
+                  aboutMessage.includes('successfully') ? 'text-green-400' : 'text-red-400'
+                }`}>
+                  <CheckCircle className="h-4 w-4" />
+                  {aboutMessage}
+                </span>
               )}
             </div>
           </CardContent>
