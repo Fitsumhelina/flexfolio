@@ -4,7 +4,6 @@ import { GeistSans } from "geist/font/sans"
 import { GeistMono } from "geist/font/mono"
 import { Analytics } from "@vercel/analytics/next"
 import { Suspense } from "react"
-import { SessionProvider } from "@/components/auth/session-provider"
 import { ConvexClientProvider } from "@/components/convex-provider"
 import { ConvexAuthProvider } from "@/components/auth/convex-auth-provider"
 import "./globals.css"
@@ -25,17 +24,15 @@ export default function RootLayout({
       <body className={`font-sans ${GeistSans.variable} ${GeistMono.variable}`}>
         <ConvexClientProvider>
           <ConvexAuthProvider>
-            <SessionProvider>
-              <Suspense
-                fallback={
-                  <div className="min-h-screen bg-black flex items-center justify-center">
-                    <div className="text-white">Loading...</div>
-                  </div>
-                }
-              >
-                {children}
-              </Suspense>
-            </SessionProvider>
+            <Suspense
+              fallback={
+                <div className="min-h-screen bg-black flex items-center justify-center">
+                  <div className="text-white">Loading...</div>
+                </div>
+              }
+            >
+              {children}
+            </Suspense>
           </ConvexAuthProvider>
         </ConvexClientProvider>
         <Analytics />
