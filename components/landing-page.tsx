@@ -322,7 +322,7 @@ export function LandingPage() {
               </h1>
             </div>
             <div className="text-gray-400 text-sm">
-              © {new Date().getFullYear()} FlexFolio.
+              © {new Date().getFullYear()} developed by <a href="https://github.com/fitsumhelina" target="_blank" rel="noopener noreferrer">Fitsum.</a>.
             </div>
           </div>
         </div>
