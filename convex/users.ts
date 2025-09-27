@@ -133,6 +133,14 @@ export const checkEmailExists = query({
   },
 });
 
+// Get all users (for debugging)
+export const getAllUsers = query({
+  args: {},
+  handler: async (ctx) => {
+    return await ctx.db.query("users").collect();
+  },
+});
+
 // Check if username exists - as query for real-time checking
 export const checkUsernameExists = query({
   args: { username: v.string() },

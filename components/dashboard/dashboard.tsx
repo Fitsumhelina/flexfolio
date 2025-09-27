@@ -293,7 +293,7 @@ export function Dashboard({ username }: DashboardProps) {
           </TabsContent>
 
           <TabsContent value="inbox" className="space-y-6">
-            <DashboardInbox user={user} />
+              <DashboardInbox user={user} messages={messages || []} />
           </TabsContent>
 
           <TabsContent value="content" className="space-y-6">

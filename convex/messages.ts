@@ -67,6 +67,14 @@ export const createMessage = mutation({
   },
 });
 
+// Mark message as read
+export const markAsRead = mutation({
+  args: { messageId: v.id("messages") },
+  handler: async (ctx, args) => {
+    await ctx.db.patch(args.messageId, { isRead: true });
+  },
+});
+
 // Delete a message
 export const deleteMessage = mutation({
   args: { messageId: v.id("messages") },
