@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
-import { useQuery, useMutation } from "convex/react";
+import { useQuery, useMutation, useAction } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { Id } from "../../convex/_generated/dataModel";
 
@@ -33,8 +33,8 @@ export function ConvexAuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const loginMutation = useMutation(api.users.login);
-  const registerMutation = useMutation(api.users.register);
+  const loginAction = useAction(api.users.login);
+  const registerAction = useAction(api.users.register);
 
   useEffect(() => {
     // Check for existing session in localStorage
@@ -53,7 +53,7 @@ export function ConvexAuthProvider({ children }: { children: ReactNode }) {
   const login = async (email: string, password: string) => {
     try {
       console.log("Auth provider: Attempting login for", email);
-      const userData = await loginMutation({ email, password });
+      const userData = await loginAction({ email, password });
       console.log("Auth provider: Login successful", userData);
       setUser(userData);
       localStorage.setItem("flexfolio-user", JSON.stringify(userData));
@@ -79,7 +79,7 @@ export function ConvexAuthProvider({ children }: { children: ReactNode }) {
 
   const register = async (name: string, email: string, username: string, password: string) => {
     try {
-      const userId = await registerMutation({ name, email, username, password });
+      const userId = await registerAction({ name, email, username, password });
       // After registration, automatically log in
       await login(email, password);
     } catch (error) {

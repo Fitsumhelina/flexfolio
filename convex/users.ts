@@ -1,41 +1,56 @@
-import { mutation, query } from "./_generated/server";
+import { mutation, query, action } from "./_generated/server";
 import { v } from "convex/values";
+import { api } from "./_generated/api";
 
 // Register a new user
-export const register = mutation({
+export const register = action({
   args: {
     name: v.string(),
     email: v.string(),
     username: v.string(),
     password: v.string(),
   },
-  handler: async (ctx, args) => {
+  handler: async (ctx, args): Promise<string> => {
     // Check if user already exists
-    const existingUser = await ctx.db
-      .query("users")
-      .withIndex("by_email", (q) => q.eq("email", args.email))
-      .first();
-
+    const existingUser = await ctx.runQuery(api.users.checkEmailExists, { email: args.email });
     if (existingUser) {
       throw new Error("User with this email already exists");
     }
 
-    const existingUsername = await ctx.db
-      .query("users")
-      .withIndex("by_username", (q) => q.eq("username", args.username))
-      .first();
-
+    const existingUsername = await ctx.runQuery(api.users.checkUsernameExists, { username: args.username });
     if (existingUsername) {
       throw new Error("Username already taken");
     }
 
-    // For now, store password as plain text (we'll implement proper auth later)
-    // In production, you should use Convex Auth or handle password hashing in an action
+    // Hash the password using the password action
+    const hashedPassword: string = await ctx.runAction(api.password.hashPassword, { password: args.password });
+
+    // Insert user with hashed password
+    const userId: string = await ctx.runMutation(api.users.insertUser, {
+      name: args.name,
+      email: args.email,
+      username: args.username,
+      password: hashedPassword,
+    });
+
+    return userId;
+  },
+});
+
+// Internal mutation to insert user (called by register action)
+export const insertUser = mutation({
+  args: {
+    name: v.string(),
+    email: v.string(),
+    username: v.string(),
+    password: v.string(), // This will be the hashed password
+  },
+  handler: async (ctx, args) => {
     const userId = await ctx.db.insert("users", {
       name: args.name,
       email: args.email,
       username: args.username,
-      password: args.password, // Store as plain text for now
+      password: args.password, // Store hashed password
       createdAt: Date.now(),
       updatedAt: Date.now(),
       portfolioData: {
@@ -60,22 +75,20 @@ export const register = mutation({
 });
 
 // Login user
-export const login = mutation({
+export const login = action({
   args: {
     email: v.string(),
     password: v.string(),
   },
-  handler: async (ctx, args) => {
+  handler: async (ctx, args): Promise<any> => {
     try {
       // Validate input
       if (!args.email || !args.password) {
         throw new Error("Email and password are required");
       }
 
-      const user = await ctx.db
-        .query("users")
-        .withIndex("by_email", (q) => q.eq("email", args.email))
-        .first();
+      // Get user by email
+      const user: any = await ctx.runQuery(api.users.getUserByEmail, { email: args.email });
 
       if (!user) {
         // For debugging: log that email was not found
@@ -83,16 +96,20 @@ export const login = mutation({
         throw new Error("Invalid email or password");
       }
 
-      // For now, compare plain text passwords
-      // In production, you should use Convex Auth or handle password verification in an action
-      if (user.password !== args.password) {
+      // Verify password using the password action
+      const isPasswordValid: boolean = await ctx.runAction(api.password.verifyPassword, {
+        password: args.password,
+        hash: user.password,
+      });
+
+      if (!isPasswordValid) {
         // For debugging: log that password was incorrect
         console.log(`Login attempt failed: Incorrect password for email '${args.email}'`);
         throw new Error("Invalid email or password");
       }
 
       // Return user without password
-      const { password, ...userWithoutPassword } = user;
+      const { password, ...userWithoutPassword }: any = user;
       console.log(`Login successful for user: ${user.email}`);
       return userWithoutPassword;
     } catch (error) {
@@ -106,6 +123,19 @@ export const login = mutation({
         throw new Error("An unexpected error occurred during login");
       }
     }
+  },
+});
+
+// Internal query to get user by email (including password for login verification)
+export const getUserByEmail = query({
+  args: { email: v.string() },
+  handler: async (ctx, args) => {
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_email", (q) => q.eq("email", args.email))
+      .first();
+
+    return user; // Return user with password for login verification
   },
 });
 
@@ -174,9 +204,10 @@ export const updateUser = mutation({
 
     // Check if username is being changed and if it's available
     if (updates.username) {
+      const username = updates.username;
       const existingUser = await ctx.db
         .query("users")
-        .withIndex("by_username", (q) => q.eq("username", updates.username))
+        .withIndex("by_username", (q) => q.eq("username", username))
         .first();
 
       if (existingUser && existingUser._id !== userId) {
@@ -186,9 +217,10 @@ export const updateUser = mutation({
 
     // Check if email is being changed and if it's available
     if (updates.email) {
+      const email = updates.email;
       const existingUser = await ctx.db
         .query("users")
-        .withIndex("by_email", (q) => q.eq("email", updates.email))
+        .withIndex("by_email", (q) => q.eq("email", email))
         .first();
 
       if (existingUser && existingUser._id !== userId) {
@@ -211,7 +243,7 @@ export const updateUser = mutation({
 });
 
 // Change password
-export const changePassword = mutation({
+export const changePassword = action({
   args: {
     userId: v.id("users"),
     oldPassword: v.string(),
@@ -224,22 +256,31 @@ export const changePassword = mutation({
         throw new Error("Old password and new password are required");
       }
 
-      const user = await ctx.db.get(args.userId);
+      // Get user with password for verification
+      const user = await ctx.runQuery(api.users.getUserWithPassword, { userId: args.userId });
       if (!user) {
         console.log(`Password change failed: User ${args.userId} not found`);
         throw new Error("User not found");
       }
 
       // Verify old password
-      if (user.password !== args.oldPassword) {
+      const isOldPasswordValid = await ctx.runAction(api.password.verifyPassword, {
+        password: args.oldPassword,
+        hash: user.password,
+      });
+
+      if (!isOldPasswordValid) {
         console.log(`Password change failed: Incorrect password for user ${user.email}`);
         throw new Error("Current password is incorrect");
       }
 
-      // Update password
-      await ctx.db.patch(args.userId, {
-        password: args.newPassword,
-        updatedAt: Date.now(),
+      // Hash the new password
+      const hashedNewPassword = await ctx.runAction(api.password.hashPassword, { password: args.newPassword });
+
+      // Update password with hash
+      await ctx.runMutation(api.users.updateUserPassword, {
+        userId: args.userId,
+        password: hashedNewPassword,
       });
 
       console.log(`Password changed successfully for user: ${user.email}`);
@@ -254,6 +295,29 @@ export const changePassword = mutation({
         throw new Error("An unexpected error occurred while changing password");
       }
     }
+  },
+});
+
+// Internal query to get user with password (for password change verification)
+export const getUserWithPassword = query({
+  args: { userId: v.id("users") },
+  handler: async (ctx, args) => {
+    const user = await ctx.db.get(args.userId);
+    return user; // Return user with password for verification
+  },
+});
+
+// Internal mutation to update user password
+export const updateUserPassword = mutation({
+  args: {
+    userId: v.id("users"),
+    password: v.string(), // This will be the hashed password
+  },
+  handler: async (ctx, args) => {
+    await ctx.db.patch(args.userId, {
+      password: args.password,
+      updatedAt: Date.now(),
+    });
   },
 });
 
