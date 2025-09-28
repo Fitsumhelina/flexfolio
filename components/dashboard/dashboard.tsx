@@ -20,7 +20,6 @@ import { useQuery, useMutation } from "convex/react"
 import { api } from "../../convex/_generated/api"
 import { Id } from "../../convex/_generated/dataModel"
 
-
 interface User {
   _id: string
   name: string
@@ -256,48 +255,110 @@ export function Dashboard({ username }: DashboardProps) {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 text-white">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 text-white flex flex-col">
       <DashboardHeader user={user} onLogout={handleLogout} onViewPortfolio={handleViewPortfolio} />
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="w-full max-w-7xl mx-auto px-2 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6 md:py-8 flex-1 flex flex-col">
         <DashboardWelcome user={user} />
         <DashboardStats user={user} messageCount={messageCount} unreadCount={unreadCount} username={user.username} />
         <PortfolioUrl user={user} onViewPortfolio={handleViewPortfolio} />
 
         {/* Dashboard Tabs */}
-        <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList className="bg-gray-900/50 border-gray-700/50 backdrop-blur-sm p-1">
-            <TabsTrigger value="overview" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-purple-600 data-[state=active]:text-white">
-              <BarChart3 className="h-4 w-4 mr-2" />
-              Overview
+        <Tabs defaultValue="overview" className="space-y-4 sm:space-y-6">
+          <TabsList
+            className="
+              bg-gray-900/50 border-gray-700/50 backdrop-blur-sm p-1
+              flex flex-row sm:flex-row md:flex-row lg:flex-row
+              w-full overflow-x-auto
+              gap-1
+              rounded-lg
+              mb-2 sm:mb-4
+              scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-transparent
+            "
+            style={{ WebkitOverflowScrolling: "touch" }}
+          >
+            <TabsTrigger
+              value="overview"
+              className="
+                flex-1 min-w-[80px] sm:min-w-[120px] md:min-w-[120px] 
+                flex items-center justify-center
+                data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-purple-600 data-[state=active]:text-white
+                px-2 py-2 sm:px-4 sm:py-2 text-xs sm:text-sm
+                rounded-md
+                whitespace-nowrap
+              "
+            >
+              <BarChart3 className="h-4 w-4 mr-1 sm:mr-2" />
+              <span className="hidden xs:inline sm:inline">Overview</span>
+              <span className="inline xs:hidden sm:hidden">Home</span>
             </TabsTrigger>
-            <TabsTrigger value="content" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-purple-600 data-[state=active]:text-white">
-              <FileText className="h-4 w-4 mr-2" />
-              Content
+            <TabsTrigger
+              value="content"
+              className="
+                flex-1 min-w-[80px] sm:min-w-[120px] md:min-w-[120px] 
+                flex items-center justify-center
+                data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-purple-600 data-[state=active]:text-white
+                px-2 py-2 sm:px-4 sm:py-2 text-xs sm:text-sm
+                rounded-md
+                whitespace-nowrap
+              "
+            >
+              <FileText className="h-4 w-4 mr-1 sm:mr-2" />
+              <span>Content</span>
             </TabsTrigger>
-            <TabsTrigger value="inbox" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-purple-600 data-[state=active]:text-white">
-              <Mail className="h-4 w-4 mr-2" />
-              Inbox
+            <TabsTrigger
+              value="inbox"
+              className="
+                flex-1 min-w-[80px] sm:min-w-[120px] md:min-w-[120px] 
+                flex items-center justify-center
+                data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-purple-600 data-[state=active]:text-white
+                px-2 py-2 sm:px-4 sm:py-2 text-xs sm:text-sm
+                rounded-md
+                whitespace-nowrap
+              "
+            >
+              <Mail className="h-4 w-4 mr-1 sm:mr-2" />
+              <span>Inbox</span>
             </TabsTrigger>
-            <TabsTrigger value="design" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-purple-600 data-[state=active]:text-white">
-              <Palette className="h-4 w-4 mr-2" />
-              Design
+            <TabsTrigger
+              value="design"
+              className="
+                flex-1 min-w-[80px] sm:min-w-[120px] md:min-w-[120px] 
+                flex items-center justify-center
+                data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-purple-600 data-[state=active]:text-white
+                px-2 py-2 sm:px-4 sm:py-2 text-xs sm:text-sm
+                rounded-md
+                whitespace-nowrap
+              "
+            >
+              <Palette className="h-4 w-4 mr-1 sm:mr-2" />
+              <span>Design</span>
             </TabsTrigger>
-            <TabsTrigger value="settings" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-purple-600 data-[state=active]:text-white">
-              <Settings className="h-4 w-4 mr-2" />
-              Settings
+            <TabsTrigger
+              value="settings"
+              className="
+                flex-1 min-w-[80px] sm:min-w-[120px] md:min-w-[120px] 
+                flex items-center justify-center
+                data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-purple-600 data-[state=active]:text-white
+                px-2 py-2 sm:px-4 sm:py-2 text-xs sm:text-sm
+                rounded-md
+                whitespace-nowrap
+              "
+            >
+              <Settings className="h-4 w-4 mr-1 sm:mr-2" />
+              <span>Settings</span>
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="overview" className="space-y-6">
+          <TabsContent value="overview" className="space-y-4 sm:space-y-6">
             <DashboardOverview user={user} username={user.username} />
           </TabsContent>
 
-          <TabsContent value="inbox" className="space-y-6">
-              <DashboardInbox user={user} messages={messages || []} />
+          <TabsContent value="inbox" className="space-y-4 sm:space-y-6">
+            <DashboardInbox user={user} messages={messages || []} />
           </TabsContent>
 
-          <TabsContent value="content" className="space-y-6">
+          <TabsContent value="content" className="space-y-4 sm:space-y-6">
             <DashboardContent 
               aboutForm={aboutForm}
               handleAboutInput={handleAboutInput}
@@ -314,11 +375,11 @@ export function Dashboard({ username }: DashboardProps) {
             />
           </TabsContent>
 
-          <TabsContent value="design" className="space-y-6">
+          <TabsContent value="design" className="space-y-4 sm:space-y-6">
             <DashboardDesign />
           </TabsContent>
 
-          <TabsContent value="settings" className="space-y-6">
+          <TabsContent value="settings" className="space-y-4 sm:space-y-6">
             <DashboardSettings userId={user?._id} onLogout={handleLogout} />
           </TabsContent>
         </Tabs>
