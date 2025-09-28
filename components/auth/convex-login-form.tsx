@@ -42,13 +42,13 @@ export function ConvexLoginForm() {
       await login(email.trim(), password);
       
       // Get the username from the logged-in user
-      const savedUser = localStorage.getItem("flexfolio-user");
-      if (savedUser) {
-        const user = JSON.parse(savedUser);
-        console.log("Login successful, redirecting to:", `/${user.username}/dashboard`);
-        router.push(`/${user.username}/dashboard`);
+      const savedSession = localStorage.getItem("flexfolio-session");
+      if (savedSession) {
+        const sessionData = JSON.parse(savedSession);
+        console.log("Login successful, redirecting to:", `/${sessionData.username}/dashboard`);
+        router.push(`/${sessionData.username}/dashboard`);
       } else {
-        console.log("Login successful but no saved user, redirecting to dashboard");
+        console.log("Login successful but no saved session, redirecting to dashboard");
         router.push("/dashboard");
       }
     } catch (err: any) {

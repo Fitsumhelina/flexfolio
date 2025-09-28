@@ -47,11 +47,11 @@ export function Dashboard({ username }: DashboardProps) {
   const router = useRouter()
 
   // Convex queries - use real-time data from Convex
-  const user = useQuery(api.users.getUser, sessionUser ? { userId: sessionUser._id as Id<"users"> } : "skip")
-  const projects = useQuery(api.projects.getProjects, sessionUser ? { userId: sessionUser._id as Id<"users"> } : "skip")
-  const skills = useQuery(api.skills.getSkills, sessionUser ? { userId: sessionUser._id as Id<"users"> } : "skip")
-  const about = useQuery(api.about.getAbout, sessionUser ? { userId: sessionUser._id as Id<"users"> } : "skip")
-  const messages = useQuery(api.messages.getMessages, sessionUser ? { userId: sessionUser._id as Id<"users"> } : "skip")
+  const user = useQuery(api.users.getUser, sessionUser ? { userId: sessionUser.userId } : "skip")
+  const projects = useQuery(api.projects.getProjects, sessionUser ? { userId: sessionUser.userId } : "skip")
+  const skills = useQuery(api.skills.getSkills, sessionUser ? { userId: sessionUser.userId } : "skip")
+  const about = useQuery(api.about.getAbout, sessionUser ? { userId: sessionUser.userId } : "skip")
+  const messages = useQuery(api.messages.getMessages, sessionUser ? { userId: sessionUser.userId } : "skip")
 
   // Convex mutations
   const updateAboutMutation = useMutation(api.about.updateAbout)
@@ -111,7 +111,7 @@ export function Dashboard({ username }: DashboardProps) {
       return
     }
 
-    console.log('Dashboard: Session user found:', sessionUser.email)
+    console.log('Dashboard: Session user found:', sessionUser.username)
 
     // If username is provided, verify the user is accessing their own dashboard
     if (username && sessionUser.username !== username) {
@@ -137,7 +137,7 @@ export function Dashboard({ username }: DashboardProps) {
         phone: about.phone || "",
         location: about.location || "",
         github: about.github || "",
-        x: about.x || about.twitter || "",
+        x: about.x || "",
         telegram: about.telegram || "",
         linkedin: about.linkedin || "",
         heroTitle: about.heroTitle || about.title || "Full Stack Developer",
@@ -177,7 +177,7 @@ export function Dashboard({ username }: DashboardProps) {
     try {
       // Use Convex mutation to update about data
       await updateAboutMutation({
-        userId: user._id as Id<"users">,
+        userId: user._id,
         ...updates,
       })
       
@@ -319,7 +319,7 @@ export function Dashboard({ username }: DashboardProps) {
           </TabsContent>
 
           <TabsContent value="settings" className="space-y-6">
-            <DashboardSettings userId={user?._id as Id<"users">} onLogout={handleLogout} />
+            <DashboardSettings userId={user?._id} onLogout={handleLogout} />
           </TabsContent>
         </Tabs>
       </main>

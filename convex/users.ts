@@ -108,10 +108,15 @@ export const login = action({
         throw new Error("Invalid email or password");
       }
 
-      // Return user without password
-      const { password, ...userWithoutPassword }: any = user;
+      // Return minimal session data (no sensitive information)
+      const sessionData = {
+        userId: user._id,
+        username: user.username,
+        name: user.name,
+        // Exclude email, createdAt, updatedAt, and portfolioData for security
+      };
       console.log(`Login successful for user: ${user.email}`);
-      return userWithoutPassword;
+      return sessionData;
     } catch (error) {
       // Log the error for debugging
       console.error("Login error:", error);

@@ -5,22 +5,15 @@ import { useQuery, useMutation, useAction } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { Id } from "../../convex/_generated/dataModel";
 
-interface User {
-  _id: Id<"users">;
+interface SessionData {
+  userId: Id<"users">;
   name: string;
-  email: string;
   username: string;
-  createdAt: number;
-  updatedAt: number;
-  portfolioData?: {
-    about?: any;
-    projects?: any[];
-    skills?: any[];
-  };
+  // Exclude sensitive data like email, createdAt, updatedAt, portfolioData
 }
 
 interface AuthContextType {
-  user: User | null;
+  user: SessionData | null;
   isLoading: boolean;
   login: (email: string, password: string) => Promise<void>;
   register: (name: string, email: string, username: string, password: string) => Promise<void>;
@@ -30,21 +23,33 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function ConvexAuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<SessionData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   const loginAction = useAction(api.users.login);
   const registerAction = useAction(api.users.register);
 
   useEffect(() => {
+    // Clear any old session data for security
+    localStorage.removeItem("flexfolio-user");
+    
     // Check for existing session in localStorage
-    const savedUser = localStorage.getItem("flexfolio-user");
-    if (savedUser) {
+    const savedSession = localStorage.getItem("flexfolio-session");
+    if (savedSession) {
       try {
-        setUser(JSON.parse(savedUser));
+        const sessionData = JSON.parse(savedSession);
+        // Validate session data structure - only allow minimal session data
+        if (sessionData.userId && sessionData.username && sessionData.name && 
+            !sessionData.email && !sessionData.portfolioData && !sessionData.createdAt) {
+          setUser(sessionData);
+        } else {
+          // Invalid session data (contains sensitive info), remove it
+          console.log("Removing invalid session data containing sensitive information");
+          localStorage.removeItem("flexfolio-session");
+        }
       } catch (error) {
-        console.error("Error parsing saved user:", error);
-        localStorage.removeItem("flexfolio-user");
+        console.error("Error parsing saved session:", error);
+        localStorage.removeItem("flexfolio-session");
       }
     }
     setIsLoading(false);
@@ -53,10 +58,10 @@ export function ConvexAuthProvider({ children }: { children: ReactNode }) {
   const login = async (email: string, password: string) => {
     try {
       console.log("Auth provider: Attempting login for", email);
-      const userData = await loginAction({ email, password });
-      console.log("Auth provider: Login successful", userData);
-      setUser(userData);
-      localStorage.setItem("flexfolio-user", JSON.stringify(userData));
+      const sessionData = await loginAction({ email, password });
+      console.log("Auth provider: Login successful", sessionData);
+      setUser(sessionData);
+      localStorage.setItem("flexfolio-session", JSON.stringify(sessionData));
     } catch (error: any) {
       console.error("Auth provider: Login error", error);
       
@@ -89,7 +94,7 @@ export function ConvexAuthProvider({ children }: { children: ReactNode }) {
 
   const logout = () => {
     setUser(null);
-    localStorage.removeItem("flexfolio-user");
+    localStorage.removeItem("flexfolio-session");
   };
 
   return (
