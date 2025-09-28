@@ -9,6 +9,7 @@
 
 ---
 
+
 ## ✨ What is FlexFolio?
 
 FlexFolio is a modern, no-code portfolio builder that lets developers and creators build stunning portfolio websites in minutes. Just sign up, customize your content, and go live with your own unique URL.
@@ -20,23 +21,24 @@ FlexFolio is a modern, no-code portfolio builder that lets developers and creato
 
 ---
 
+<div align="center">
+
 ## 🌟 Key Features
 
-| Feature | Description |
-|---------|-------------|
-| 🆓 **Free Forever** | No payment required, completely free to use |
-| 🎨 **No Code Required** | Beautiful interface, zero coding needed |
-| ⚡ **Lightning Fast** | Built with Next.js for optimal performance |
-| 📱 **Responsive** | Works perfectly on all devices |
-| 🔗 **Custom URLs** | Get your own URL like `flexfolio.com/yournmae` |
-| 🎛️ **CMS Dashboard** | Control your content anytime |
-| 🚀 **Instant Deploy** | Go live in seconds |
+ Feature | Description |
+---------|-------------|
+ 🆓 **Free Forever** | No payment required, completely free to use |
+ 🎨 **No Code Required** | Beautiful interface, zero coding needed |
+ ⚡ **Lightning Fast** | Built with Next.js for optimal performance |
+ 📱 **Responsive** | Works perfectly on all devices |
+ 🔗 **Custom URLs** | Get your own URL like `flexfolio.com/yournmae` |
+ 🎛️ **CMS Dashboard** | Control your content anytime |
+ 🚀 **Instant Deploy** | Go live in seconds |
 
 ---
 
 ## 🛠️ Tech Stack
 
-<div align="center">
 
 | Frontend | Backend | Database | UI/UX |
 |----------|---------|----------|-------|
@@ -46,51 +48,6 @@ FlexFolio is a modern, no-code portfolio builder that lets developers and creato
 
 </div>
 
----
-
-## 🚀 Quick Start
-
-### 1. Clone & Install
-```bash
-git clone https://github.com/fitsumhelina/flexfolio.git
-cd flexfolio
-pnpm install
-```
-
-### 2. Environment Setup
-```bash
-cp .env.example .env
-```
-
-Add your Convex credentials:
-```env
-CONVEX_DEPLOYMENT=your-deployment-url
-NEXT_PUBLIC_CONVEX_URL=your-convex-url
-```
-
-### 3. Run Development Server
-```bash
-pnpm dev
-```
-
-Visit [http://localhost:3000](http://localhost:3000) 🎉
-
----
-
-## 🎯 How It Works
-
-### For Users
-1. **Sign Up** → Create your free account
-2. **Choose Username** → Get your unique URL
-3. **Customize** → Add your content and style
-4. **Publish** → Go live instantly!
-
-### For Developers
-- **Landing Page** with animated components
-- **Authentication** system with Convex
-- **Dashboard** for content management
-- **Dynamic Routing** for user portfolios
-- **Real-time** updates and sync
 
 ---
 
@@ -106,29 +63,6 @@ Visit [http://localhost:3000](http://localhost:3000) 🎉
 
 ---
 
-## 🎨 Features in Detail
-
-### 🎭 Beautiful UI Components
-- Animated text effects with TrueFocus
-- Shiny text animations
-- Skeleton loading states
-- Gradient backgrounds
-- Responsive design
-
-### 🔐 Authentication
-- Secure user registration
-- Username validation
-- Session management
-- Protected routes
-
-### 📊 Dashboard
-- Content management system
-- Real-time preview
-- Settings customization
-- Profile management
-
----
-
 ## 🌐 Live Demo
 
 **Try it now:** [flexfolio1.vercel.app/demo](https://flexfolio1.vercel.app/demo)
@@ -136,22 +70,11 @@ Visit [http://localhost:3000](http://localhost:3000) 🎉
 See a live example of what you can build with FlexFolio!
 
 ---
-
 ## 🤝 Contributing
 
-We welcome contributions! Here's how you can help:
-
-1. **Fork** the repository
-2. **Create** a feature branch (`git checkout -b feature/your-branch`)
-3. **Commit** your changes (`git commit -m 'Add your-branch'`)
-4. **Push** to the branch (`git push origin feature/your-branch`)
-5. **Open** a Pull Request
-
-### Development Guidelines
-- Follow TypeScript best practices
-- Use Tailwind CSS for styling
-- Write meaningful commit messages
-- Test your changes thoroughly
+| How to Contribute | Development Guidelines |
+|-------------------|-------------------------|
+| 1. **Fork** the repository <br> 2. **Create** a feature branch (`git checkout -b feature/your-branch`) <br> 3. **Commit** your changes (`git commit -m 'Add your-branch'`) <br> 4. **Push** to the branch (`git push origin feature/your-branch`) <br> 5. **Open** a Pull Request | - Follow TypeScript best practices <br> - Use Tailwind CSS for styling <br> - Write meaningful commit messages <br> - Test your changes thoroughly |
 
 ---
 
@@ -182,7 +105,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 <div align="center">
 
-**Built with ❤️ by [Fitsum](https://github.com/fitsumhelina)**
+**Built with ❤️ by [Fitsum](https://www.linkedin.com/in/fitsum-helina-57164828a)**
 
 [⭐ Star this repo](https://github.com/fitsumhelina/flexfolio) • [🐛 Report Bug](https://github.com/fitsumhelina/flexfolio/issues) • [💡 Request Feature](https://github.com/fitsumhelina/flexfolio/issues)
 
