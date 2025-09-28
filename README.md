@@ -1,135 +1,112 @@
-# FlexFolio - Portfolio Builder SaaS
-
-A modern, no-code portfolio builder that allows users to create stunning portfolio websites in minutes. Built with Next.js, TypeScript, and MongoDB.
-
-## 🚀 Features
-
-- **Free Forever**: No payment required, completely free to use
-- **No Code Required**: Drag-and-drop interface for easy customization
-- **Beautiful Templates**: Professionally designed portfolio templates
-- **Custom URLs**: Get your own unique URL like `flexfolio.com/username`
-- **Real-time Preview**: See changes instantly as you build
-- **Responsive Design**: Works perfectly on all devices
-- **Fast Performance**: Built with Next.js for optimal speed
-
-## 🛠️ Tech Stack
-
-- **Frontend**: Next.js 14, React, TypeScript, Tailwind CSS
-- **Backend**: Next.js API Routes, MongoDB
-- **UI Components**: Radix UI, Lucide React
-- **Authentication**: Custom JWT-based auth (demo implementation)
-- **Database**: MongoDB with Mongoose
+![cover](./public/flexfolio_cover_2.jpg)
 
 
-## 🚀 Getting Started
+> **Build your perfect portfolio in 5 minutes** - No coding required, free forever.
 
-### Prerequisites
-
-- Node.js 18+ 
-- MongoDB database
-- npm or pnpm
-
-### Installation
-
-1. Clone the repository:
-```bash
-git clone <repository-url>
-cd flexfolio
-```
-
-2. Install dependencies:
-```bash
-npm install
-# or
-pnpm install
-```
-
-3. Set up environment variables:
-```bash
-cp .env.example .env
-```
-
-Add your MongoDB connection string:
-```
-MONGODB_URI=mongodb://localhost:27017/flexfolio
-```
-
-4. Run the development server:
-```bash
-npm run dev
-# or
-pnpm dev
-```
-
-5. Open [http://localhost:3000](http://localhost:3000) in your browser.
-
-## 🎯 How It Works
-
-### For Users
-
-1. **Sign Up**: Create a free account with email and username
-2. **Choose Template**: Select from beautiful portfolio templates
-3. **Customize**: Edit your about section, add projects and skills
-4. **Publish**: Your portfolio goes live at `flexfolio.com/username`
-
-### For Developers
-
-The platform is built with a modular architecture:
-
-- **Landing Page**: Showcases the platform with demo portfolio
-- **Authentication**: User registration and login system
-- **Dashboard**: Portfolio management interface
-- **Dynamic Routing**: User portfolios accessible via `/username`
-- **API Routes**: RESTful endpoints for data management
-
-## 🔧 Key Features
-
-### User Registration & Authentication
-- Email-based registration
-- Username validation
-- Secure password handling (demo implementation)
-- Session management with localStorage
-
-### Portfolio Management
-- About section editor with live preview
-- Project management (coming soon)
-- Skills management (coming soon)
-- Theme customization (coming soon)
-
-### Dynamic Portfolio Display
-- Custom URLs for each user
-- Responsive design
-- SEO-friendly structure
-- Fast loading times
-
-## 🎨 Customization
-
-The platform supports extensive customization:
-
-- **Themes**: Multiple color schemes and layouts
-- **Content**: Full control over about, projects, and skills
-- **Styling**: Custom CSS support (coming soon)
-- **Domain**: Custom domain support (coming soon)
-
-## 📱 Demo
-
-Visit the live demo at [https://dev-fitsum.vercel.app](https://dev-fitsum.vercel.app) to see a sample portfolio.
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Submit a pull request
-
-## 📄 License
-
-This project is open source and available under the [MIT License](LICENSE).
-
-## 🆘 Support
-
-For support, email support@flexfolio.com or create an issue in the repository.
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-View%20Now-blue?style=for-the-badge&logo=vercel)](https://)
+[![GitHub Stars](https://img.shields.io/github/stars/fitsumhelina/flexfolio?style=for-the-badge&logo=github)](https://github.com/fitsumhelina/flexfolio)
+[![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
 
 ---
 
-Built with ❤️ using Next.js and modern web technologies.
+
+## ✨ What is FlexFolio?
+
+FlexFolio is a modern, no-code portfolio builder that lets developers and creators build stunning portfolio websites in minutes. Just sign up, customize your content, and go live with your own unique URL.
+
+### 🎯 Perfect for:
+- **Developers** showcasing their projects
+- **Designers** displaying their work
+- **Anyone** who wants a professional online presence
+
+---
+
+<div align="center">
+
+## 🌟 Key Features
+
+ Feature | Description |
+---------|-------------|
+ 🆓 **Free Forever** | No payment required, completely free to use |
+ 🎨 **No Code Required** | Beautiful interface, zero coding needed |
+ ⚡ **Lightning Fast** | Built with Next.js for optimal performance |
+ 📱 **Responsive** | Works perfectly on all devices |
+ 🔗 **Custom URLs** | Get your own URL like `flexfolio.com/yournmae` |
+ 🎛️ **CMS Dashboard** | Control your content anytime |
+ 🚀 **Instant Deploy** | Go live in seconds |
+
+---
+
+## 🛠️ Tech Stack
+
+
+| Frontend | Backend | Database | UI/UX |
+|----------|---------|----------|-------|
+| Next.js 14 | Convex | Convex DB | Tailwind CSS |
+| React 18 | TypeScript | Real-time | Radix UI |
+| TypeScript | Auth | | Lucide Icons |
+
+</div>
+
+
+---
+
+## 📸 Screenshots
+
+<div align="center">
+
+| Landing Page | Dashboard | Portfolio |
+|--------------|-----------|-----------|
+| ![Landing](./public/landingpage.png?text=landing) | ![Dashboard](./public/demodashboard.png?text=Dashboard) | ![Portfolio](./public/demoportfolio.png?text=Portfolio) |
+
+</div>
+
+---
+
+## 🌐 Live Demo
+
+**Try it now:** [flexfolio1.vercel.app/demo](https://flexfolio1.vercel.app/demo)
+
+See a live example of what you can build with FlexFolio!
+
+---
+## 🤝 Contributing
+
+| How to Contribute | Development Guidelines |
+|-------------------|-------------------------|
+| 1. **Fork** the repository <br> 2. **Create** a feature branch (`git checkout -b feature/your-branch`) <br> 3. **Commit** your changes (`git commit -m 'Add your-branch'`) <br> 4. **Push** to the branch (`git push origin feature/your-branch`) <br> 5. **Open** a Pull Request | - Follow TypeScript best practices <br> - Use Tailwind CSS for styling <br> - Write meaningful commit messages <br> - Test your changes thoroughly |
+
+---
+
+## 📈 Roadmap
+
+- [ ] **Templates Gallery** - More portfolio templates
+- [ ] **Custom Domains** - Use your own domain
+- [ ] **Analytics** - Track your portfolio views
+- [ ] **SEO Tools** - Optimize for search engines
+- [ ] **Export Options** - Download your portfolio
+- [ ] **Team Collaboration** - Work together on portfolios
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+
+## 💝 Support
+
+- **Issues**: [GitHub Issues](https://github.com/fitsumhelina/flexfolio/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/fitsumhelina/flexfolio/discussions)
+- **Email**: [dev.fitsum@gmail.com](mailto:dev.fitsum@gmail.com)
+
+---
+
+<div align="center">
+
+**Built with ❤️ by [Fitsum](https://www.linkedin.com/in/fitsum-helina-57164828a)**
+
+[⭐ Star this repo](https://github.com/fitsumhelina/flexfolio) • [🐛 Report Bug](https://github.com/fitsumhelina/flexfolio/issues) • [💡 Request Feature](https://github.com/fitsumhelina/flexfolio/issues)
+
+</div>

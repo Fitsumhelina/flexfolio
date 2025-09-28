@@ -15,33 +15,11 @@ export function DemoPortfolio() {
 
   return (
     <div className="min-h-screen bg-black text-white">
-      {/* Demo Header */}
-      <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-4">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center space-x-4">
-            <Button 
-              variant="ghost" 
-              onClick={() => router.push('/')}
-              className="text-white hover:bg-white/20"
-            >
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Back to FlexFolio
-            </Button>
-            <div className="text-white">
-              <span className="font-semibold">Demo Portfolio</span>
-              <span className="text-white/80 ml-2">- See what you can build</span>
-            </div>
-          </div>
-          <Button 
-            onClick={() => router.push('/register')}
-            className="bg-white text-blue-600 hover:bg-gray-100"
-          >
-            Create Your Own
-          </Button>
-        </div>
-      </div>
+      
 
       {/* Original Portfolio Content */}
+      <br />
+      <br />
       <DemoNavigation />
       <br />
       <br />
@@ -51,24 +29,30 @@ export function DemoPortfolio() {
       <DemoSkills />
       <DemoContact />
 
-      {/* Demo Footer */}
-      <div className="bg-gray-900 border-t border-gray-800 py-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h3 className="text-2xl font-bold mb-4">Ready to Create Your Own Portfolio?</h3>
-          <p className="text-gray-400 mb-6">
-            Join thousands of developers who have already created their perfect portfolio with FlexFolio
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-    
+   {/* Demo Footer */}
+   <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-4">
+        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-4 w-full sm:w-auto">
             <Button 
-              variant="outline"
-              onClick={() => window.open('/register', '_blank')}
-              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+              variant="ghost" 
+              onClick={() => router.push('/')}
+              className="text-white hover:bg-white/20 w-full sm:w-auto"
             >
-              <ExternalLink className="h-4 w-4 mr-2" />
-              Start Here
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              <span className="hidden xs:inline">Back to FlexFolio</span>
+              <span className="inline xs:hidden">Back</span>
             </Button>
+            <div className="text-white flex flex-col sm:flex-row sm:items-center">
+              <span className="font-semibold text-base sm:text-lg">Demo Portfolio</span>
+              <span className="text-white/80 ml-0 sm:ml-2 text-sm sm:text-base">- See what you can build</span>
+            </div>
           </div>
+          <Button 
+            onClick={() => router.push('/register')}
+            className="bg-white text-blue-600 hover:bg-gray-100 w-full sm:w-auto mt-2 sm:mt-0"
+          >
+            <span className="text-base sm:text-lg">Create Your Own</span>
+          </Button>
         </div>
       </div>
     </div>

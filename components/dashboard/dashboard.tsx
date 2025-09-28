@@ -15,8 +15,10 @@ import { DashboardDesign } from "./tabs/design"
 import { DashboardSettings } from "./tabs/settings"
 import { DashboardFooter } from "./footer"
 import { DashboardLoading } from "./loading"
-import { useSession } from "@/components/auth/session-provider"
-
+import { useAuth } from "@/components/auth/convex-auth-provider"
+import { useQuery, useMutation } from "convex/react"
+import { api } from "../../convex/_generated/api"
+import { Id } from "../../convex/_generated/dataModel"
 
 interface User {
   _id: string
@@ -38,12 +40,26 @@ interface DashboardProps {
 }
 
 export function Dashboard({ username }: DashboardProps) {
-  const { user: sessionUser, isLoading: sessionLoading, signOut } = useSession()
-  const [user, setUser] = useState<User | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
+  const { user: sessionUser, isLoading: sessionLoading, logout } = useAuth()
   const [messageCount, setMessageCount] = useState(0)
   const [unreadCount, setUnreadCount] = useState(0)
   const router = useRouter()
+
+  // Convex queries - use real-time data from Convex
+  const user = useQuery(api.users.getUser, sessionUser ? { userId: sessionUser.userId } : "skip")
+  const projects = useQuery(api.projects.getProjects, sessionUser ? { userId: sessionUser.userId } : "skip")
+  const skills = useQuery(api.skills.getSkills, sessionUser ? { userId: sessionUser.userId } : "skip")
+  const about = useQuery(api.about.getAbout, sessionUser ? { userId: sessionUser.userId } : "skip")
+  const messages = useQuery(api.messages.getMessages, sessionUser ? { userId: sessionUser.userId } : "skip")
+
+  // Convex mutations
+  const updateAboutMutation = useMutation(api.about.updateAbout)
+  const createProjectMutation = useMutation(api.projects.createProject)
+  const updateProjectMutation = useMutation(api.projects.updateProject)
+  const deleteProjectMutation = useMutation(api.projects.deleteProject)
+  const createSkillMutation = useMutation(api.skills.createSkill)
+  const updateSkillMutation = useMutation(api.skills.updateSkill)
+  const deleteSkillMutation = useMutation(api.skills.deleteSkill)
   const [aboutForm, setAboutForm] = useState({
     email: "",
     phone: "",
@@ -77,6 +93,9 @@ export function Dashboard({ username }: DashboardProps) {
   const [socialMessage, setSocialMessage] = useState<string | null>(null)
   const [aboutMessage, setAboutMessage] = useState<string | null>(null)
 
+  // Check if we're still loading
+  const isLoading = sessionLoading || !user
+
   useEffect(() => {
     console.log('Dashboard: Session check', { sessionLoading, sessionUser: sessionUser ? 'exists' : 'null' })
     
@@ -91,7 +110,7 @@ export function Dashboard({ username }: DashboardProps) {
       return
     }
 
-    console.log('Dashboard: Session user found:', sessionUser.email)
+    console.log('Dashboard: Session user found:', sessionUser.username)
 
     // If username is provided, verify the user is accessing their own dashboard
     if (username && sessionUser.username !== username) {
@@ -99,49 +118,46 @@ export function Dashboard({ username }: DashboardProps) {
       router.push(`/${sessionUser.username}/dashboard`)
       return
     }
-
-    console.log('Dashboard: Setting user and loading data')
-    setUser(sessionUser)
-    // Load message counts
-    fetch(`/api/messages?username=${sessionUser.username}`)
-      .then(res => res.json())
-      .then(data => {
-        if (Array.isArray(data)) {
-            setMessageCount(data.length)
-            setUnreadCount(data.filter((m: any) => !m.isRead).length)
-          }
-        })
-        .catch(() => {})
-    
-    const about = sessionUser?.portfolioData?.about || {}
-    setAboutForm({
-      email: about.email || "",
-      phone: about.phone || "",
-      location: about.location || "",
-      github: about.github || "",
-      x: about.x || about.twitter || "",
-      telegram: about.telegram || "",
-      linkedin: about.linkedin || "",
-      heroTitle: about.heroTitle || about.title || "Full Stack Developer",
-      heroDescription: about.heroDescription || about.bio || "",
-      heroBackgroundMode: (about as any).heroBackgroundMode || "gradient",
-      heroGradientPreset: (about.heroGradientPreset as 1|2|3|4) || 1,
-      heroBackgroundImageUrl: about.heroBackgroundImageUrl || "",
-      heroBackgroundBlurLevel: (about.heroBackgroundBlurLevel as 0|1|2|3|4) || 0,
-      heroPatternId: (about as any).heroPatternId || "liquid-ether",
-      heroPatternProps: (about as any).heroPatternProps || {},
-      // About section fields
-      name: about.name || sessionUser.name || "",
-      title: about.title || "Full Stack Developer",
-      bio: about.bio || "I'm a passionate developer who loves creating amazing digital experiences.",
-      experience: about.experience || "1+",
-      projectsCompleted: about.projectsCompleted || "5+",
-      profileImage: about.profileImage || "",
-      profileImageBorderColor: about.profileImageBorderColor || "#3B82F6"
-    })
-
-    setIsLoading(false)
   }, [sessionUser, sessionLoading, router, username])
+
+  // Update message counts from Convex data
+  useEffect(() => {
+    if (messages) {
+      setMessageCount(messages.length)
+      setUnreadCount(messages.filter((m: any) => !m.isRead).length)
+    }
+  }, [messages])
+  
+  // Update about form with Convex data
+  useEffect(() => {
+    if (about) {
+      setAboutForm({
+        email: about.email || "",
+        phone: about.phone || "",
+        location: about.location || "",
+        github: about.github || "",
+        x: about.x || "",
+        telegram: about.telegram || "",
+        linkedin: about.linkedin || "",
+        heroTitle: about.heroTitle || about.title || "Full Stack Developer",
+        heroDescription: about.heroDescription || about.bio || "",
+        heroBackgroundMode: (about as any).heroBackgroundMode || "gradient",
+        heroGradientPreset: (about.heroGradientPreset as 1|2|3|4) || 1,
+        heroBackgroundImageUrl: about.heroBackgroundImageUrl || "",
+        heroBackgroundBlurLevel: (about.heroBackgroundBlurLevel as 0|1|2|3|4) || 0,
+        heroPatternId: (about as any).heroPatternId || "liquid-ether",
+        heroPatternProps: (about as any).heroPatternProps || {},
+        // About section fields
+        name: about.name || "",
+        title: about.title || "Full Stack Developer",
+        bio: about.bio || "I'm a passionate developer who loves creating amazing digital experiences.",
+        experience: about.experience || "1+",
+        projectsCompleted: about.projectsCompleted || "5+",
+        profileImage: about.profileImage || "",
+        profileImageBorderColor: about.profileImageBorderColor || "#3B82F6"
+      })
+    }
+  }, [about])
 
   const handleAboutInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
@@ -158,54 +174,13 @@ export function Dashboard({ username }: DashboardProps) {
     setSaving(true)
     setMessage(null)
     try {
-      const currentAbout = user.portfolioData?.about || {}
-      const mergedAbout = {
-        // preserve existing about fields
-        name: currentAbout.name || user.name,
-        title: currentAbout.title || "Full Stack Developer",
-        bio: currentAbout.bio || "",
-        experience: currentAbout.experience || "",
-        projectsCompleted: currentAbout.projectsCompleted || "",
-        profileImage: currentAbout.profileImage || "",
-        profileImageBorderColor: currentAbout.profileImageBorderColor || "#3B82F6",
-        // contact
-        email: currentAbout.email ?? aboutForm.email,
-        phone: currentAbout.phone ?? aboutForm.phone,
-        location: currentAbout.location ?? aboutForm.location,
-        // socials
-        github: currentAbout.github ?? aboutForm.github,
-        x: currentAbout.x ?? aboutForm.x,
-        telegram: currentAbout.telegram ?? aboutForm.telegram,
-        linkedin: currentAbout.linkedin ?? aboutForm.linkedin,
-        // hero settings (defaults preserved; will be overridden by updates)
-        heroTitle: currentAbout.heroTitle ?? aboutForm.heroTitle,
-        heroDescription: currentAbout.heroDescription ?? aboutForm.heroDescription,
-        heroBackgroundMode: currentAbout.heroBackgroundMode ?? aboutForm.heroBackgroundMode,
-        heroGradientPreset: currentAbout.heroGradientPreset ?? aboutForm.heroGradientPreset,
-        heroBackgroundImageUrl: currentAbout.heroBackgroundImageUrl ?? aboutForm.heroBackgroundImageUrl,
-        heroBackgroundBlurLevel: currentAbout.heroBackgroundBlurLevel ?? aboutForm.heroBackgroundBlurLevel,
-        heroPatternId: (currentAbout as any).heroPatternId ?? aboutForm.heroPatternId,
-        heroPatternProps: (currentAbout as any).heroPatternProps ?? aboutForm.heroPatternProps,
-        // apply incoming updates last
+      // Use Convex mutation to update about data
+      await updateAboutMutation({
+        userId: user._id,
         ...updates,
-      }
-
-      const res = await fetch('/api/users/update-about', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId: user._id, aboutData: mergedAbout }),
       })
-      const data = await res.json()
-      if (!res.ok) {
-        throw new Error(data?.error || 'Failed to save')
-      }
-
-      const updatedUser = {
-        ...user,
-        portfolioData: { ...(user.portfolioData || {}), about: mergedAbout },
-      }
-      setUser(updatedUser)
-      setMessage('Saved')
+      
+      setMessage('Content updated successfully')
     } catch (err: any) {
       setMessage(err?.message || 'Failed to save')
     } finally {
@@ -261,7 +236,7 @@ export function Dashboard({ username }: DashboardProps) {
   }
 
   const handleLogout = async () => {
-    await signOut()
+    await logout()
     router.push('/')
   }
 
@@ -280,48 +255,110 @@ export function Dashboard({ username }: DashboardProps) {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 text-white">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 text-white flex flex-col">
       <DashboardHeader user={user} onLogout={handleLogout} onViewPortfolio={handleViewPortfolio} />
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="w-full max-w-7xl mx-auto px-2 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6 md:py-8 flex-1 flex flex-col">
         <DashboardWelcome user={user} />
         <DashboardStats user={user} messageCount={messageCount} unreadCount={unreadCount} username={user.username} />
         <PortfolioUrl user={user} onViewPortfolio={handleViewPortfolio} />
 
         {/* Dashboard Tabs */}
-        <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList className="bg-gray-900/50 border-gray-700/50 backdrop-blur-sm p-1">
-            <TabsTrigger value="overview" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-purple-600 data-[state=active]:text-white">
-              <BarChart3 className="h-4 w-4 mr-2" />
-              Overview
+        <Tabs defaultValue="overview" className="space-y-4 sm:space-y-6">
+          <TabsList
+            className="
+              bg-gray-900/50 border-gray-700/50 backdrop-blur-sm p-1
+              flex flex-row sm:flex-row md:flex-row lg:flex-row
+              w-full overflow-x-auto
+              gap-1
+              rounded-lg
+              mb-2 sm:mb-4
+              scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-transparent
+            "
+            style={{ WebkitOverflowScrolling: "touch" }}
+          >
+            <TabsTrigger
+              value="overview"
+              className="
+                flex-1 min-w-[80px] sm:min-w-[120px] md:min-w-[120px] 
+                flex items-center justify-center
+                data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-purple-600 data-[state=active]:text-white
+                px-2 py-2 sm:px-4 sm:py-2 text-xs sm:text-sm
+                rounded-md
+                whitespace-nowrap
+              "
+            >
+              <BarChart3 className="h-4 w-4 mr-1 sm:mr-2" />
+              <span className="hidden xs:inline sm:inline">Overview</span>
+              <span className="inline xs:hidden sm:hidden">Home</span>
             </TabsTrigger>
-            <TabsTrigger value="content" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-purple-600 data-[state=active]:text-white">
-              <FileText className="h-4 w-4 mr-2" />
-              Content
+            <TabsTrigger
+              value="content"
+              className="
+                flex-1 min-w-[80px] sm:min-w-[120px] md:min-w-[120px] 
+                flex items-center justify-center
+                data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-purple-600 data-[state=active]:text-white
+                px-2 py-2 sm:px-4 sm:py-2 text-xs sm:text-sm
+                rounded-md
+                whitespace-nowrap
+              "
+            >
+              <FileText className="h-4 w-4 mr-1 sm:mr-2" />
+              <span>Content</span>
             </TabsTrigger>
-            <TabsTrigger value="inbox" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-purple-600 data-[state=active]:text-white">
-              <Mail className="h-4 w-4 mr-2" />
-              Inbox
+            <TabsTrigger
+              value="inbox"
+              className="
+                flex-1 min-w-[80px] sm:min-w-[120px] md:min-w-[120px] 
+                flex items-center justify-center
+                data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-purple-600 data-[state=active]:text-white
+                px-2 py-2 sm:px-4 sm:py-2 text-xs sm:text-sm
+                rounded-md
+                whitespace-nowrap
+              "
+            >
+              <Mail className="h-4 w-4 mr-1 sm:mr-2" />
+              <span>Inbox</span>
             </TabsTrigger>
-            <TabsTrigger value="design" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-purple-600 data-[state=active]:text-white">
-              <Palette className="h-4 w-4 mr-2" />
-              Design
+            <TabsTrigger
+              value="design"
+              className="
+                flex-1 min-w-[80px] sm:min-w-[120px] md:min-w-[120px] 
+                flex items-center justify-center
+                data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-purple-600 data-[state=active]:text-white
+                px-2 py-2 sm:px-4 sm:py-2 text-xs sm:text-sm
+                rounded-md
+                whitespace-nowrap
+              "
+            >
+              <Palette className="h-4 w-4 mr-1 sm:mr-2" />
+              <span>Design</span>
             </TabsTrigger>
-            <TabsTrigger value="settings" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-purple-600 data-[state=active]:text-white">
-              <Settings className="h-4 w-4 mr-2" />
-              Settings
+            <TabsTrigger
+              value="settings"
+              className="
+                flex-1 min-w-[80px] sm:min-w-[120px] md:min-w-[120px] 
+                flex items-center justify-center
+                data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-purple-600 data-[state=active]:text-white
+                px-2 py-2 sm:px-4 sm:py-2 text-xs sm:text-sm
+                rounded-md
+                whitespace-nowrap
+              "
+            >
+              <Settings className="h-4 w-4 mr-1 sm:mr-2" />
+              <span>Settings</span>
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="overview" className="space-y-6">
+          <TabsContent value="overview" className="space-y-4 sm:space-y-6">
             <DashboardOverview user={user} username={user.username} />
           </TabsContent>
 
-          <TabsContent value="inbox" className="space-y-6">
-            <DashboardInbox user={user} />
+          <TabsContent value="inbox" className="space-y-4 sm:space-y-6">
+            <DashboardInbox user={user} messages={messages || []} />
           </TabsContent>
 
-          <TabsContent value="content" className="space-y-6">
+          <TabsContent value="content" className="space-y-4 sm:space-y-6">
             <DashboardContent 
               aboutForm={aboutForm}
               handleAboutInput={handleAboutInput}
@@ -338,12 +375,12 @@ export function Dashboard({ username }: DashboardProps) {
             />
           </TabsContent>
 
-          <TabsContent value="design" className="space-y-6">
+          <TabsContent value="design" className="space-y-4 sm:space-y-6">
             <DashboardDesign />
           </TabsContent>
 
-          <TabsContent value="settings" className="space-y-6">
-            <DashboardSettings user={user} setUser={setUser} onLogout={handleLogout} />
+          <TabsContent value="settings" className="space-y-4 sm:space-y-6">
+            <DashboardSettings userId={user?._id} onLogout={handleLogout} />
           </TabsContent>
         </Tabs>
       </main>
