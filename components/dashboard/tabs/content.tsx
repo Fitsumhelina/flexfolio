@@ -325,10 +325,11 @@ export function DashboardContent({
                 </div>
               )}
             </div>
-            {/* Gradient Preview & Picker */}
+            {/* Hero Preview Section */}
             <div className="mt-6 space-y-3">
-              <div className="text-sm text-white/80">Preview</div>
-              <div className="relative h-54 rounded-lg overflow-hidden border border-white/20">
+              <div className="text-sm text-white/80">Hero Preview</div>
+              <div className="relative h-96 rounded-lg overflow-hidden border border-white/20">
+                {/* Background */}
                 {aboutForm.heroBackgroundMode === 'image' && aboutForm.heroBackgroundImageUrl ? (
                   <img src={aboutForm.heroBackgroundImageUrl} alt="preview" className={`w-full h-full object-cover opacity-50 ${`hero-blur-${aboutForm.heroBackgroundBlurLevel}`}`} />
                 ) : aboutForm.heroBackgroundMode === 'pattern' ? (
@@ -349,7 +350,86 @@ export function DashboardContent({
                 ) : (
                   <div className={`hero-animated-bg ${aboutForm.heroGradientPreset===2?'hero-bg-2':aboutForm.heroGradientPreset===3?'hero-bg-3':aboutForm.heroGradientPreset===4?'hero-bg-4':'hero-bg-1'} ${`hero-blur-${aboutForm.heroBackgroundBlurLevel}`}`} />
                 )}
+                
+                {/* Hero Content Overlay */}
+                <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
+                  {/* Hi, I'm John */}
+                  <div className="text-2xl sm:text-3xl font-medium text-blue-300 mb-2">
+                    Hi, I'm {aboutForm.name || "John"}
+                  </div>
+            
+                  
+                  {/* Full Stack Developer (gradient) */}
+                  <div className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4">
+                    <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+                      {aboutForm.heroTitle || "Full Stack Developer"}
+                    </span>
+                  </div>
+                  
+                  {/* Description */}
+                  <div className="text-sm sm:text-base text-white/90 max-w-md  leading-relaxed">
+                    {aboutForm.heroDescription || "I'm a passionate full-stack developer with over 5 years of experience building scalable web applications and digital solutions."}
+                  </div>
+
+                  {/* social links */}
+                  <div className="flex flex-row gap-4">
+
+                  <div className="flex justify-center gap-4 mt-4">
+                    {aboutForm.github && (
+                      <a href={aboutForm.github} target="_blank" rel="noopener noreferrer">
+                        <img src="https://cdn-icons-png.flaticon.com/128/270/270798.png" alt="GitHub" className="w-5 h-5" />
+                      </a>
+                    )}
+                  </div>
+                  {aboutForm.linkedin && (
+                    <a href={aboutForm.linkedin} target="_blank" rel="noopener noreferrer">
+                      <img src="https://cdn-icons-png.flaticon.com/512/174/174857.png" alt="LinkedIn" className="w-5 h-5" />
+                    </a>
+                  )}
+                  {aboutForm.x && (
+                    <a href={aboutForm.x} target="_blank" rel="noopener noreferrer">
+                      <img src="https://cdn-icons-png.flaticon.com/128/5969/5969020.png" alt="X" className="w-5 h-5" />
+                    </a>
+                  )}
+                  {aboutForm.telegram && (
+                    <a href={aboutForm.telegram} target="_blank" rel="noopener noreferrer">
+                      <img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg" alt="Telegram" className="w-5 h-5" />
+                    </a>
+                  )}
+
+                  </div>
+                  
+                  
+                  {/* CTA Buttons */}
+                  <div className="mt-4">
+                  <div className="flex flex-col sm:flex-row gap-4">
+                    {/* Get In Touch Button */}
+                    <button className="flex items-center justify-center px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white font-medium rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl">
+                      <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                      </svg>
+                      Get In Touch
+                    </button>
+                    
+                    {/* View Projects Button */}
+                    <button className="flex items-center justify-center px-6 py-3 bg-gradient-to-r from-green-500 to-yellow-500 hover:from-green-600 hover:to-yellow-600 text-white font-medium rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl">
+                      <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                      </svg>
+                      View Projects
+                    </button>
+                  </div>
+                  </div>                  
+                  {/* Scroll Indicator */}
+                  <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2">
+                    <svg className="w-5 h-5 text-white/60 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                    </svg>
+                  </div>
+                </div>
               </div>
+              
+              {/* Gradient Preset Selector */}
               {aboutForm.heroBackgroundMode === 'gradient' && (
                 <div className="grid grid-cols-4 gap-2">
                   {[1,2,3,4].map(p => (
