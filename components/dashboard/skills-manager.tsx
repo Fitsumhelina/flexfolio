@@ -23,7 +23,7 @@ import {
 } from "lucide-react"
 
 interface Skill {
-  id: string
+  _id: string
   name: string
   category: string
   proficiency: number
@@ -104,7 +104,7 @@ export function SkillsManager({ username }: SkillsManagerProps) {
       if (editingSkill) {
         // Update existing skill
         await updateSkillMutation({
-          skillId: editingSkill.id as any, // Cast to Convex ID type
+          skillId: editingSkill._id as any, // Cast to Convex ID type
           ...skillData
         })
         setMessage({ type: 'success', text: 'Skill updated successfully!' })
@@ -222,7 +222,7 @@ export function SkillsManager({ username }: SkillsManagerProps) {
                 </h2>
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {categorySkills.map((skill) => (
-                    <Card key={skill.id} className="bg-gray-900/50 border-gray-700 hover:border-gray-600 transition-colors">
+                    <Card key={skill._id} className="bg-gray-900/50 border-gray-700 hover:border-gray-600 transition-colors">
                       <CardContent className="p-6">
                         <div className="flex items-center justify-between mb-4">
                           <h3 className="text-lg font-semibold text-white">{skill.name}</h3>
@@ -238,7 +238,7 @@ export function SkillsManager({ username }: SkillsManagerProps) {
                             <Button 
                               variant="ghost" 
                               size="sm"
-                              onClick={() => handleDelete(skill.id)}
+                              onClick={() => handleDelete(skill._id)}
                               className="text-red-400 hover:text-red-300"
                             >
                               <Trash2 className="h-4 w-4" />

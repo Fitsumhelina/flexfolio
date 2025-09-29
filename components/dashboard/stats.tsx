@@ -4,23 +4,23 @@ import { useRouter } from "next/navigation"
 import { Card, CardContent } from "@/components/ui/card"
 import { BarChart3, TrendingUp, Mail, Zap } from "lucide-react"
 import { ROUTES, userDashboard, userDashboardMail, userDashboardProjects, userDashboardSkills } from "@/lib/routes"
-
-interface User {
-  portfolioData?: {
-    projects?: any[]
-    skills?: any[]
-  }
-}
+import { useQuery } from "convex/react"
+import { api } from "@/convex/_generated/api"
+import { useAuth } from "@/components/auth/convex-auth-provider"
 
 interface DashboardStatsProps {
-  user: User
   messageCount: number
   unreadCount: number
   username?: string
 }
 
-export function DashboardStats({ user, messageCount, unreadCount, username }: DashboardStatsProps) {
+export function DashboardStats({ messageCount, unreadCount, username }: DashboardStatsProps) {
   const router = useRouter()
+  const { user: sessionUser } = useAuth()
+  
+  // Convex queries
+  const projects = useQuery(api.projects.getProjects, sessionUser ? { userId: sessionUser.userId } : "skip")
+  const skills = useQuery(api.skills.getSkills, sessionUser ? { userId: sessionUser.userId } : "skip")
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
@@ -31,7 +31,7 @@ export function DashboardStats({ user, messageCount, unreadCount, username }: Da
           >
             <div>
               <p className="text-gray-400 text-sm font-medium">Total Projects</p>
-              <p className="text-3xl font-bold text-blue-400">{user.portfolioData?.projects?.length || 0}</p>
+              <p className="text-3xl font-bold text-blue-400">{projects?.length || 0}</p>
               <p className="text-xs text-gray-500">+{Math.floor(Math.random() * 5)} this month</p>
             </div>
             <div className="w-12 h-12 bg-blue-500/20 rounded-lg flex items-center justify-center">
@@ -81,7 +81,7 @@ export function DashboardStats({ user, messageCount, unreadCount, username }: Da
           >
             <div>
               <p className="text-gray-400 text-sm font-medium">Skills Listed</p>
-              <p className="text-3xl font-bold text-orange-400">{user.portfolioData?.skills?.length || 0}</p>
+              <p className="text-3xl font-bold text-orange-400">{skills?.length || 0}</p>
               <p className="text-xs text-gray-500">Updated recently</p>
             </div>
             <div className="w-12 h-12 bg-orange-500/20 rounded-lg flex items-center justify-center">
