@@ -207,7 +207,7 @@ export function LandingPage() {
     { number: "Unique", label: "Customization" },
     { number: "Private", label: "Dashboard" },
     { number: "99.9%", label: "Uptime" },
-    { number: "Free", label: "Forever" },
+    { number: "Built in ", label: "Email system" },
   ];
 
   // Make navigation sticky using position: sticky and a top value, and add a shadow for visibility
@@ -348,7 +348,7 @@ export function LandingPage() {
                 <div className="bg-black rounded-lg overflow-hidden shadow-lg">
                   <iframe
                     src="/demo"
-                    className="w-full h-64 sm:h-80 lg:h-96"
+                    className="w-full h-76 sm:h-[28rem] lg:h-[32rem]"
                     title="Portfolio Demo"
                   />
                 </div>

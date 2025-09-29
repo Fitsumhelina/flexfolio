@@ -39,6 +39,7 @@ import { useEffect as ReactUseEffect, useState as ReactUseState } from 'react'
 import { ROUTES } from '@/lib/routes'
 import { PATTERNS } from '@/lib/patterns'
 import { demoUserData, demoProjects, demoSkills, demoMessages } from "@/lib/demo-data"
+import { HeroBackgroundPreview } from "@/components/ui/hero-background-preview"
 
 function DemoInbox({ user }: { user: any }) {
   const [messages, setMessages] = ReactUseState<Array<any>>(demoMessages)
@@ -782,6 +783,17 @@ export function DemoDashboard() {
                       </>
                     ) : null}
                   </div>
+
+                  {/* Background Preview Section */}
+                  <HeroBackgroundPreview 
+                    aboutForm={aboutForm}
+                    setAboutForm={setAboutForm}
+                    showGradientSelector={true}
+                    height="h-96"
+                    showSocialLinks={true}
+                    showCTAButtons={true}
+                    showScrollIndicator={true}
+                  />
 
                   <div className="flex items-center gap-3 mt-4">
                     <Button onClick={handleSaveHero} disabled={isSavingHero} className="bg-green-500 hover:bg-green-600 text-white">
