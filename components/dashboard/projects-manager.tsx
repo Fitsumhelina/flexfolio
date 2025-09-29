@@ -26,7 +26,7 @@ import {
 } from "lucide-react"
 
 interface Project {
-  id: string
+  _id: string
   title: string
   description: string
   tech: string[]
@@ -113,7 +113,7 @@ export function ProjectsManager({ username }: ProjectsManagerProps) {
       if (editingProject) {
         // Update existing project
         await updateProjectMutation({
-          projectId: editingProject.id as any, // Cast to Convex ID type
+          projectId: editingProject._id as any, // Cast to Convex ID type
           ...projectData
         })
         setMessage({ type: 'success', text: 'Project updated successfully!' })
@@ -224,7 +224,7 @@ export function ProjectsManager({ username }: ProjectsManagerProps) {
         {/* Projects Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
           {projectsList.map((project) => (
-            <Card key={project.id} className="bg-gray-900/50 border-gray-700 hover:border-gray-600 transition-colors">
+            <Card key={project._id} className="bg-gray-900/50 border-gray-700 hover:border-gray-600 transition-colors">
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-white text-lg">{project.title}</CardTitle>
@@ -258,7 +258,7 @@ export function ProjectsManager({ username }: ProjectsManagerProps) {
                   <Button 
                     variant="outline" 
                     size="sm"
-                    onClick={() => handleDelete(project.id)}
+                    onClick={() => handleDelete(project._id)}
                     className="border-red-500/30 text-red-400 hover:bg-red-500/10"
                   >
                     <Trash2 className="h-4 w-4" />
