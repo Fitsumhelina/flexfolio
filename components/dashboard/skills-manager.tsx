@@ -10,6 +10,8 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { useAuth } from "@/components/auth/convex-auth-provider"
+import { useMutation, useQuery } from "convex/react"
+import { api } from "@/convex/_generated/api"
 import { 
   ArrowLeft, 
   Plus, 
@@ -43,13 +45,18 @@ interface SkillsManagerProps {
 
 export function SkillsManager({ username }: SkillsManagerProps) {
   const { user: sessionUser, isLoading: sessionLoading } = useAuth()
-  const [user, setUser] = useState<User | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
   const [isSaving, setIsSaving] = useState(false)
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null)
   const [showForm, setShowForm] = useState(false)
   const [editingSkill, setEditingSkill] = useState<Skill | null>(null)
   const router = useRouter()
+
+  // Convex queries and mutations
+  const user = useQuery(api.users.getUser, sessionUser ? { userId: sessionUser.userId } : "skip")
+  const skills = useQuery(api.skills.getSkills, sessionUser ? { userId: sessionUser.userId } : "skip")
+  const createSkillMutation = useMutation(api.skills.createSkill)
+  const updateSkillMutation = useMutation(api.skills.updateSkill)
+  const deleteSkillMutation = useMutation(api.skills.deleteSkill)
 
   const [formData, setFormData] = useState({
     name: "",
@@ -70,10 +77,6 @@ export function SkillsManager({ username }: SkillsManagerProps) {
       router.push(ROUTES.LOGIN)
       return
     }
-
-    setUser(sessionUser)
-
-    setIsLoading(false)
   }, [sessionUser, sessionLoading, router])
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -86,53 +89,38 @@ export function SkillsManager({ username }: SkillsManagerProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!user) return
+    if (!user || !sessionUser) return
 
     setIsSaving(true)
     setMessage(null)
 
     try {
       const skillData = {
-        ...formData,
-        id: editingSkill?.id || Date.now().toString()
+        name: formData.name,
+        category: formData.category,
+        proficiency: formData.proficiency
       }
 
-      const response = await fetch('/api/users/update-skills', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          userId: user._id,
-          skill: skillData,
-          isEdit: !!editingSkill
-        }),
-      })
-
-      const data = await response.json()
-
-      if (response.ok) {
-        // Update local storage
-        const updatedSkills = editingSkill 
-          ? (user.portfolioData?.skills || []).map(s => s.id === editingSkill.id ? skillData : s)
-          : [...(user.portfolioData?.skills || []), skillData]
-        
-        const updatedUser = {
-          ...user,
-          portfolioData: {
-            ...user.portfolioData,
-            skills: updatedSkills
-          }
-        }
-        setUser(updatedUser)
-        
-        setMessage({ type: 'success', text: editingSkill ? 'Skill updated successfully!' : 'Skill added successfully!' })
-        resetForm()
+      if (editingSkill) {
+        // Update existing skill
+        await updateSkillMutation({
+          skillId: editingSkill.id as any, // Cast to Convex ID type
+          ...skillData
+        })
+        setMessage({ type: 'success', text: 'Skill updated successfully!' })
       } else {
-        setMessage({ type: 'error', text: data.error || 'Failed to save skill' })
+        // Create new skill
+        await createSkillMutation({
+          userId: sessionUser.userId,
+          ...skillData
+        })
+        setMessage({ type: 'success', text: 'Skill added successfully!' })
       }
+      
+      resetForm()
     } catch (error) {
-      setMessage({ type: 'error', text: 'Network error. Please try again.' })
+      console.error('Error saving skill:', error)
+      setMessage({ type: 'error', text: 'Failed to save skill. Please try again.' })
     }
 
     setIsSaving(false)
@@ -149,33 +137,13 @@ export function SkillsManager({ username }: SkillsManagerProps) {
   }
 
   const handleDelete = async (skillId: string) => {
-    if (!user || !confirm('Are you sure you want to delete this skill?')) return
+    if (!confirm('Are you sure you want to delete this skill?')) return
 
     try {
-      const response = await fetch('/api/users/delete-skill', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          userId: user._id,
-          skillId
-        }),
-      })
-
-      if (response.ok) {
-        const updatedSkills = (user.portfolioData?.skills || []).filter(s => s.id !== skillId)
-        const updatedUser = {
-          ...user,
-          portfolioData: {
-            ...user.portfolioData,
-            skills: updatedSkills
-          }
-        }
-        setUser(updatedUser)
-        setMessage({ type: 'success', text: 'Skill deleted successfully!' })
-      }
+      await deleteSkillMutation({ skillId: skillId as any })
+      setMessage({ type: 'success', text: 'Skill deleted successfully!' })
     } catch (error) {
+      console.error('Error deleting skill:', error)
       setMessage({ type: 'error', text: 'Failed to delete skill' })
     }
   }
@@ -190,7 +158,7 @@ export function SkillsManager({ username }: SkillsManagerProps) {
     setShowForm(false)
   }
 
-  if (isLoading) {
+  if (sessionLoading || !user) {
     return (
       <div className="min-h-screen bg-black flex items-center justify-center">
         <div className="text-white">Loading...</div>
@@ -198,12 +166,8 @@ export function SkillsManager({ username }: SkillsManagerProps) {
     )
   }
 
-  if (!user) {
-    return null
-  }
-
-  const skills = user.portfolioData?.skills || []
-  const skillsByCategory = skills.reduce((acc, skill) => {
+  const skillsList = skills || []
+  const skillsByCategory = skillsList.reduce((acc, skill) => {
     if (!acc[skill.category]) {
       acc[skill.category] = []
     }
