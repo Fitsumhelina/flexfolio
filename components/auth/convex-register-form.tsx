@@ -30,13 +30,13 @@ export function ConvexRegisterForm() {
   const router = useRouter();
   const { register } = useAuth();
 
-  // Real-time email checking
+  // Real-time email checking with error handling
   const emailExists = useQuery(
     api.users.checkEmailExists, 
-    formData.email.includes("@") ? { email: formData.email } : "skip"
+    formData.email.includes("@") && formData.email.length > 5 ? { email: formData.email } : "skip"
   );
 
-  // Real-time username checking
+  // Real-time username checking with error handling
   const usernameExists = useQuery(
     api.users.checkUsernameExists, 
     formData.username.length >= 3 ? { username: formData.username } : "skip"
@@ -44,16 +44,16 @@ export function ConvexRegisterForm() {
 
   // Update email status based on query result
   useEffect(() => {
-    if (!formData.email.includes("@")) {
+    if (!formData.email.includes("@") || formData.email.length <= 5) {
       setEmailStatus(null);
       return;
     }
 
     if (emailExists === undefined) {
       setEmailStatus("checking");
-    } else if (emailExists) {
+    } else if (emailExists === true) {
       setEmailStatus("taken");
-    } else {
+    } else if (emailExists === false) {
       setEmailStatus("available");
     }
   }, [emailExists, formData.email]);
@@ -67,9 +67,9 @@ export function ConvexRegisterForm() {
 
     if (usernameExists === undefined) {
       setUsernameStatus("checking");
-    } else if (usernameExists) {
+    } else if (usernameExists === true) {
       setUsernameStatus("taken");
-    } else {
+    } else if (usernameExists === false) {
       setUsernameStatus("available");
     }
   }, [usernameExists, formData.username]);

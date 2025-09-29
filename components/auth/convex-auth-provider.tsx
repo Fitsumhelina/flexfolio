@@ -58,7 +58,15 @@ export function ConvexAuthProvider({ children }: { children: ReactNode }) {
   const login = async (email: string, password: string) => {
     try {
       console.log("Auth provider: Attempting login for", email);
-      const sessionData = await loginAction({ email, password });
+      
+      // Add timeout to prevent hanging
+      const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error("Login request timed out")), 10000);
+      });
+      
+      const loginPromise = loginAction({ email, password });
+      
+      const sessionData = await Promise.race([loginPromise, timeoutPromise]);
       console.log("Auth provider: Login successful", sessionData);
       setUser(sessionData);
       localStorage.setItem("flexfolio-session", JSON.stringify(sessionData));
@@ -76,6 +84,11 @@ export function ConvexAuthProvider({ children }: { children: ReactNode }) {
         errorMessage = error;
       }
       
+      // Handle specific connection errors
+      if (errorMessage.includes("Connection lost") || errorMessage.includes("timed out")) {
+        errorMessage = "Connection to server lost. Please check your internet connection and try again.";
+      }
+      
       // Create a new error with the extracted message
       const loginError = new Error(errorMessage);
       throw loginError;
@@ -84,10 +97,28 @@ export function ConvexAuthProvider({ children }: { children: ReactNode }) {
 
   const register = async (name: string, email: string, username: string, password: string) => {
     try {
-      const userId = await registerAction({ name, email, username, password });
+      console.log("Auth provider: Attempting registration for", email);
+      
+      // Add timeout to prevent hanging
+      const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error("Registration request timed out")), 15000);
+      });
+      
+      const registerPromise = registerAction({ name, email, username, password });
+      
+      const userId = await Promise.race([registerPromise, timeoutPromise]);
+      console.log("Auth provider: Registration successful", userId);
+      
       // After registration, automatically log in
       await login(email, password);
-    } catch (error) {
+    } catch (error: any) {
+      console.error("Auth provider: Registration error", error);
+      
+      // Handle specific connection errors
+      if (error?.message?.includes("Connection lost") || error?.message?.includes("timed out")) {
+        throw new Error("Connection to server lost. Please check your internet connection and try again.");
+      }
+      
       throw error;
     }
   };
