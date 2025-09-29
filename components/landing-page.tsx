@@ -348,7 +348,7 @@ export function LandingPage() {
                 <div className="bg-black rounded-lg overflow-hidden shadow-lg">
                   <iframe
                     src="/demo"
-                    className="w-full h-64 sm:h-80 lg:h-96"
+                    className="w-full h-76 sm:h-[28rem] lg:h-[32rem]"
                     title="Portfolio Demo"
                   />
                 </div>
