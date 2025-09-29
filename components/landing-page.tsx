@@ -207,7 +207,7 @@ export function LandingPage() {
     { number: "Unique", label: "Customization" },
     { number: "Private", label: "Dashboard" },
     { number: "99.9%", label: "Uptime" },
-    { number: "Free", label: "Forever" },
+    { number: "Built in ", label: "Email system" },
   ];
 
   // Make navigation sticky using position: sticky and a top value, and add a shadow for visibility
