@@ -39,6 +39,7 @@ import { useEffect as ReactUseEffect, useState as ReactUseState } from 'react'
 import { ROUTES } from '@/lib/routes'
 import { PATTERNS } from '@/lib/patterns'
 import { demoUserData, demoProjects, demoSkills, demoMessages } from "@/lib/demo-data"
+import { HeroBackgroundPreview } from "@/components/ui/hero-background-preview"
 
 function DemoInbox({ user }: { user: any }) {
   const [messages, setMessages] = ReactUseState<Array<any>>(demoMessages)
@@ -784,56 +785,15 @@ export function DemoDashboard() {
                   </div>
 
                   {/* Background Preview Section */}
-                  <div className="mt-6 space-y-3">
-                    <div className="text-sm text-white/80">Background Preview</div>
-                    <div className="relative h-48 rounded-lg overflow-hidden border border-white/20">
-                      {aboutForm.heroBackgroundMode === 'image' && aboutForm.heroBackgroundImageUrl ? (
-                        <img 
-                          src={aboutForm.heroBackgroundImageUrl} 
-                          alt="preview" 
-                          className={`w-full h-full object-cover opacity-50 ${`hero-blur-${aboutForm.heroBackgroundBlurLevel}`}`} 
-                        />
-                      ) : aboutForm.heroBackgroundMode === 'pattern' ? (
-                        (() => {
-                          const entry = PATTERNS.find(p => p.id === aboutForm.heroPatternId)
-                          if (!entry) return null
-                          const Comp: any = entry.component
-                          const defaults = entry.defaults || {}
-                          let patternProps = { ...defaults, ...(aboutForm.heroPatternProps || {}) }
-                          if (aboutForm.heroPatternId === "liquid-ether") {
-                            if (typeof patternProps.autoSpeed === "undefined") {
-                              patternProps.autoSpeed = 1.5
-                            }
-                          }
-                          patternProps.style = { width: '100%', height: '100%', position: 'absolute', inset: 0 }
-                          return <Comp {...patternProps} />
-                        })()
-                      ) : (
-                        <div className={`hero-animated-bg ${aboutForm.heroGradientPreset===2?'hero-bg-2':aboutForm.heroGradientPreset===3?'hero-bg-3':aboutForm.heroGradientPreset===4?'hero-bg-4':'hero-bg-1'} ${`hero-blur-${aboutForm.heroBackgroundBlurLevel}`}`} />
-                      )}
-                      {/* Overlay text to show how content would appear */}
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <div className="text-center text-white">
-                          <h3 className="text-xl font-bold mb-2">{aboutForm.heroTitle || "Your Title"}</h3>
-                          <p className="text-sm opacity-80">{aboutForm.heroDescription || "Your description"}</p>
-                        </div>
-                      </div>
-                    </div>
-                    {aboutForm.heroBackgroundMode === 'gradient' && (
-                      <div className="grid grid-cols-4 gap-2">
-                        {[1,2,3,4].map(p => (
-                          <button 
-                            key={p} 
-                            type="button" 
-                            onClick={() => setAboutForm(prev => ({ ...prev, heroGradientPreset: p as 1|2|3|4 }))} 
-                            className={`h-10 rounded border ${aboutForm.heroGradientPreset===p?'border-white':'border-white/20'} relative overflow-hidden`}
-                          >
-                            <div className={`absolute inset-0 hero-animated-bg ${p===2?'hero-bg-2':p===3?'hero-bg-3':p===4?'hero-bg-4':'hero-bg-1'}`} />
-                          </button>
-                        ))}
-                      </div>
-                    )}
-                  </div>
+                  <HeroBackgroundPreview 
+                    aboutForm={aboutForm}
+                    setAboutForm={setAboutForm}
+                    showGradientSelector={true}
+                    height="h-96"
+                    showSocialLinks={true}
+                    showCTAButtons={true}
+                    showScrollIndicator={true}
+                  />
 
                   <div className="flex items-center gap-3 mt-4">
                     <Button onClick={handleSaveHero} disabled={isSavingHero} className="bg-green-500 hover:bg-green-600 text-white">
