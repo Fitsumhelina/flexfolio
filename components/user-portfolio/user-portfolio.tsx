@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useQuery } from "convex/react";
+import { useQuery, useMutation } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { Navigation } from "@/components/user-portfolio/navigation";
 import { UserHero } from "@/components/user-portfolio/hero";
@@ -86,6 +86,29 @@ export function UserPortfolio({ username }: UserPortfolioProps) {
     api.skills.getSkills, 
     user ? { userId: user._id } : "skip"
   );
+
+  // Page view tracking
+  const trackPageView = useMutation(api.pageViews.trackPageView);
+
+  // Track page view when component mounts
+  useEffect(() => {
+    if (user) {
+      const trackView = async () => {
+        try {
+          await trackPageView({
+            userId: user._id,
+            visitorIP: undefined, // We'll let the server handle IP detection
+            userAgent: navigator.userAgent,
+            referrer: document.referrer || undefined,
+          });
+        } catch (error) {
+          console.error("Failed to track page view:", error);
+        }
+      };
+      
+      trackView();
+    }
+  }, [user, trackPageView]);
 
   // Handle loading and error states
   if (user === undefined) {
