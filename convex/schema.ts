@@ -105,4 +105,14 @@ export default defineSchema({
     createdAt: v.number(),
   })
     .index("by_userId", ["userId"]),
+
+  pageViews: defineTable({
+    userId: v.id("users"),
+    visitorIP: v.optional(v.string()),
+    userAgent: v.optional(v.string()),
+    referrer: v.optional(v.string()),
+    timestamp: v.number(),
+  })
+    .index("by_user", ["userId"])
+    .index("by_timestamp", ["timestamp"]),
 });
