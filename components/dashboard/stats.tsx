@@ -21,6 +21,8 @@ export function DashboardStats({ messageCount, unreadCount, username }: Dashboar
   // Convex queries
   const projects = useQuery(api.projects.getProjects, sessionUser ? { userId: sessionUser.userId } : "skip")
   const skills = useQuery(api.skills.getSkills, sessionUser ? { userId: sessionUser.userId } : "skip")
+  const totalPageViews = useQuery(api.pageViews.getTotalPageViews, sessionUser ? { userId: sessionUser.userId } : "skip")
+  const recentPageViews = useQuery(api.pageViews.getRecentPageViews, sessionUser ? { userId: sessionUser.userId } : "skip")
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
@@ -46,8 +48,8 @@ export function DashboardStats({ messageCount, unreadCount, username }: Dashboar
           <div className="flex items-center justify-between cursor-pointer">
             <div>
               <p className="text-gray-400 text-sm font-medium">Page Views</p>
-              <p className="text-3xl font-bold text-green-400">2,847</p>
-              <p className="text-xs text-gray-500">+12% this week</p>
+              <p className="text-3xl font-bold text-green-400">{totalPageViews || 0}</p>
+              <p className="text-xs text-gray-500">+{recentPageViews || 0} this week</p>
             </div>
             <div className="w-12 h-12 bg-green-500/20 rounded-lg flex items-center justify-center">
               <TrendingUp className="h-6 w-6 text-green-400" />
